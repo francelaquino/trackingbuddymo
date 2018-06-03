@@ -1,0 +1,81 @@
+{
+  "project_info": {
+    "project_number": "1028173376912",
+    "firebase_url": "https://trackingbuddy-3bebd.firebaseio.com",
+    "project_id": "trackingbuddy-3bebd",
+    "storage_bucket": "trackingbuddy-3bebd.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1028173376912:android:95bcd88f60558e7c",
+        "android_client_info": {
+          "package_name": "com.googlestorage"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1028173376912-rigb3elheqqk8o78ntratdccqfkr2qtu.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "1028173376912-rigb3elheqqk8o78ntratdccqfkr2qtu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDCbLnJhLrxsX-RyQfqi2wuo7oW8gtoRwQ"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1028173376912:android:f62b068724fd1ef0",
+        "android_client_info": {
+          "package_name": "com.tracking"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1028173376912-rigb3elheqqk8o78ntratdccqfkr2qtu.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "1028173376912-rigb3elheqqk8o78ntratdccqfkr2qtu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDCbLnJhLrxsX-RyQfqi2wuo7oW8gtoRwQ"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
