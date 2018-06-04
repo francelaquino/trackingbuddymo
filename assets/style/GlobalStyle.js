@@ -102,6 +102,41 @@ module.exports = StyleSheet.create({
     font14:{
         fontSize:14,
     },
+    /*List Design Start */
+    listItem:{
+        borderBottomColor:'#e5e5e5',
+        borderBottomWidth:.5,
+        marginLeft:0,
+        padding:5
+    },
+    listLeft:{
+        width:55,
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingLeft:0
+    },
+    listBody:{
+        borderBottomWidth:0,
+        marginLeft:5
+    },
+    listHeading:{
+        color:'black',
+    },
+    listRight:{
+        borderBottomWidth:0,
+        padding:0,
+        flexDirection: 'row',
+    },
+    listRightOptionIcon:{
+        fontSize:20,
+        color:'silver',
+    },
+    listRightTouchable:{
+        position:'absolute'
+        ,top:10
+    },
+    
+    /* List Design End */
     avatarcontainersmall:{
         borderRadius: 50,
         backgroundColor:theme.primaryColor,
@@ -205,7 +240,42 @@ module.exports = StyleSheet.create({
         width:80,
         alignSelf: "center", 
         flexDirection:'column'
+    },
+    /*Modal Design Start*/
+    modalWrapper:{
+        backgroundColor: 'rgba(0,0,0,0.5)',
+        height:'100%',
+        zIndex: 1000,
+    },
+    modalContainer:{
+        borderRadius:6, 
+        marginTop: 50,
+        backgroundColor:'white',
+        width:300,
+        alignSelf: "center",
+        flexDirection:'column',
+    },
+    modalAvatar:{
+        marginLeft:0,
+        borderBottomColor:'#e5e5e5',
+        borderBottomWidth:.5,
+        padding:5
+    },
+    modalLeft:{
+        width:55,
+        justifyContent: 'center',
+        alignItems: 'center'
+    },modalAvatarIcon:{
+        color:'#818181'
+    },
+    modalCancel:{
+        width:100,
+        color:'#009da3',
+        padding:15,
+        fontSize:17
     }
+
+    /*Model Design End*/
   
 
 });

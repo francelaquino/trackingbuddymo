@@ -26,9 +26,6 @@ class NewInvite extends Component {
             isLoading:false,
         })
     }
-    componentDidUpdate(){
-        console.log("update")
-    }
     
     goBack(){
         if(this.state.parentReload==true){

@@ -1,9 +1,11 @@
 
 import React, { Component } from 'react';
-import {  Platform,  StyleSheet,  Text,  View, ScrollView,TextInput, TouchableOpacity, ToastAndroid, Image, Alert,RefreshControl } from 'react-native';
+import { Modal,TouchableHighlight, Platform,  StyleSheet,  Text,  View, ScrollView,TextInput, TouchableOpacity, ToastAndroid, Image, Alert,RefreshControl } from 'react-native';
 import { Root, Container, Header, Body, Title, Item, Input, Label, Button, Icon, Content, List, ListItem,Left, Right,Switch, Thumbnail, CardItem, Card } from 'native-base';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+
 import firebase from 'react-native-firebase';
 import { LeftHome } from '../shared/LeftHome';
 import Loading  from '../shared/Loading';
@@ -17,6 +19,8 @@ class DisplayMember extends Component {
         super(props)
         this.state={
             isLoading:true,
+            modalVisible: false,
+            memberid:'',
             emptyPhoto:'https://firebasestorage.googleapis.com/v0/b/trackingbuddy-3bebd.appspot.com/o/member_photos%2Ficons8-person-80.png?alt=media&token=59864ce7-cf1c-4c5e-a07d-76c286a2171d',
             members:{
                 id:'',
@@ -26,8 +30,18 @@ class DisplayMember extends Component {
         }
       }
 
-    
+    openMemberOption(memberid){
+        this.setState({memberid:memberid})
+        this.setModalVisible(true)
+    }
+    setModalVisible(visible) {
+        this.setState({modalVisible: visible});
+    }
     componentWillMount() {
+        this.initialize();
+    }
+
+    onReload(){
         this.initialize();
     }
    
@@ -83,27 +97,27 @@ class DisplayMember extends Component {
         
     }
    
-    confirmDelete(memberid){
+    confirmDelete(){
         Alert.alert(
             'Comfirm Delete',
             'Are you sure you want to delete the member?',
             [
               
-              {text: 'Yes', onPress: () => this.onDelete(memberid)},
+              {text: 'Yes', onPress: () => this.onDelete()},
               {text: 'No', style: 'cancel'},
             ],
             { cancelable: true }
           )
     }
-    onDelete(memberid){
-        console.log(memberid)
-        let memberRef=firebase.database().ref().child("members/"+userdetails.userid+"/"+memberid);
+    onDelete(){
+        let memberRef=firebase.database().ref().child("members/"+userdetails.userid+"/"+this.state.memberid);
 
         memberRef.remove()
         .catch(function(err) {
             console.log('error', err);
           });
         this.initialize()
+        this.setModalVisible(false)
         ToastAndroid.showWithGravityAndOffset("Member successfully deleted",ToastAndroid.LONG,ToastAndroid.BOTTOM, 25, 50);
     }
     loading(){
@@ -120,38 +134,24 @@ class DisplayMember extends Component {
     ready(){
         const members =this.state.members.map(member=>(
             
-            <Card key={member.id}>
-            <CardItem>
-            <Left>
-                <View style={globalStyle.avatarcontainer}> 
-                    { member.avatar==='' ?  <Thumbnail  style={globalStyle.avatar} source={{uri: this.state.emptyPhoto}} /> :
-                    <Thumbnail  style={globalStyle.avatar} source={{uri: member.avatar}} />
-                    }
-                    </View>
-                    <Body style={{marginLeft:10}}>
-                    <Text style={globalStyle.heading1}>{member.firstname}</Text>
-                    <Text  style={globalStyle.font12}>Doing what you like will always keep you happy . .</Text>
-                </Body>
-            </Left>
-            </CardItem>
-            <CardItem style={globalStyle.cardNavFooter}>
-            <Left>
-            <Button transparent>
-                <MaterialIcons style={globalStyle.navBarIcon} name="message"/>
-                <Text style={globalStyle.font12}>Message</Text>
-                </Button>
-                <Button transparent>
-                <MaterialIcons style={globalStyle.navBarIcon} name="place"/>
-                <Text style={globalStyle.font12}>Places</Text>
-                </Button>
-                <Button transparent onPress={()=>this.confirmDelete(member.id)}>
-                <MaterialIcons style={globalStyle.navBarIcon} name="delete"/>
-                <Text style={globalStyle.font12}>Delete Member</Text>
-                </Button>
-            </Left>
-            </CardItem>
-            </Card>
-
+                            <ListItem key={member.id}  avatar style={globalStyle.listItem}>
+                            <Left style={globalStyle.listLeft}>
+                                { member.avatar==='' ?  <Thumbnail  style={globalStyle.avatar} source={{uri: this.state.emptyPhoto}} /> :
+                                <Thumbnail  style={globalStyle.avatar} source={{uri: member.avatar}} />
+                                }
+                            </Left>
+                            <Body style={globalStyle.listBody} >
+                                <Text style={globalStyle.listHeading}>{member.firstname}</Text>
+                            </Body>
+                            <Right style={globalStyle.listRight} >
+                                <TouchableHighlight  style={globalStyle.listRightTouchable}  
+                                    onPress={() => {
+                                    this.openMemberOption(member.id);
+                                    }}>
+                                <MaterialCommunityIcons  style={globalStyle.listRightOptionIcon}   name='dots-vertical' />
+                                </TouchableHighlight>
+                            </Right>
+                            </ListItem>
           ));
 
         return (
@@ -163,13 +163,14 @@ class DisplayMember extends Component {
                                 <Icon size={30} name='arrow-back' />
                             </Button> 
                         </Left>
-                        <Body>
+                        <Body >
                             <Title>Members</Title>
                         </Body>
                         <Right  >
-                            <Button transparent onPress={() =>this.props.navigation.navigate('NewInvite',{onReload : this.onReload})}>
-                                <Icon  style={{color:'white',fontSize:30}} name='md-person-add' />
+                            <Button transparent onPress={() => this.props.navigation.navigate("NewInvite",{reload: this.onReload})}>
+                                <Ionicons style={{color:'white',fontSize:25}}  name='md-person-add' />
                             </Button> 
+                            
                             
                         </Right>
                     </Header>
@@ -177,10 +178,62 @@ class DisplayMember extends Component {
                         <ScrollView  contentContainerStyle={{flexGrow: 1}} keyboardShouldPersistTaps={"always"}
                           >
                             <View style={globalStyle.container}>
+                            <List   >
                                 {members}
+                                </List  >
                             </View>
                         </ScrollView>
                     </Content>
+                    <Modal 
+                        animationType="fade"
+                        transparent={true}
+                        visible={this.state.modalVisible}
+                        onRequestClose={() => {
+                            this.setModalVisible(!this.state.modalVisible);
+                        }}>
+                        <View style={globalStyle.modalWrapper} >
+                            <View style={[globalStyle.modalContainer,{height:220}]} >
+                                <List>
+                                    <ListItem avatar onPress={()=>this.openMembers()} 
+                                    style={globalStyle.modalAvatar}>
+                                    <Left style={globalStyle.modalLeft}>
+                                        <MaterialIcons style={[globalStyle.avatarIcon],{fontSize:35}} name="message"/>
+                                    </Left>
+                                    <Body style={{borderBottomWidth:0,marginLeft:0}}>
+                                        <Text style={{color:'#2b2a2a',fontSize:16}}>Message</Text>
+                                    </Body>
+                                    </ListItem>
+                                    <ListItem avatar onPress={()=>this.openMembers()} 
+                                    style={globalStyle.modalAvatar}>
+                                    <Left style={globalStyle.modalLeft}>
+                                        <MaterialIcons style={[globalStyle.avatarIcon],{fontSize:35}} name="location-on"/>
+                                    </Left>
+                                    <Body style={{borderBottomWidth:0,marginLeft:0}}>
+                                        <Text style={{color:'#2b2a2a',fontSize:16}}>Places</Text>
+                                    </Body>
+                                    </ListItem>
+                                    <ListItem avatar onPress={()=>this.confirmDelete()}  
+                                     style={globalStyle.modalAvatar}>
+                                    <Left style={globalStyle.modalLeft}>
+                                        <MaterialIcons style={[globalStyle.avatarIcon],{fontSize:40}} name="delete"/>
+                                    </Left>
+                                    <Body style={{borderBottomWidth:0,marginLeft:0}}>
+                                        <Text style={{color:'#2b2a2a',fontSize:16}}>Delete Member</Text>
+                                    </Body>
+                                    </ListItem>
+                                </List>
+
+                                <TouchableHighlight 
+                                    onPress={() => {
+                                    this.setModalVisible(!this.state.modalVisible);
+                                    }}>
+                                    <View style={{alignItems:'center',flexDirection:'row'}}>
+                                    <Right><Text style={globalStyle.modalCancel} >CANCEL</Text></Right>
+                                    </View>
+                                </TouchableHighlight>
+                            </View>
+                        </View>
+                        </Modal>
                 </Container>
             </Root>
         )

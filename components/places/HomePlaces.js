@@ -18,15 +18,14 @@ class HomePlaces extends Component {
         super(props)
         this.state = {
             isLoading:true,
-            isModalVisible: true,
             modalVisible: false,
         };
       }
       
 
-      setModalVisible(visible) {
+    setModalVisible(visible) {
         this.setState({modalVisible: visible});
-      }
+    }
       
     componentWillMount() {
         this.initialize();
@@ -111,37 +110,38 @@ class HomePlaces extends Component {
                         onRequestClose={() => {
                             this.setModalVisible(!this.state.modalVisible);
                         }}>
-                        <View style={{backgroundColor: 'rgba(0,0,0,0.5)',height:'100%',zIndex: 1000}}>
-                        <View style={{borderRadius:6, marginTop: 50,backgroundColor:'white',height:165,width:300,alignSelf: "center",         flexDirection:'column'}}>
-                            <List>
-                                <ListItem avatar onPress={()=>this.openMembers()}  
-                                style={{marginLeft:0,borderBottomColor:'#e5e5e5',borderBottomWidth:.5,padding:5}}>
-                                <Left style={{width:55,justifyContent: 'center',alignItems: 'center'}} >
-                                    <Ionicons style={{color:'#818181',fontSize:35}} name="md-person"/>
-                                </Left>
-                                <Body style={{borderBottomWidth:0,marginLeft:0}}>
-                                    <Text style={{color:'#2b2a2a',fontSize:16}}>Members</Text>
-                                </Body>
-                                </ListItem>
-                                <ListItem avatar onPress={()=>this.openGroups()}  style={{marginLeft:0,borderBottomColor:'#009da3',borderBottomWidth:1,padding:5}}>
-                                <Left style={{width:55,justifyContent: 'center',alignItems: 'center'}} >
-                                    <Ionicons style={{color:'#818181',fontSize:40}} name="md-people"/>
-                                </Left>
-                                <Body style={{borderBottomWidth:0,marginLeft:0}}>
-                                    <Text style={{color:'#2b2a2a',fontSize:16}}>Groups</Text>
-                                </Body>
-                                </ListItem>
-                            </List>
+                        <View style={globalStyle.modalWrapper} >
+                            <View style={[globalStyle.modalContainer,{height:165}]} >
+                                <List>
+                                    <ListItem avatar onPress={()=>this.openMembers()} 
+                                    style={globalStyle.modalAvatar}>
+                                    <Left style={globalStyle.modalLeft}>
+                                        <Ionicons style={[globalStyle.avatarIcon],{fontSize:35}} name="md-person"/>
+                                    </Left>
+                                    <Body style={{borderBottomWidth:0,marginLeft:0}}>
+                                        <Text style={{color:'#2b2a2a',fontSize:16}}>Members</Text>
+                                    </Body>
+                                    </ListItem>
+                                    <ListItem avatar onPress={()=>this.openGroups()}  
+                                     style={globalStyle.modalAvatar}>
+                                    <Left style={globalStyle.modalLeft}>
+                                        <Ionicons style={[globalStyle.avatarIcon],{fontSize:40}} name="md-people"/>
+                                    </Left>
+                                    <Body style={{borderBottomWidth:0,marginLeft:0}}>
+                                        <Text style={{color:'#2b2a2a',fontSize:16}}>Groups</Text>
+                                    </Body>
+                                    </ListItem>
+                                </List>
 
-                            <TouchableHighlight 
-                                onPress={() => {
-                                this.setModalVisible(!this.state.modalVisible);
-                                }}>
-                                 <View style={{alignItems:'center',flexDirection:'row'}}>
-                                <Right><Text style={{width:100,color:'#009da3',padding:15,fontSize:17}}>CANCEL</Text></Right>
-                                </View>
-                            </TouchableHighlight>
-                        </View>
+                                <TouchableHighlight 
+                                    onPress={() => {
+                                    this.setModalVisible(!this.state.modalVisible);
+                                    }}>
+                                    <View style={{alignItems:'center',flexDirection:'row'}}>
+                                    <Right><Text style={globalStyle.modalCancel} >CANCEL</Text></Right>
+                                    </View>
+                                </TouchableHighlight>
+                            </View>
                         </View>
                         </Modal>
                 </Container>
@@ -192,14 +192,11 @@ const styles = StyleSheet.create({
         alignItems:'center',
         borderTopWidth:.5,
         borderTopColor:'silver',
-        
-       
     },
     
     mapContainer: {
       flex: 1,
       display: 'flex',
-    
       
     },
     memberContainer: {
