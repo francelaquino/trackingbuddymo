@@ -38,62 +38,51 @@ class DisplayMember extends Component {
         this.setState({modalVisible: visible});
     }
     componentWillMount() {
+         this.setState({isLoading:false})
         this.initialize();
     }
-
-    onReload(){
+    onReload = () => {
+        this.setState({isLoading:true})
         this.initialize();
-    }
-   
+      }
    
     initialize(){
         let members=[]
+
+        this.setState({members: members});
+
+
         let parent=this;
-        return mypromise= new Promise((resolve,reject)=>{
-            let memberarr=[]
-            let memberRef = firebase.database().ref().child('members/'+userdetails.userid).on('value',function(snapshot){
+
+        return parentPromise= new Promise((resolve,reject)=>{
+            let memberRef = firebase.database().ref().child('users/'+userdetails.userid+"/members").on('value',function(snapshot){
+                resolve(snapshot)
+            })
+            }).then(function(snapshot){
                 if(snapshot.val()===null){
-                    resolve(memberarr)
                 }else{
                     snapshot.forEach(childSnapshot => {
-                        let userid=childSnapshot.val().id;
-                        memberarr.push({
-                        userid:userid
+                        let userid=childSnapshot.key;
+                        return childPromise= new Promise((resolve,reject)=>{
+                            let childRef= firebase.database().ref().child('users/'+userid).once("value",function(snapshot){
+                                if(snapshot.val() !== null){
+                                    members.push({
+                                        id:snapshot.key,
+                                        firstname:snapshot.val().firstname,
+                                        avatar: snapshot.val().avatar,
+                                    });
+                                }
+                                resolve(snapshot);
+                            })
+                        }).then(function(){
+                            parent.setState({members: members,isLoading:false});
                         })
-                        
-                        });
-                        resolve(memberarr)
-                    }
-                        
-            
-               
-            });
-            
-        }).then(function(response){
-            if(response.length<=0){
-                parent.setState({members: [],isLoading:false});
-            }else{
-                response.forEach(data => {
-                    return mypromise1= new Promise((resolve,reject)=>{
-                        let memberarr=[]
-                        let childRef= firebase.database().ref().child('users/'+data.userid).once("value",function(snapshot){
-                            if(snapshot.val() !== null){
-                                members.push({
-                                    id:snapshot.key,
-                                    firstname:snapshot.val().firstname,
-                                    avatar: snapshot.val().avatar,
-                                });
-                            }
-                            resolve()
-                        })
-                    }).then(function(){
-                        parent.setState({members: members,isLoading:false});
-                    
                     })
-                });
-            }
-           
+                }
+            
         })
+
+
         
     }
    
@@ -110,7 +99,7 @@ class DisplayMember extends Component {
           )
     }
     onDelete(){
-        let memberRef=firebase.database().ref().child("members/"+userdetails.userid+"/"+this.state.memberid);
+        let memberRef=firebase.database().ref().child("users/"+userdetails.userid+"/members/"+this.state.memberid);
 
         memberRef.remove()
         .catch(function(err) {
@@ -133,12 +122,14 @@ class DisplayMember extends Component {
     
     ready(){
         const members =this.state.members.map(member=>(
-            
                             <ListItem key={member.id}  avatar style={globalStyle.listItem}>
                             <Left style={globalStyle.listLeft}>
-                                { member.avatar==='' ?  <Thumbnail  style={globalStyle.avatar} source={{uri: this.state.emptyPhoto}} /> :
-                                <Thumbnail  style={globalStyle.avatar} source={{uri: member.avatar}} />
+                               
+                                <View style={globalStyle.listAvatarContainer} >
+                                { member.avatar==='' ?  <Thumbnail  style={globalStyle.listAvatar} source={{uri: this.state.emptyPhoto}} /> :
+                                <Thumbnail  style={globalStyle.listAvatar} source={{uri: member.avatar}} />
                                 }
+                                </View>
                             </Left>
                             <Body style={globalStyle.listBody} >
                                 <Text style={globalStyle.listHeading}>{member.firstname}</Text>
@@ -167,7 +158,7 @@ class DisplayMember extends Component {
                             <Title>Members</Title>
                         </Body>
                         <Right  >
-                            <Button transparent onPress={() => this.props.navigation.navigate("NewInvite",{reload: this.onReload})}>
+                            <Button transparent onPress={() => this.props.navigation.navigate("NewInvite",{onReload : this.onReload})}>
                                 <Ionicons style={{color:'white',fontSize:25}}  name='md-person-add' />
                             </Button> 
                             

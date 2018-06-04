@@ -207,9 +207,9 @@ class EditGroup extends Component {
                     <ScrollView contentContainerStyle={{flexGrow: 1}} keyboardShouldPersistTaps={"always"}>
                         <View style={globalStyle.container}>
                         <TouchableOpacity style={{marginTop:20}} onPress={this.selectPhoto.bind(this)}>
-                            <View style={registrationStyle.avatarContainer}>
-                            { this.state.avatarsource === '' ? <Image style={registrationStyle.avatar} source={{uri : this.state.emptyPhoto}} />  :
-                                <Image style={registrationStyle.avatar} source={this.state.avatarsource} />
+                            <View style={globalStyle.avatarContainer}>
+                            { this.state.avatarsource === '' ? <Image style={globalStyle.avatarBig} source={{uri : this.state.emptyPhoto}} />  :
+                                <Image style={globalStyle.avatarBig} source={this.state.avatarsource} />
                                 }
                             </View>
                             </TouchableOpacity>

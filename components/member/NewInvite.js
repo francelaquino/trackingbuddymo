@@ -1,7 +1,7 @@
 
 import React, { Component } from 'react';
 import {  Platform,  StyleSheet,  Text,  View, ScrollView,TextInput, TouchableOpacity, ToastAndroid } from 'react-native';
-import { Root, Container, Header, Body, Title, Item, Input, Label, Button, Icon, Left, Right } from 'native-base';
+import { Content,Root, Container, Header, Body, Title, Item, Input, Label, Button, Icon, Left, Right } from 'native-base';
 import firebase from 'react-native-firebase';
 var globalStyle = require('../../assets/style/GlobalStyle');
 var userdetails = require('../shared/userDetails');
@@ -31,7 +31,7 @@ class NewInvite extends Component {
         if(this.state.parentReload==true){
             this.props.navigation.state.params.onReload();
             this.setState({parentReload:false})
-        }
+        } 
         this.props.navigation.goBack();
     }  
     onSubmit(){
@@ -43,7 +43,7 @@ class NewInvite extends Component {
             let parent=this;
             snapshot.forEach(function(childSnapshot) {
                 id = childSnapshot.key;
-                let userRef = firebase.database().ref().child("members/"+userdetails.userid+"/"+id);
+                let userRef = firebase.database().ref().child("users/"+userdetails.userid+"/members/"+id);
                 userRef.set({ 
                     id : id,
                     dateadded: Date.now(),
@@ -96,6 +96,7 @@ class NewInvite extends Component {
                         </Body>
                     </Header>
                 
+                    <Content padder>
                     <ScrollView  contentContainerStyle={{flexGrow: 1}} keyboardShouldPersistTaps={"always"}>
                         <View style={globalStyle.container}>
                             <Item  stackedLabel style={globalStyle.item}>
@@ -107,7 +108,7 @@ class NewInvite extends Component {
                                 </View>
                             </Item>
                             
-
+                            
                             <View style={{justifyContent: 'center',alignItems: 'center'}}>
                                 <Button disabled={!this.state.invitationcode}
                                     onPress={()=>this.onSubmit()}
@@ -118,6 +119,7 @@ class NewInvite extends Component {
 
                         </View>
                     </ScrollView>
+                    </Content>
                 </Container>
         </Root>
         );

@@ -40,7 +40,9 @@ class AddMember extends Component {
         mem[index].selected = !mem[index].selected;
         this.setState({mem});
         if(mem[index].selected){
-            let groupRef = firebase.database().ref().child("groupmembers/"+this.state.groupid+"/"+mem[index].id);
+            
+
+        /*    let groupRef = firebase.database().ref().child("groupmembers/"+this.state.groupid+"/"+mem[index].id);
 			groupRef.set({ 
 							member : mem[index].id,
 							dateadded: Date.now(),
@@ -56,7 +58,7 @@ class AddMember extends Component {
                 })
                 .catch(function(err) {
                         console.log('error', err);
-                    });
+                    });*/
             }
 
     }
@@ -67,6 +69,7 @@ class AddMember extends Component {
             groupname:this.props.navigation.state.params.groupname,
             groupid:this.props.navigation.state.params.id,
         })
+
         let members=[]
         let parent=this;
         return mypromise= new Promise((resolve,reject)=>{

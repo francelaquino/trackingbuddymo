@@ -135,22 +135,52 @@ module.exports = StyleSheet.create({
         position:'absolute'
         ,top:10
     },
-    
-    /* List Design End */
-    avatarcontainersmall:{
+    listAvatarContainer:{
         borderRadius: 50,
-        backgroundColor:theme.primaryColor,
-        padding:2,
-        width:44,
-        height:44,
-    },
-    avatarcontainer:{
-        borderRadius: 50,
-        backgroundColor:theme.primaryColor,
+        backgroundColor:'silver',
         padding:2,
         width:50,
         height:50,
     },
+    listAvatar:{
+        width:46,
+        height:46,
+    },
+    listItemSmall:{
+        borderBottomColor:'#e5e5e5',
+        borderBottomWidth:.5,
+        marginLeft:0,
+        padding:2
+    },
+    listHeadingSmall:{
+        color:'black',
+        fontSize:10,
+    },
+    listAvatarContainerSmall:{
+        borderRadius: 50,
+        backgroundColor:'silver',
+        padding:2,
+        width:40,
+        height:40,
+    },
+    listAvatarSmall:{
+        width:36,
+        height:36,
+    },
+    /* List Design End */
+
+    avatarContainer:{
+        backgroundColor:'silver',
+        alignItems: 'center',
+        marginBottom:10,
+        borderRadius: 40,
+        width: 80,
+        height: 80,
+        padding:2,
+        alignSelf: "center",
+        flexDirection:'column',
+    },
+   
     avatarcontainerbottom:{
         borderRadius: 50,
         backgroundColor:'#e2e0e0',
@@ -158,14 +188,16 @@ module.exports = StyleSheet.create({
         width:40,
         height:40,
     },
+    avatarBig: {
+        borderRadius: 38,
+        width: 76,
+        height: 76,
+      },
     avatar:{
         width:46,
         height:46,
     },
-    avatarsmall:{
-        width:40,
-        height:40,
-    },
+   
     avatarbottom:{
         width:36,
         height:36,
@@ -220,13 +252,13 @@ module.exports = StyleSheet.create({
     },
     navBarIcon:{
         fontSize:25,
-        color:theme.primaryColor,
-        alignItems:'center'
+        color:'white',
+        alignItems:'center',
     },
     navBarLabel:{
         fontSize:10,
         height:15,
-        color:'#3f3e3e',
+        color:'white',
     },
     deleteButtonSmall:{
         color:'white',

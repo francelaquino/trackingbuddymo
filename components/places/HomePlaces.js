@@ -4,11 +4,15 @@ import { Modal, TouchableHighlight,Platform,  StyleSheet,  Text,  View, ScrollVi
 import { Root, Container, Header, Body, Title, Item, Input, Label, Button, Icon, Content, List, ListItem,Left, Right,Switch, Thumbnail,Card,CardItem } from 'native-base';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
+import Entypo from 'react-native-vector-icons/Entypo';
+
 import MapView from 'react-native-maps';
 import { LeftHome } from '../shared/LeftHome';
+import firebase from 'react-native-firebase';
 import Loading  from '../shared/Loading';
-var userDetails = require('../shared/userDetails');
+var userdetails = require('../shared/userDetails');
 var globalStyle = require('../../assets/style/GlobalStyle');
 
 
@@ -19,6 +23,12 @@ class HomePlaces extends Component {
         this.state = {
             isLoading:true,
             modalVisible: false,
+            emptyPhoto:'https://firebasestorage.googleapis.com/v0/b/trackingbuddy-3bebd.appspot.com/o/member_photos%2Ficons8-person-80.png?alt=media&token=59864ce7-cf1c-4c5e-a07d-76c286a2171d',
+            members:{
+                id:'',
+                firstname:'',
+                avatar:'',
+            }
         };
       }
       
@@ -32,7 +42,43 @@ class HomePlaces extends Component {
     }
         
     initialize(){
-        this.setState({isLoading:false})
+
+        
+        let members=[]
+
+        this.setState({members: members});
+
+
+        let parent=this;
+
+        return parentPromise= new Promise((resolve,reject)=>{
+            let memberRef = firebase.database().ref().child('users/'+userdetails.userid+"/members").on('value',function(snapshot){
+                resolve(snapshot)
+            })
+            }).then(function(snapshot){
+                if(snapshot.val()===null){
+                }else{
+                    snapshot.forEach(childSnapshot => {
+                        let userid=childSnapshot.key;
+                        return childPromise= new Promise((resolve,reject)=>{
+                            let childRef= firebase.database().ref().child('users/'+userid).once("value",function(snapshot){
+                                if(snapshot.val() !== null){
+                                    members.push({
+                                        id:snapshot.key,
+                                        firstname:snapshot.val().firstname,
+                                        avatar: snapshot.val().avatar,
+                                    });
+                                }
+                                resolve(snapshot);
+                            })
+                        }).then(function(){
+                            parent.setState({members: members,isLoading:false});
+                        })
+                    })
+                }
+            
+        })
+
     }
     loading(){
         return (
@@ -52,6 +98,25 @@ class HomePlaces extends Component {
         this.props.navigation.navigate("DisplayGroup");
     }
     ready(){
+
+        const members =this.state.members.map(member=>(
+            <ListItem key={member.id}  avatar style={globalStyle.listItem}>
+            <Left style={globalStyle.listLeft}>
+               
+                <View style={globalStyle.listAvatarContainerSmall} >
+                { member.avatar==='' ?  <Thumbnail  style={globalStyle.listAvatar} source={{uri: this.state.emptyPhoto}} /> :
+                <Thumbnail  style={globalStyle.listAvatarSmall} source={{uri: member.avatar}} />
+                }
+                </View>
+            </Left>
+            <Body style={globalStyle.listBody} >
+                <Text style={globalStyle.listHeading}>{member.firstname}</Text>
+            </Body>
+            
+            </ListItem>
+        ));
+
+
         return (
             <Root>
                 
@@ -83,23 +148,32 @@ class HomePlaces extends Component {
                             </MapView>
                         </View>
                         
-                        <View style={styles.memberContainer} >
                         
-                        </View>
                         <View style={styles.navBar} >
                             <TouchableOpacity style={globalStyle.navBarButton} onPress={() =>navigate('DisplayGroup')}>
                                 <Ionicons style={globalStyle.navBarIcon} name="md-swap"/>
                                 <Text style={globalStyle.navBarLabel}>Switch Group</Text>
                             </TouchableOpacity>
                             <TouchableOpacity style={globalStyle.navBarButton} onPress={() =>navigate('DisplayMember')}>
-                                <Ionicons style={globalStyle.navBarIcon} name="ios-people"/>
-                                <Text style={globalStyle.navBarLabel}>Members</Text>
+                                <Entypo style={globalStyle.navBarIcon} name="location"/>
+                                <Text style={globalStyle.navBarLabel}>Center Map</Text>
                             </TouchableOpacity>
                             <View style={globalStyle.navBarButton}>
-                                <MaterialIcons style={globalStyle.navBarIcon} name="place"/>
-                                <Text style={globalStyle.navBarLabel}>Places</Text>
+                                <MaterialIcons style={globalStyle.navBarIcon} name="my-location"/>
+                                <Text style={globalStyle.navBarLabel}>Checkin</Text>
                             </View>
                             
+                        </View>
+                        <View style={styles.memberContainer} >
+                        <ScrollView  contentContainerStyle={{flexGrow: 1}} keyboardShouldPersistTaps={"always"}>
+                            
+                            {members}
+                            {members}
+                            {members}
+                            {members}
+                            {members}
+                            
+                        </ScrollView>
                         </View>
                     </View>
 
@@ -157,20 +231,7 @@ class HomePlaces extends Component {
             }else{
                 return this.ready();
             }
-        /*const { navigate } = this.props.navigation;
-        const members =this.props.members.map(member=>(
-            <ListItem key={member.id} avatar style={{borderTopWidth:.5,marginLeft:0,paddingLeft:5}} >
-            <Left>
-                <View style={globalStyle.avatarcontainerbottom}> 
-                <Thumbnail  style={globalStyle.avatarbottom} source={{uri: member.avatar}} />
-                </View>
-              </Left>
-              <Body style={{borderBottomWidth:0}}>
-                <Text style={globalStyle.heading2}>{member.firstname}</Text>
-                <Text  style={globalStyle.font11}>Doing what you like will always keep you happy . .</Text>
-              </Body>
-          </ListItem>
-          ));*/
+        
 
   }
 }
@@ -187,11 +248,15 @@ const styles = StyleSheet.create({
     navBar: {
         flexDirection: 'row',
         height: 50,
-        backgroundColor: 'transparent',
+        backgroundColor: '#8ce9d4',
         padding:2,
         alignItems:'center',
-        borderTopWidth:.5,
-        borderTopColor:'silver',
+        borderTopWidth:0,
+        borderTopColor:'#009da3',
+        shadowOpacity: 0.75,
+        shadowRadius: 5,
+        shadowColor: 'red',
+        shadowOffset: { height: 0, width: 0 },
     },
     
     mapContainer: {
@@ -200,7 +265,7 @@ const styles = StyleSheet.create({
       
     },
     memberContainer: {
-        height: 150,
+        height: 160,
         display: 'flex',
         borderTopColor:'#848482',
         borderTopWidth:.5,
