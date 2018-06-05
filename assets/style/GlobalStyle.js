@@ -103,17 +103,21 @@ module.exports = StyleSheet.create({
         fontSize:14,
     },
     /*List Design Start */
+   
     listItem:{
         borderBottomColor:'#e5e5e5',
         borderBottomWidth:.5,
         marginLeft:0,
-        padding:5
+        padding:5,
+
+       
     },
     listLeft:{
         width:55,
         justifyContent: 'center',
         alignItems: 'center',
-        paddingLeft:0
+        paddingLeft:0,
+        marginLeft:3
     },
     listBody:{
         borderBottomWidth:0,
@@ -150,8 +154,10 @@ module.exports = StyleSheet.create({
         borderBottomColor:'#e5e5e5',
         borderBottomWidth:.5,
         marginLeft:0,
-        padding:2
+        padding:5,
+        height:48,
     },
+  
     listHeadingSmall:{
         color:'black',
         fontSize:10,

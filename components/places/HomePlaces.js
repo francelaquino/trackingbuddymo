@@ -1,7 +1,7 @@
 
 import React, { Component } from 'react';
 import { Modal, TouchableHighlight,Platform,  StyleSheet,  Text,  View, ScrollView,TextInput, TouchableOpacity, ToastAndroid, Image } from 'react-native';
-import { Root, Container, Header, Body, Title, Item, Input, Label, Button, Icon, Content, List, ListItem,Left, Right,Switch, Thumbnail,Card,CardItem } from 'native-base';
+import { Drawer,Root, Container, Header, Body, Title, Item, Input, Label, Button, Icon, Content, List, ListItem,Left, Right,Switch, Thumbnail,Card,CardItem } from 'native-base';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -10,6 +10,7 @@ import Entypo from 'react-native-vector-icons/Entypo';
 
 import MapView from 'react-native-maps';
 import { LeftHome } from '../shared/LeftHome';
+import { LeftDrawer } from '../shared/LeftDrawer';
 import firebase from 'react-native-firebase';
 import Loading  from '../shared/Loading';
 var userdetails = require('../shared/userDetails');
@@ -23,6 +24,7 @@ class HomePlaces extends Component {
         this.state = {
             isLoading:true,
             modalVisible: false,
+            active: false,
             emptyPhoto:'https://firebasestorage.googleapis.com/v0/b/trackingbuddy-3bebd.appspot.com/o/member_photos%2Ficons8-person-80.png?alt=media&token=59864ce7-cf1c-4c5e-a07d-76c286a2171d',
             members:{
                 id:'',
@@ -31,6 +33,7 @@ class HomePlaces extends Component {
             }
         };
       }
+    
       
 
     setModalVisible(visible) {
@@ -99,8 +102,15 @@ class HomePlaces extends Component {
     }
     ready(){
 
+        closeDrawer = () => {
+            this.drawer._root.close()
+          };
+          openDrawer = () => {
+            this.drawer._root.open()
+          };
+
         const members =this.state.members.map(member=>(
-            <ListItem key={member.id}  avatar style={globalStyle.listItem}>
+            <ListItem key={member.id}  avatar style={globalStyle.listItemSmall}>
             <Left style={globalStyle.listLeft}>
                
                 <View style={globalStyle.listAvatarContainerSmall} >
@@ -111,6 +121,7 @@ class HomePlaces extends Component {
             </Left>
             <Body style={globalStyle.listBody} >
                 <Text style={globalStyle.listHeading}>{member.firstname}</Text>
+                <Text note style={{fontSize:10}}>Jubail Industrial</Text>
             </Body>
             
             </ListItem>
@@ -121,7 +132,7 @@ class HomePlaces extends Component {
             <Root>
                 
                 <Container style={globalStyle.containerWrapper}>
-                   
+                
           
                     <Header style={globalStyle.header}>
                         <LeftHome/>
@@ -150,11 +161,11 @@ class HomePlaces extends Component {
                         
                         
                         <View style={styles.navBar} >
-                            <TouchableOpacity style={globalStyle.navBarButton} onPress={() =>navigate('DisplayGroup')}>
+                            <TouchableOpacity style={globalStyle.navBarButton} onPress={() =>openDrawer()}>
                                 <Ionicons style={globalStyle.navBarIcon} name="md-swap"/>
                                 <Text style={globalStyle.navBarLabel}>Switch Group</Text>
                             </TouchableOpacity>
-                            <TouchableOpacity style={globalStyle.navBarButton} onPress={() =>navigate('DisplayMember')}>
+                            <TouchableOpacity style={globalStyle.navBarButton} onPress={() =>closeDrawer()}>
                                 <Entypo style={globalStyle.navBarIcon} name="location"/>
                                 <Text style={globalStyle.navBarLabel}>Center Map</Text>
                             </TouchableOpacity>
@@ -176,6 +187,7 @@ class HomePlaces extends Component {
                         </ScrollView>
                         </View>
                     </View>
+          
 
                     <Modal 
                         animationType="fade"
@@ -248,8 +260,8 @@ const styles = StyleSheet.create({
     navBar: {
         flexDirection: 'row',
         height: 50,
-        backgroundColor: '#8ce9d4',
         padding:2,
+        backgroundColor: '#35bcc1',
         alignItems:'center',
         borderTopWidth:0,
         borderTopColor:'#009da3',
