@@ -1,67 +1,69 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- * @flow
- */
 
 import React, { Component } from 'react';
-import {  Platform,  StyleSheet,  Text,  View } from 'react-native';
+import { AppRegistry, View,Text} from 'react-native';
+import DisplayGroup from './components/group/DisplayGroup';
+import DisplayHomeGroup from './components/group/DisplayHomeGroup';
+import EditGroup from './components/group/EditGroup';
+import AddMember from './components/group/AddMember';
+import MembersGroup from './components/group/MembersGroup';
+import DisplayMember from './components/member/DisplayMember';
+import GenerateInviteCode from './components/member/GenerateInviteCode';
+import InfoMember from './components/member/InfoMember';
+import NewInvite from './components/member/NewInvite';
+import HomePlaces from './components/places/HomePlaces';
+import { DrawerNavigator } from 'react-navigation'
 
-const instructions = Platform.select({
-  ios: 'Press Cmd+R to reload,\n' +
-    'Cmd+D or shake for dev menu',
-  android: 'Double tap R on your keyboard to reload,\n' +
-    'Shake or press menu button for dev menu',
-});
 
-type Props = {};
-export default class App extends Component<Props> {
+const Drawer= DrawerNavigator({
+    HomePlaces: { 
+      screen: HomePlaces,
+      headerMode: 'none',
+      navigationOptions: {
+          header: null
+      }
+    },
+    DisplayMember: { 
+        screen: DisplayMember,
+        headerMode: 'none',
+        navigationOptions: {
+            header: null
+        } 
+    },
+    DisplayGroup: { 
+        screen: DisplayGroup,
+        headerMode: 'none',
+        navigationOptions: {
+            header: null
+        }
+      } 
+    })
+
+
+class App extends Component{
   constructor(props){
     super(props);
-    state = {
-      timer: null,
-    };
+    this.state = { mounted: false };
   }
-
-
-tick() {
-  console.log("1");
-}
-
-
-
-  render() {
-    return (
-      <View style={styles.container}>
-        <Text style={styles.welcome}>
-          Welcome to React Native!
-        </Text>
-        <Text style={styles.instructions}>
-          To get started, edit App.js
-        </Text>
-        <Text style={styles.instructions}>
-          {instructions}
-        </Text>
-      </View>
-    );
+  componentDidMount(){
+    setTimeout(() => {
+      this.setState({ mounted: true });
+      
+    }, 5000);
+  }
+  render(){
+    if(this.state.mounted){
+      return (
+        <View><Text>ffff</Text>
+        </View>
+      )
+    }else{
+      return (
+        <View><Text>dfdf</Text>
+        </View>
+      )
+    }
   }
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
-});
+
+export default App;

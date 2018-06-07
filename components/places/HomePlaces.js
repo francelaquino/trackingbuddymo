@@ -6,10 +6,12 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+
 import Entypo from 'react-native-vector-icons/Entypo';
 
 import MapView from 'react-native-maps';
-import { LeftHome } from '../shared/LeftHome';
+import  LeftHome  from '../shared/LeftHome';
 import { LeftDrawer } from '../shared/LeftDrawer';
 import firebase from 'react-native-firebase';
 import Loading  from '../shared/Loading';
@@ -60,6 +62,7 @@ class HomePlaces extends Component {
             })
             }).then(function(snapshot){
                 if(snapshot.val()===null){
+                    parent.setState({isLoading:false});
                 }else{
                     snapshot.forEach(childSnapshot => {
                         let userid=childSnapshot.key;
@@ -135,7 +138,7 @@ class HomePlaces extends Component {
                 
           
                     <Header style={globalStyle.header}>
-                        <LeftHome/>
+                        <LeftHome navigation={this.props.navigation}/>
                         <Body>
                             <Title>Home</Title>
                         </Body>
@@ -202,19 +205,19 @@ class HomePlaces extends Component {
                                     <ListItem avatar onPress={()=>this.openMembers()} 
                                     style={globalStyle.modalAvatar}>
                                     <Left style={globalStyle.modalLeft}>
-                                        <Ionicons style={[globalStyle.avatarIcon],{fontSize:35}} name="md-person"/>
+                                        <MaterialIcons style={[globalStyle.avatarIcon],{fontSize:35}} name="group"/>
                                     </Left>
                                     <Body style={{borderBottomWidth:0,marginLeft:0}}>
-                                        <Text style={{color:'#2b2a2a',fontSize:16}}>Members</Text>
+                                        <Text style={{color:'#2b2a2a',fontSize:16}}>Member</Text>
                                     </Body>
                                     </ListItem>
                                     <ListItem avatar onPress={()=>this.openGroups()}  
                                      style={globalStyle.modalAvatar}>
                                     <Left style={globalStyle.modalLeft}>
-                                        <Ionicons style={[globalStyle.avatarIcon],{fontSize:40}} name="md-people"/>
+                                        <FontAwesome style={[globalStyle.avatarIcon],{fontSize:30}} name="group"/>
                                     </Left>
                                     <Body style={{borderBottomWidth:0,marginLeft:0}}>
-                                        <Text style={{color:'#2b2a2a',fontSize:16}}>Groups</Text>
+                                        <Text style={{color:'#2b2a2a',fontSize:16}}>Group</Text>
                                     </Body>
                                     </ListItem>
                                 </List>

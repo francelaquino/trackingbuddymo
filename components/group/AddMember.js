@@ -71,10 +71,53 @@ class AddMember extends Component {
         })
 
         let members=[]
+
+        this.setState({members: members});
+
+
+        let parent=this;
+
+        return parentPromise= new Promise((resolve,reject)=>{
+            let memberRef = firebase.database().ref().child("users/"+userdetails.userid+'/members').on('value',function(snapshot){
+                console.log(snapshot)
+                resolve(snapshot)
+            })
+            }).then(function(snapshot){
+                if(snapshot.val()===null){
+                }else{
+                    snapshot.forEach(childSnapshot => {
+                        let userid=childSnapshot.key;
+                        return childPromise= new Promise((resolve,reject)=>{
+                            let childRef= firebase.database().ref().child('users/'+userid).once("value",function(snapshot){
+                                if(snapshot.val() !== null){
+                                    members.push({
+                                        id:snapshot.key,
+                                        firstname:snapshot.val().firstname,
+                                        avatar: snapshot.val().avatar,
+                                        selected : true,
+                                    });
+                                }
+                                resolve(snapshot);
+                            })
+                        }).then(function(){
+                            parent.setState({members: members,isLoading:false});
+                        })
+                    })
+                }
+            
+        })
+
+
+        
+    }
+
+
+
+        /*let members=[]
         let parent=this;
         return mypromise= new Promise((resolve,reject)=>{
             let memberarr=[]
-            let memberRef = firebase.database().ref().child('members/'+userdetails.userid).on('value',function(snapshot){
+            let memberRef = firebase.database().ref().child(userdetails.userid+'/members').on('value',function(snapshot){
                 if(snapshot.val()===null){
                     resolve(memberarr)
                 }else{
@@ -136,9 +179,9 @@ class AddMember extends Component {
                 });
             }
            
-        })
+        })*/
         
-    }
+    //}
    
     confirmDelete(memberid){
         Alert.alert(
@@ -177,25 +220,23 @@ class AddMember extends Component {
     ready(){
         const members =this.state.members.map((member,index)=>
             
-            <View  key={member.id} style={{marginBottom:10}}>
-            <ListItem avatar button onPress={()=>this.addSelectedMember(index)} >
+            <ListItem  key={member.id} avatar button onPress={()=>this.addSelectedMember(index)} style={globalStyle.listItem}>
             <Left >
-                <View style={globalStyle.avatarcontainersmall}> 
+                <View style={globalStyle.listAvatarContainer}> 
                     { member.avatar==='' ?  <Thumbnail  style={globalStyle.avatar} source={{uri: this.state.emptyPhoto}} /> :
-                    <Thumbnail  style={globalStyle.avatarsmall} source={{uri: member.avatar}} />
+                    <Thumbnail  style={globalStyle.listAvatar} source={{uri: member.avatar}} />
                     }
                     </View>
             </Left>
-            <Body style={{marginLeft:10}}>
+            <Body style={globalStyle.listBody} >
                     <Text style={globalStyle.heading1}>{member.firstname}</Text>
                 </Body>
-            <Right >
+            <Right style={globalStyle.listRight}>
                 { member.selected ===true &&
                 <Icon  style={{color:'#009da3'}} size={30} name="md-checkmark-circle" />
                 }
             </Right>
           </ListItem>
-          </View>
           );
 
         return (

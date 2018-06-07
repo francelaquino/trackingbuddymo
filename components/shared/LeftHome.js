@@ -1,20 +1,23 @@
 
 import React, { Component } from 'react';
-import { Button, Icon,Left } from 'native-base';
+import { Button, Icon,Left, Drawer } from 'native-base';
 
 var globalStyle = require('../../assets/style/GlobalStyle');
 
 
-const LeftHome =()=> {
-    return (
-        <Left style={globalStyle.headerMenu} >
-            <Button transparent >
-                <Icon size={30} name='menu' />
-            </Button> 
-        </Left>
-    )
+class LeftHome extends Component {
+    render(){
+        const navigation = this.props.navigation;
+        return (
+            <Left style={globalStyle.headerMenu} >
+                <Button transparent onPress={()=>navigation.openDrawer()} >
+                    <Icon size={30} name='menu' />
+                </Button> 
+            </Left>
+        )
+    }
 }
 
 
   
-export  { LeftHome };
+export  default  LeftHome ;

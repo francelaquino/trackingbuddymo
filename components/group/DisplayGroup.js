@@ -6,6 +6,7 @@ import { LeftHome } from '../shared/LeftHome';
 import firebase from 'react-native-firebase';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Loading  from '../shared/Loading';
 var userdetails = require('../shared/userDetails');
@@ -29,6 +30,11 @@ class DisplayGroup extends Component {
                 id:'',
                 avatar:'',
                 groupname:'',
+            },
+            members:{
+                id:'',
+                firstname:'',
+                avatar:'',
             }
         };
         
@@ -83,7 +89,10 @@ class DisplayGroup extends Component {
     
         })
 
+
     }
+
+    
 
     loading(){
         return (
@@ -113,18 +122,24 @@ class DisplayGroup extends Component {
                                 <TouchableHighlight  style={globalStyle.listRightTouchable}  
                                     onPress={() => 
                                     this.openGroupOption(group.id,group.groupname,group.avatar)}>
-                                <MaterialCommunityIcons  style={globalStyle.listRightOptionIcon}   name='dots-vertical' />
+                                <SimpleLineIcons  style={globalStyle.listRightOptionIcon}   name='options-vertical' />
                                 </TouchableHighlight>
                             </Right>
                             </ListItem>
 
            
           ));
+
+         
         return(
             <Root>
                 <Container style={globalStyle.containerWrapper}>
                     <Header style={globalStyle.header}>
-                        <LeftHome/>
+                    <Left style={globalStyle.headerLeft} >
+                            <Button transparent onPress={()=> {this.props.navigation.goBack()}} >
+                                <Icon size={30} name='arrow-back' />
+                            </Button> 
+                        </Left>
                         <Body>
                             <Title>Group</Title>
                         </Body>
@@ -141,6 +156,8 @@ class DisplayGroup extends Component {
                         <List>
                             {groups}
                         </List>
+
+                         
                     </View>
                     </ScrollView>
                     <Modal 
@@ -151,24 +168,15 @@ class DisplayGroup extends Component {
                             this.setModalVisible(!this.state.modalVisible);
                         }}>
                         <View style={globalStyle.modalWrapper} >
-                            <View style={[globalStyle.modalContainer,{height:220}]} >
+                            <View style={[globalStyle.modalContainer,{height:168}]} >
                                 <List>
                                     <ListItem avatar onPress={()=>this.addMember()} 
                                     style={globalStyle.modalAvatar}>
                                     <Left style={globalStyle.modalLeft}>
-                                        <Ionicons style={[globalStyle.avatarIcon],{fontSize:35}} name='md-person-add' />
+                                    <MaterialIcons style={[globalStyle.avatarIcon],{fontSize:40}} name="group"/>
                                     </Left>
                                     <Body style={{borderBottomWidth:0,marginLeft:0}}>
-                                        <Text style={{color:'#2b2a2a',fontSize:16}}>Add Member</Text>
-                                    </Body>
-                                    </ListItem>
-                                    <ListItem avatar onPress={()=>this.confirmDelete()}  
-                                     style={globalStyle.modalAvatar}>
-                                    <Left style={globalStyle.modalLeft}>
-                                    <MaterialIcons style={[globalStyle.avatarIcon],{fontSize:35}} name="location-on"/>
-                                    </Left>
-                                    <Body style={{borderBottomWidth:0,marginLeft:0}}>
-                                        <Text style={{color:'#2b2a2a',fontSize:16}}>Places</Text>
+                                        <Text style={{color:'#2b2a2a',fontSize:16}}>Members</Text>
                                     </Body>
                                     </ListItem>
                                     <ListItem avatar onPress={()=>this.editGroup()} 
