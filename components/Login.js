@@ -2,8 +2,7 @@
 import React, { Component } from 'react';
 import {  Platform,  StyleSheet,  Text,  View, ScrollView,TextInput, TouchableOpacity, Image, TouchableHighlight,ToastAndroid, NavigationActions  } from 'react-native';
 import { Root, Container, Header, Body, Title, Item, Input, Label, Button, Icon } from 'native-base';
-import { connect } from 'react-redux';
-import { userSignIn } from '../actions/userActions' ;
+import firebase from 'react-native-firebase';
 import HomePlaces from './places/HomePlaces';
 var userDetails = require('./shared/userDetails');
 var registrationStyle = require('../assets/style/Registration');
@@ -13,8 +12,8 @@ class Login extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            email: 'aquinof@rchsp.med.sa',
-            password:'1',
+            email: 'francelaquino@yahoo.com',
+            password:'111111',
             
         };
 
@@ -22,35 +21,50 @@ class Login extends Component {
 
       }
     onLogin (){
+        let self=this;
         if(this.state.email=="" || this.state.password==""){
             ToastAndroid.showWithGravityAndOffset("Invalid username or wrong password",ToastAndroid.LONG,ToastAndroid.BOTTOM,25,50);
             return false;
         }
 
-        this.props.userSignIn(this.state.email,this.state.password).then(res=>{
-        	if(res.status==200){
-                
-                if(res.exist==false){
-                    this.setState({email:'',password:''});
-                    ToastAndroid.showWithGravityAndOffset(res.result,ToastAndroid.LONG,ToastAndroid.BOTTOM, 25, 50);
-                }else{
-                    userDetails.id=res.data.id;
-                    userDetails.username=res.data.email;
-                    userDetails.firstname=res.data.firstname;
-                    this.props.navigation.navigate('HomePlaces');
-                    
-                }
-            }
-        });
+        firebase.auth().signInAndRetrieveDataWithEmailAndPassword(this.state.email,this.state.password).then((res)=>{
+            //userDetails.userid=user.uid;
+          let memberRef = firebase.database().ref().child('users/'+res.user.uid).on('value',function(snapshot){
+              userDetails.userid=res.user.uid;
+              userDetails.email=snapshot.val().email;
+              userDetails.firstname=snapshot.val().firstname;
+              userDetails.lastname=snapshot.val().lastname;
+
+              
+
+              self.props.navigation.navigate('HomePlaces');
+            });
+
+
+         
+         
+        }).catch(function(e){
+            self.setState({
+                email:'',
+                password:'',
+              });
+            ToastAndroid.showWithGravityAndOffset("Invalid username or bad password", ToastAndroid.LONG, ToastAndroid.BOTTOM, 25, 50 );
+       
+      })
+
+      
     }
     render() {
+
+        
+        
     const { navigate } = this.props.navigation;
     return (
         <Root>
             <Container style={registrationStyle.containerWrapper}>
         	   
           	
-                <ScrollView contentContainerStyle={{flexGrow: 1}}>
+            <ScrollView  contentContainerStyle={{flexGrow: 1}} keyboardShouldPersistTaps={"always"}>
                     <View style={registrationStyle.container}>
                         <View style={registrationStyle.logoContainer}>
                         <Image  style={registrationStyle.logo} resizeMode='contain'  source={require('../images/logo.png')} />
@@ -97,10 +111,5 @@ class Login extends Component {
 }
 
 
-const mapStateToProps = state => ({
-})
-  
-  
-  Login=connect(mapStateToProps,{userSignIn})(Login);
   
   export default Login;

@@ -1,7 +1,9 @@
 import {  CREATE_GROUP, DISPLAY_GROUP, DELETE_GROUP, UPDATE_GROUP } from '../actions/types';
 
 const initialState = {
-    items:[],
+    groups:[],
+    isLoading:true,
+    success:true,
 }
 
 
@@ -15,7 +17,8 @@ export default function(state=initialState,action){
         case DISPLAY_GROUP:
             return{
                 ...state,
-                items:action.payload
+                groups:action.payload,
+                isLoading:false,
             };
         case DELETE_GROUP:
             return{
@@ -32,3 +35,4 @@ export default function(state=initialState,action){
     }
 
 }
+

@@ -3,8 +3,8 @@ import React, { Component } from 'react';
 import {  Platform,  StyleSheet,  Text,  View, ScrollView,TextInput, TouchableOpacity, ToastAndroid, Image } from 'react-native';
 import { Root, Container, Header, Body, Title, Item, Input, Label, Button, Icon, Left } from 'native-base';
 import ImagePicker from 'react-native-image-picker';
-import firebase from 'react-native-firebase';
-var userdetails = require('../shared/userDetails');
+import { connect } from 'react-redux';
+import { createGroup,displayGroup  } from '../../actions/groupActions' ;
 var globalStyle = require('../../assets/style/GlobalStyle');
 var registrationStyle = require('../../assets/style/Registration');
 
@@ -25,12 +25,8 @@ class CreateGroup extends Component {
 	
 	
 	componentWillMount() {
-    this.initialize();
 	}
 	
-	initialize(){
-		this.setState({isLoading:false});
-	}
 	
 	removePhoto(){
 		this.setState({avatarsource:''});
@@ -73,63 +69,18 @@ class CreateGroup extends Component {
 	}
 
     onSubmit(){
-			
-		
-		
         if(this.state.groupname==""){
             return false;
-				}
-				
-				firebase.database().ref().child("groups/"+userdetails.userid).orderByChild("groupname").equalTo(this.state.groupname).once("value",snapshot => {
-					if (snapshot.val()){
-						ToastAndroid.showWithGravityAndOffset("Group already exist",ToastAndroid.LONG,ToastAndroid.BOTTOM, 25, 50);
-					}else{
-						let groupid=userdetails.userid+this.randomString(4);
-						if(this.state.avatarsource!=""){
-							let avatarlink=groupid+".jpg";
-							let ref = firebase.storage().ref("/group_photos/"+avatarlink);
-							ref.putFile(this.state.avatarsource.uri.replace("file:/", "")).then(res => {
-								this.setState({avatar:res.downloadURL })
-								setTimeout(() => {
-										this.sendSubmit(groupid);
-								}, 0);
-							})
-							.catch(function(err) {
-								console.log('error', err);
-								
-							});
-						}else{
-							this.setState({avatar: this.state.emptyPhoto});
-							setTimeout(() => {
-								this.sendSubmit(groupid);
-							}, 0);
-						}
-					}
-				}).catch(function(err) {
-					console.log('error', err);
-					
-				});
-			
-				
-          
-      
-    }
-
-    sendSubmit(groupid){
-			let groupRef = firebase.database().ref().child("groups/"+userdetails.userid+"/"+groupid);
-
-			groupRef.set({ 
-							id:groupid,
-							groupname : this.state.groupname,
-							avatar: this.state.avatar,
-							datecreated: Date.now(),
-							dateupdated: Date.now(),
-			})
-			.catch(function(err) {
-					console.log('error', err);
-				});
-				this.props.navigation.goBack();
-			ToastAndroid.showWithGravityAndOffset("Group successfully created",ToastAndroid.LONG,ToastAndroid.BOTTOM, 25, 50);
+        }
+		    this.props.createGroup(this.state.groupname,this.state.avatarsource).then(res=>{
+                if(res!==""){
+                    
+                    ToastAndroid.showWithGravityAndOffset(res,ToastAndroid.LONG,ToastAndroid.BOTTOM, 25, 50);
+                    this.props.displayGroup();
+                    this.props.navigation.goBack();
+                }
+            }).catch(function(err) {
+            });
     }
 
 	loading(){
@@ -200,15 +151,13 @@ class CreateGroup extends Component {
 
 
 		render() {
-			if(this.state.isLoading){
-				return this.loading();
-			}else{
 				return this.ready();
-			}
 		}
 }
 
-
+const mapStateToProps = state => ({
+  })
   
+CreateGroup=connect(mapStateToProps,{createGroup,displayGroup})(CreateGroup);
   
 export default CreateGroup;

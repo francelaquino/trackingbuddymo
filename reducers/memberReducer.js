@@ -1,9 +1,11 @@
-import {  DISPLAY_MEMBER,INVITE_MEMBER, GET_MEMBER, DELETE_MEMBER } from '../actions/types';
+import {  DISPLAY_MEMBER,INVITE_MEMBER, GET_MEMBER, DELETE_MEMBER, DISPLAY_HOME_MEMBER, DISPLAY_GROUP_MEMBER } from '../actions/types';
 
 const initialState = {
-    items:[],
-    item:[],
-    isready:false
+    members:[],
+    member:[],
+    home_members:[],
+    isLoading:true,
+    success:true,
 }
 
 
@@ -12,19 +14,31 @@ export default function(state=initialState,action){
         case DISPLAY_MEMBER:
             return {
                 ...state,
-                items: action.payload
-                
+                members: action.payload,
+                isLoading:false,
             };
+        case DISPLAY_HOME_MEMBER:
+            return {
+                ...state,
+                home_members: action.payload,
+                isLoading:false,
+            };
+        case DISPLAY_GROUP_MEMBER:
+            return {
+                ...state,
+                members: action.payload,
+                isLoading:false,
+            }
         case GET_MEMBER:
             return {
                 ...state,
-                item: action.payload,
+                members: action.payload,
                 isready:true,
             };
         case DELETE_MEMBER:
             return {
                 ...state,
-                item: action.payload,
+                members: action.payload,
             };
         default:
             return state;

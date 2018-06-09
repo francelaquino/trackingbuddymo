@@ -3,10 +3,10 @@ import React, { Component } from 'react';
 import {  Platform,  StyleSheet,  Text,  View, ScrollView,TextInput, TouchableOpacity, ToastAndroid, Alert, Image } from 'react-native';
 import { Root, Container, Header, Body, Title, Item, Input, Label, Button, Icon, Left } from 'native-base';
 import ImagePicker from 'react-native-image-picker';
-import firebase from 'react-native-firebase';
+import { connect } from 'react-redux';
+import { displayGroup,updateGroup, deleteGroup  } from '../../actions/groupActions' ;
 var globalStyle = require('../../assets/style/GlobalStyle');
 var registrationStyle = require('../../assets/style/Registration');
-var userdetails = require('../shared/userDetails');
 
 class EditGroup extends Component {
     constructor(props) {
@@ -86,24 +86,15 @@ class EditGroup extends Component {
     }
     onDelete(){
 
-        let groupRef=firebase.database().ref().child("groups/"+userdetails.userid+"/"+this.state.groupid);
-
-        groupRef.remove()
-        .catch(function(err) {
-            console.log('error', err);
-          });
-        
-        let avatarlink=this.state.groupid+".jpg";
-
-        let ref = firebase.storage().ref("/group_photos/"+avatarlink);
-        ref.delete().then(res => {
-        })
-        .catch(function(err) {
-              console.log('error', err);
+        this.props.deleteGroup(this.state.groupid).then(res=>{
+        	if(res!==""){
+                ToastAndroid.showWithGravityAndOffset(res,ToastAndroid.LONG,ToastAndroid.BOTTOM, 25, 50);
+                this.props.displayGroup();
+                this.pros.navigation.goBack();
+            }
+        }).catch(function(err) {
         });
 
-        this.props.navigation.goBack()
-        ToastAndroid.showWithGravityAndOffset("Group successfully deleted",ToastAndroid.LONG,ToastAndroid.BOTTOM, 25, 50);
 
         
     }
@@ -116,65 +107,25 @@ class EditGroup extends Component {
             return false;
         }
 
-        firebase.database().ref().child("groups/"+userdetails.userid).orderByChild("groupname").equalTo(this.state.groupname).once("value",snapshot => {
-            let key="";
-            snapshot.forEach(function(childSnapshot) {
-                key =childSnapshot.key;
-            });
-            if(key==this.state.groupid || key==""){
-                if(this.state.isPhotoChange==true){
-                    let avatarlink=this.state.groupid+".jpg";
-                    const ref = firebase.storage().ref("/group_photos/"+avatarlink);
-                    ref.putFile(this.state.avatarsource.uri.replace("file:/", "")).then(res => {
-                        this.setState({avatar:res.downloadURL })
-                        setTimeout(() => {
-                            this.sendSubmit(this.state.groupid);
-                        }, 0);
-                    })
-                    .catch(function(err) {
-                        console.log('error', err);
-                      });
-                }else{
-                    if(this.state.avatarsource.uri=="" || this.state.avatarsource.uri==undefined){
-                        this.setState({avatar:this.state.emptyPhoto });
-                    }else{
-                        this.setState({avatar:this.state.avatarsource.uri });
-                    }
-                    
-                    setTimeout(() => {
-                        this.sendSubmit(this.state.groupid);
-                    }, 0);
-                }
-             }else{
-                ToastAndroid.showWithGravityAndOffset("Group already exist",ToastAndroid.LONG,ToastAndroid.BOTTOM, 25, 50);
-             }
-           
+        let group={
+            groupname:this.state.groupname,
+            groupid: this.state.groupid,
+            avatarsource:this.state.avatarsource,
+            isPhotoChange:this.state.isPhotoChange,
+        }
+
+        this.props.updateGroup(group).then(res=>{
+            if(res!==""){
+                ToastAndroid.showWithGravityAndOffset(res,ToastAndroid.LONG,ToastAndroid.BOTTOM, 25, 50);
+                this.props.displayGroup();
+            }
         }).catch(function(err) {
-            console.log('error', err);
-            
         });
 
         
-            
-
-
-        
     }
 
-    sendSubmit(groupid){
-        let groupRef = firebase.database().ref().child("groups/"+userdetails.userid+"/"+groupid);
-        groupRef.update({ 
-                groupname : this.state.groupname,
-                avatar: this.state.avatar,
-                dateupdated: Date.now(),
-        })
-        .catch(function(err) {
-            console.log('error', err);
-          });
-          this.props.navigation.goBack();
-        ToastAndroid.showWithGravityAndOffset("Group successfully updated",ToastAndroid.LONG,ToastAndroid.BOTTOM, 25, 50);
-    }
-
+   
     
 
     loading(){
@@ -265,5 +216,10 @@ class EditGroup extends Component {
 
 
   
+
+const mapStateToProps = state => ({
+})
+  
+EditGroup=connect(mapStateToProps,{updateGroup,displayGroup, deleteGroup})(EditGroup);
   
 export default EditGroup;

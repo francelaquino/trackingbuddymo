@@ -2,8 +2,8 @@
 import React, { Component } from 'react';
 import { TouchableHighlight,Modal, Platform,  StyleSheet,  Text,  View, ScrollView,TextInput, TouchableOpacity, ToastAndroid, Image  } from 'react-native';
 import { Root, Container, Header, Body, Title, Item, Input, Label, Button, Icon, Content, List, ListItem,Left, Right,Switch,Thumbnail, Card,CardItem } from 'native-base';
-import { LeftHome } from '../shared/LeftHome';
-import firebase from 'react-native-firebase';
+import { connect } from 'react-redux';
+import { displayGroup  } from '../../actions/groupActions' ;
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
@@ -18,7 +18,6 @@ class DisplayGroup extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            isLoading:true,
             modalVisible: false,
             groupid:'',
             groupavatar:'',
@@ -26,11 +25,6 @@ class DisplayGroup extends Component {
             groupname:'',
 			avatarsource:'',
             avatar:'',
-            groups:{
-                id:'',
-                avatar:'',
-                groupname:'',
-            },
             members:{
                 id:'',
                 firstname:'',
@@ -61,7 +55,7 @@ class DisplayGroup extends Component {
 
     addMember(){
         this.setModalVisible(false)
-        this.props.navigation.navigate('AddMemberGroup',{id:this.state.groupid,groupname:this.state.groupname})
+        this.props.navigation.navigate('AddMemberGroup',{groupid:this.state.groupid,groupname:this.state.groupname})
     }
    
     componentWillMount() {
@@ -69,27 +63,7 @@ class DisplayGroup extends Component {
     }
         
     initialize(){
-        let groupRef = firebase.database().ref().child('groups/'+userdetails.userid).orderByChild("groupname");
-        groupRef.on('value', (dataSnapshot) => {
-           
-        let groups=[];
-        if(dataSnapshot.exists){
-            var users = [];
-            dataSnapshot.forEach(function(child) {
-                groups.push({
-                  id: child.key,
-                  groupname: child.val().groupname,
-                  avatar: child.val().avatar
-                })
-                
-            });
-            this.setState({groups: groups,isLoading:false});
-
-        }
-    
-        })
-
-
+            this.props.displayGroup();
     }
 
     
@@ -105,7 +79,7 @@ class DisplayGroup extends Component {
     }
     ready(){
         const { navigate } = this.props.navigation;
-        const groups =this.state.groups.map(group=>(
+        const groups =this.props.groups.map(group=>(
             <ListItem key={group.id}  avatar style={globalStyle.listItem}>
                             
                             <Left style={globalStyle.listLeft}>
@@ -135,7 +109,7 @@ class DisplayGroup extends Component {
             <Root>
                 <Container style={globalStyle.containerWrapper}>
                     <Header style={globalStyle.header}>
-                    <Left style={globalStyle.headerLeft} >
+                        <Left style={globalStyle.headerLeft} >
                             <Button transparent onPress={()=> {this.props.navigation.goBack()}} >
                                 <Icon size={30} name='arrow-back' />
                             </Button> 
@@ -209,7 +183,7 @@ class DisplayGroup extends Component {
     }
 
     render() {
-        if(this.state.isLoading){
+        if(this.props.isLoading){
             return this.loading();
         }else{
             return this.ready();
@@ -218,5 +192,15 @@ class DisplayGroup extends Component {
    
 }
   
+
+
+
+const mapStateToProps = state => ({
+    groups: state.fetchGroup.groups,
+    isLoading: state.fetchGroup.isLoadingGroup,
+  })
+  
+DisplayGroup=connect(mapStateToProps,{displayGroup})(DisplayGroup);
   
 export default DisplayGroup;
+

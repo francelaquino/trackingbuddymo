@@ -5,6 +5,8 @@ import { Root, Container, Header, Body, Title, Item, Input, Label, Button, Icon,
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import firebase from 'react-native-firebase';
+import { connect } from 'react-redux';
+import { displayGroupMember  } from '../../actions/memberActions' ;
 import { LeftHome } from '../shared/LeftHome';
 import Loading  from '../shared/Loading';
 var userdetails = require('../shared/userDetails');
@@ -26,6 +28,7 @@ class AddMember extends Component {
             },
             groupname:'',
             groupid:'',
+            membercount:''
         }
       }
 
@@ -36,16 +39,17 @@ class AddMember extends Component {
     }
    
     addSelectedMember(index){
-        let mem = [...this.state.members];
+        let mem = [...this.props.members];
         mem[index].selected = !mem[index].selected;
         this.setState({mem});
         if(mem[index].selected){
             
 
-        /*    let groupRef = firebase.database().ref().child("groupmembers/"+this.state.groupid+"/"+mem[index].id);
+            let groupRef = firebase.database().ref().child("groupmembers/"+this.state.groupid+"/"+mem[index].id);
 			groupRef.set({ 
 							member : mem[index].id,
-							dateadded: Date.now(),
+                            dateadded: Date.now(),
+                            
 			})
 			.catch(function(err) {
 					console.log('error', err);
@@ -56,132 +60,41 @@ class AddMember extends Component {
                                 member : mem[index].id,
                                 dateadded: Date.now(),
                 })
+                
                 .catch(function(err) {
                         console.log('error', err);
-                    });*/
+                    });
             }
 
+            this.countMembers();
+
+
+    }
+
+    countMembers(){
+        let self=this;
+        firebase.database().ref().child('groupmembers/'+this.state.groupid) .once("value",function(snapshot){
+            if(snapshot.numChildren()<=1){
+                self.setState({membercount : snapshot.numChildren()+' member'})
+            }else{
+                self.setState({membercount : snapshot.numChildren()+' members'})
+            }
+        });
     }
     
     initialize(){
        
         this.setState({
             groupname:this.props.navigation.state.params.groupname,
-            groupid:this.props.navigation.state.params.id,
+            groupid:this.props.navigation.state.params.groupid,
         })
-
-        let members=[]
-
-        this.setState({members: members});
-
-
-        let parent=this;
-
-        return parentPromise= new Promise((resolve,reject)=>{
-            let memberRef = firebase.database().ref().child("users/"+userdetails.userid+'/members').on('value',function(snapshot){
-                console.log(snapshot)
-                resolve(snapshot)
-            })
-            }).then(function(snapshot){
-                if(snapshot.val()===null){
-                }else{
-                    snapshot.forEach(childSnapshot => {
-                        let userid=childSnapshot.key;
-                        return childPromise= new Promise((resolve,reject)=>{
-                            let childRef= firebase.database().ref().child('users/'+userid).once("value",function(snapshot){
-                                if(snapshot.val() !== null){
-                                    members.push({
-                                        id:snapshot.key,
-                                        firstname:snapshot.val().firstname,
-                                        avatar: snapshot.val().avatar,
-                                        selected : true,
-                                    });
-                                }
-                                resolve(snapshot);
-                            })
-                        }).then(function(){
-                            parent.setState({members: members,isLoading:false});
-                        })
-                    })
-                }
-            
-        })
-
-
-        
+            setTimeout(() => {
+                this.props.displayGroupMember(this.state.groupid);    
+                this.countMembers();
+            }, 1);
     }
 
 
-
-        /*let members=[]
-        let parent=this;
-        return mypromise= new Promise((resolve,reject)=>{
-            let memberarr=[]
-            let memberRef = firebase.database().ref().child(userdetails.userid+'/members').on('value',function(snapshot){
-                if(snapshot.val()===null){
-                    resolve(memberarr)
-                }else{
-                    snapshot.forEach(childSnapshot => {
-                        let userid=childSnapshot.val().id;
-                        memberarr.push({
-                        userid:userid
-                        })
-                        
-                        });
-                        resolve(memberarr)
-                    }
-                        
-            
-               
-            });
-            
-        }).then(function(response){
-            if(response.length<=0){
-                parent.setState({members: [],isLoading:false});
-            }else{
-                response.forEach(data => {
-                    return mypromise1= new Promise((resolve,reject)=>{
-                        let memberarr=[]
-                        let selected=false;
-
-                        
-                        let childRef= firebase.database().ref().child('users/'+data.userid).once("value",function(snapshot){
-                            if(snapshot.val() !== null){
-                                
-                                return mypromise2= new Promise((resolve,reject)=>{
-                                    firebase.database().ref().child('groupmembers/'+parent.state.groupid).orderByChild("member").equalTo(snapshot.key) .once("value",function(snapshot){
-                                        if(snapshot.val()!==null){
-                                            selected=true;
-                                        }
-                                        resolve();
-                                    });
-                                }).then(function(){
-                                    
-                                    members.push({
-                                        id:snapshot.key,
-                                        firstname:snapshot.val().firstname,
-                                        avatar: snapshot.val().avatar,
-                                        selected : selected,
-                                    });
-                                    resolve()
-                                })
-
-
-
-                                
-                            }
-                            resolve()
-                        })
-                    }).then(function(){
-                        parent.setState({members: members,isLoading:false});
-                    
-                    })
-                });
-            }
-           
-        })*/
-        
-    //}
    
     confirmDelete(memberid){
         Alert.alert(
@@ -218,7 +131,7 @@ class AddMember extends Component {
     
     
     ready(){
-        const members =this.state.members.map((member,index)=>
+        const members =this.props.members.map((member,index)=>
             
             <ListItem  key={member.id} avatar button onPress={()=>this.addSelectedMember(index)} style={globalStyle.listItem}>
             <Left >
@@ -251,7 +164,9 @@ class AddMember extends Component {
                         <Body>
                             <Title>{this.state.groupname}</Title>
                         </Body>
-                        
+                        <Right>
+                            <Text style={{color:'white'}}>{this.state.membercount}</Text>
+                        </Right>
                     </Header>
                     <Content padder>
                         <ScrollView  contentContainerStyle={{flexGrow: 1}} keyboardShouldPersistTaps={"always"}
@@ -269,7 +184,7 @@ class AddMember extends Component {
 
 
     render() {
-        if(this.state.isLoading){
+        if(this.props.isLoading){
             return this.loading();
         }else{
             return this.ready();
@@ -280,5 +195,16 @@ class AddMember extends Component {
 
 
 
+
+
+const mapStateToProps = state => ({
+    members: state.fetchMember.members,
+    isLoading:state.fetchMember.isLoading,
+  })
+  
+  
+  AddMember=connect(mapStateToProps,{displayGroupMember})(AddMember);
+  
+  
   
 export default AddMember;

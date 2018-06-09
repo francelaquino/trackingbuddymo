@@ -3,6 +3,7 @@ import Register from '../Registration';
 import Login from '../Login';
 import CreateGroup from '../group/CreateGroup';
 import DisplayGroup from '../group/DisplayGroup';
+import SelectGroup from '../group/SelectGroup';
 import DisplayHomeGroup from '../group/DisplayHomeGroup';
 import EditGroup from '../group/EditGroup';
 import AddMember from '../group/AddMember';
@@ -13,7 +14,6 @@ import InfoMember from '../member/InfoMember';
 import NewInvite from '../member/NewInvite';
 import HomePlaces from '../places/HomePlaces';
 import GroupPlaces from '../places/GroupPlaces';
-//import { StackNavigator } from 'react-navigation';
 import  { createStackNavigator }  from 'react-navigation';
 
 export  default Navigation = createStackNavigator({
@@ -24,13 +24,6 @@ export  default Navigation = createStackNavigator({
             header: null
         }
     },
-    DisplayMember: { 
-        screen: DisplayMember,
-        headerMode: 'none',
-        navigationOptions: {
-            header: null
-        } 
-    },
     DisplayGroup: { 
         screen: DisplayGroup,
         headerMode: 'none',
@@ -38,6 +31,33 @@ export  default Navigation = createStackNavigator({
             header: null
         } 
     },
+    
+    DisplayMember: { 
+        screen: DisplayMember,
+        headerMode: 'none',
+        navigationOptions: {
+            header: null
+        } 
+    },
+    Login: { 
+        screen: Login,
+        headerMode: 'none',
+        navigationOptions: {
+            header: null
+        },
+        
+    },
+    SelectGroup: { 
+        screen: SelectGroup,
+        headerMode: 'none',
+        navigationOptions: {
+            header: null
+        },
+        
+    },
+    
+    
+    
    
     
    
@@ -97,14 +117,7 @@ export  default Navigation = createStackNavigator({
    
     
     
-    Login: { 
-        screen: Login,
-        headerMode: 'none',
-        navigationOptions: {
-            header: null
-        },
-        
-    },
+    
    
     
   

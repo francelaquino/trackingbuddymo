@@ -1,17 +1,200 @@
-import { DISPLAY_MEMBER, INVITE_MEMBER, GET_MEMBER, DELETE_MEMBER } from './types';
-import { BASE_URL } from '../constants'
+import { DISPLAY_MEMBER, INVITE_MEMBER, GET_MEMBER, DELETE_MEMBER, DISPLAY_HOME_MEMBER, DISPLAY_GROUP_MEMBER } from './types';
 import axios from 'axios';
+import firebase from 'react-native-firebase';
+var userdetails = require('../components/shared/userDetails');
+
+
+
+export const displayHomeMember=()=> dispatch=> {
+    let members=[];
+
+    if(userdetails.group==""){
+        return new Promise((resolve) => {
+            let memberRef = firebase.database().ref().child('users/'+userdetails.userid+"/members").on('value',function(snapshot){
+                resolve(snapshot)
+            })
+            }).then(function(snapshot){
+                if(snapshot.val()===null){
+                    dispatch({ 
+                        type: DISPLAY_HOME_MEMBER,
+                        payload: members,
+                    });
+                }else{
+                    snapshot.forEach(childSnapshot => {
+                        let userid=childSnapshot.key;
+                        return childPromise= new Promise((resolve,reject)=>{
+                            let childRef= firebase.database().ref().child('users/'+userid).once("value",function(snapshot){
+                                if(snapshot.val() !== null){
+                                    members.push({
+                                        id:snapshot.key,
+                                        firstname:snapshot.val().firstname,
+                                        avatar: snapshot.val().avatar,
+                                    });
+                                }
+                                resolve();
+                            })
+                        }).then(function(){
+                            dispatch({ 
+                                type: DISPLAY_HOME_MEMBER,
+                                payload: members,
+                            });
+
+
+                        })
+                    })
+                }
+        })
+    }else{
+
+        return parentPromise= new Promise((resolve,reject)=>{
+            let memberRef = firebase.database().ref().child("groupmembers/"+userdetails.group).on('value',function(snapshot){
+                resolve(snapshot)
+            })
+            }).then(function(snapshot){
+                if(snapshot.val()===null){
+                    dispatch({ 
+                        type: DISPLAY_HOME_MEMBER,
+                        payload: members,
+                    });
+                }else{
+                    snapshot.forEach(childSnapshot => {
+                        let userid=childSnapshot.key;
+                        return childPromise= new Promise((resolve,reject)=>{
+                            let childRef= firebase.database().ref().child('users/'+userid).once("value",function(snapshot){
+                                if(snapshot.val() !== null){
+                                    members.push({
+                                        id:snapshot.key,
+                                        firstname:snapshot.val().firstname,
+                                        avatar: snapshot.val().avatar,
+                                    });
+                                }
+
+
+                                resolve();
+                            })
+                        }).then(function(snapshot){
+                            dispatch({ 
+                                type: DISPLAY_HOME_MEMBER,
+                                payload: members,
+                            });
+                        })
+                    })
+                }
+            
+        })
+    }
+
+};
+
+
+export const displayGroupMember=(groupid)=> dispatch=> {
+   
+    let members=[];
+    let key="";
+    let firstname="";
+    let avatar="";
+    let userid="";
+    let count=0;
+    let cnt=0;
+console.log(groupid)
+        return new Promise((resolve,reject)=>{
+            firebase.database().ref().child("users/"+userdetails.userid+'/members').once('value',function(snapshot){
+                resolve(snapshot);
+            });
+        }).then(function(snapshot){
+            if(snapshot.val()===null){
+                dispatch({ 
+                    type: DISPLAY_GROUP_MEMBER,
+                    payload: members
+                });
+            }else{
+                return new Promise((resolve,reject)=>{
+                    count=snapshot.numChildren();
+                    snapshot.forEach(snapshot1 => {
+                        userid=snapshot1.key;
+                        return new Promise((resolve,reject)=>{
+                            firebase.database().ref().child('users/'+userid).once("value",function(snapshot2){
+                                key=snapshot2.key;
+                                firstname=snapshot2.val().firstname;
+                                avatar= snapshot2.val().avatar;
+                                resolve()
+                            });
+                        }).then(function(){
+                            return new Promise((resolve,reject)=>{
+                                firebase.database().ref().child('groupmembers/'+groupid).orderByChild("member").equalTo(key).once("value",function(snapshot3){
+                                    if(snapshot3.val()===null){
+                                        resolve(false);
+                                    }else{
+                                        resolve(true);
+                                    }
+                                })
+                            }).then(function(selected){
+                                members.push({
+                                    id:key,
+                                    firstname:firstname,
+                                    avatar: avatar,
+                                    selected : selected,
+                                });
+                                cnt++;
+                                if(cnt>=count){
+                                    resolve();
+                                }
+                            });
+                        });
+                    });
+                    
+                }).then(function(){
+                    dispatch({ 
+                        type: DISPLAY_GROUP_MEMBER,
+                        payload: members
+                    });
+                });
+            }
+        });
+
+};
 
 
 
 export const displayMember=()=> dispatch=> {
-    axios.get(BASE_URL+'member/displaymember')
-    .then(function (res) {
-        dispatch({ 
-            type: DISPLAY_MEMBER,
-            payload: res.data.result
+   
+    let members=[]
+
+    return parentPromise= new Promise((resolve,reject)=>{
+        let memberRef = firebase.database().ref().child('users/'+userdetails.userid+"/members").on('value',function(snapshot){
+            resolve(snapshot)
+        })
+        }).then(function(snapshot){
+            if(snapshot.val()===null){
+                dispatch({ 
+                    type: DISPLAY_MEMBER,
+                    payload: members
+                });
+            }else{
+                snapshot.forEach(childSnapshot => {
+                let userid=childSnapshot.key;
+                return childPromise= new Promise((resolve,reject)=>{
+                    let childRef= firebase.database().ref().child('users/'+userid).once("value",function(snapshot){
+                        if(snapshot.val() !== null){
+                            members.push({
+                            id:snapshot.key,
+                            firstname:snapshot.val().firstname,
+                            avatar: snapshot.val().avatar,
+                            });
+                        }
+                        resolve(snapshot);
+                    })
+                    }).then(function(){
+                        dispatch({ 
+                            type: DISPLAY_MEMBER,
+                            payload: members
+                        });
+                    }).catch(function(err) {
+                    });
+                })
+            }
+        }).catch(function(err) {
         });
-    });
 };
 
 export const getMember=(id)=> dispatch=> {
@@ -25,33 +208,39 @@ export const getMember=(id)=> dispatch=> {
 };
 
 
-export const deleteMember=(data)=> dispatch=> {
+export const deleteMember=(memberid)=> dispatch=> {
+    console.log(memberid)
     return new Promise((resolve) => {
-        axios.delete(BASE_URL+'member/deletemember',
-        {
-            data:data
-        })
-        .then(function (res) {
-            resolve(res.data);
-
-        })
+        let memberRef=firebase.database().ref().child("users/"+userdetails.userid+"/members/"+memberid);
+        memberRef.remove()
+        .catch(function(err) {
+            resolve(false)
+        });
+        resolve(true)
     });
 };
 
-export const sendInvite=(data)=> dispatch=> {
-    var user={
-        userid:25
-    }
+export const sendInvite=(invitationcode)=> dispatch=> {
     return new Promise((resolve) => {
-        axios.post(BASE_URL+'member/sendinvite',
-        {
-            data:data,
-            user:user
-        })
-        .then(function (res) {
-            resolve(res.data);
+        firebase.database().ref().child("users").orderByChild("invitationcode").equalTo(invitationcode).once("value",snapshot => {
+            let id="";
+            let parent=this;
+            snapshot.forEach(function(childSnapshot) {
+                id = childSnapshot.key;
+                let userRef = firebase.database().ref().child("users/"+userdetails.userid+"/members/"+id);
+                userRef.set({ 
+                    id : id,
+                    dateadded: Date.now(),
+                }).catch(function(err) {
+                    resolve(false)
+                });
+                resolve(true)
+            });
+            resolve(false)
+        }).catch(function(err) {
+            resolve(false)
+        });
 
-        })
     });
 };
 

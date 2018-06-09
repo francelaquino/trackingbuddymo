@@ -9,7 +9,7 @@ class Loading extends Component{
         return (
             <Content padder>
             <View style={[styles.container]}>
-            <ActivityIndicator size="large"  color="gray" />
+            <ActivityIndicator size="large"  color="#096d71" />
             
             </View>
             </Content>

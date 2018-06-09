@@ -1,6 +1,9 @@
 import  React  from 'react';
 import { AppRegistry } from 'react-native';
-import DisplayGroup from './components/group/DisplayGroup';
+import { Provider } from 'react-redux';
+import store from './store';
+import { DrawerNavigator } from 'react-navigation'
+/*import DisplayGroup from './components/group/DisplayGroup';
 import DisplayHomeGroup from './components/group/DisplayHomeGroup';
 import EditGroup from './components/group/EditGroup';
 import AddMember from './components/group/AddMember';
@@ -10,36 +13,24 @@ import GenerateInviteCode from './components/member/GenerateInviteCode';
 import InfoMember from './components/member/InfoMember';
 import NewInvite from './components/member/NewInvite';
 import HomePlaces from './components/places/HomePlaces';
-import App from './App';
+import App from './App';*/
+import Navigation from './components/shared/Navigation';
 
-//import Navigation from './components/shared/Navigation';
-import { DrawerNavigator } from 'react-navigation'
 
-const drawerNavigator= DrawerNavigator({
-  HomePlaces:{
-    screen: HomePlaces,
-  },
-  DisplayMember: { 
-    screen: DisplayMember,
-  },
-  DisplayGroup: { 
-    screen: DisplayGroup,
-  },
-})
-const TrackingApp =()=>(
-        <drawerNavigator/>
+/*const TrackingApp =()=>(
+        <Navigation/>
 )
 
   
-AppRegistry.registerComponent('tracking', () => App);
+AppRegistry.registerComponent('tracking', () => TrackingApp);
   
 
 
-/*
+*/
 const tracking =()=>(
     <Provider store={store}>
         <Navigation/>
     </Provider>
 )
 
-AppRegistry.registerComponent('tracking', () => tracking);*/
+AppRegistry.registerComponent('tracking', () => tracking);

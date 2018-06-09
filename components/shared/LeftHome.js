@@ -10,7 +10,7 @@ class LeftHome extends Component {
         const navigation = this.props.navigation;
         return (
             <Left style={globalStyle.headerMenu} >
-                <Button transparent onPress={()=>navigation.openDrawer()} >
+                <Button transparent onPress={()=>this.navigation.openDrawer()} >
                     <Icon size={30} name='menu' />
                 </Button> 
             </Left>

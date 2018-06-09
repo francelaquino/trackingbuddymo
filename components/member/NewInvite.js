@@ -2,17 +2,15 @@
 import React, { Component } from 'react';
 import {  Platform,  StyleSheet,  Text,  View, ScrollView,TextInput, TouchableOpacity, ToastAndroid } from 'react-native';
 import { Content,Root, Container, Header, Body, Title, Item, Input, Label, Button, Icon, Left, Right } from 'native-base';
-import firebase from 'react-native-firebase';
+import { connect } from 'react-redux';
+import { sendInvite, displayMember, displayHomeMember } from '../../actions/memberActions' ;
 var globalStyle = require('../../assets/style/GlobalStyle');
-var userdetails = require('../shared/userDetails');
 
 
 class NewInvite extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            isLoading:true,
-            parentReload:false,
             invitationcode:'3DG73I3',
         };
       }
@@ -28,46 +26,24 @@ class NewInvite extends Component {
     }
     
     goBack(){
-        if(this.state.parentReload==true){
-            this.props.navigation.state.params.onReload();
-            this.setState({parentReload:false})
-        } 
         this.props.navigation.goBack();
     }  
     onSubmit(){
         if(this.state.invitationcode==""){
             return false;
         }
-        firebase.database().ref().child("users").orderByChild("invitationcode").equalTo(this.state.invitationcode).once("value",snapshot => {
-            let id="";
-            let parent=this;
-            snapshot.forEach(function(childSnapshot) {
-                id = childSnapshot.key;
-                let userRef = firebase.database().ref().child("users/"+userdetails.userid+"/members/"+id);
-                userRef.set({ 
-                    id : id,
-                    dateadded: Date.now(),
-                }).catch(function(err) {
-                    console.log('error', err);
-                });
-                parent.setState({parentReload:true});
+        this.props.sendInvite(this.state.invitationcode).then(res=>{
+        	if(res==true){
                 ToastAndroid.showWithGravityAndOffset("Member successfully added",ToastAndroid.LONG,ToastAndroid.BOTTOM, 25, 50);
-                parent.setState({invitationcode:""});
-              
-                
-            });
-            if(id==""){
-                ToastAndroid.showWithGravityAndOffset("Invalid invidation code",ToastAndroid.LONG,ToastAndroid.BOTTOM, 25, 50);
+                this.props.displayMember();
+                this.props.displayHomeMember();
+                this.setState({invitationcode:''})
+            }else{
+                ToastAndroid.showWithGravityAndOffset("Invalid invitation code",ToastAndroid.LONG,ToastAndroid.BOTTOM, 25, 50);
             }
-
         }).catch(function(err) {
-            console.log('error', err);
+            ToastAndroid.showWithGravityAndOffset("Invalid invitation code",ToastAndroid.LONG,ToastAndroid.BOTTOM, 25, 50);
         });
-
-       
-  
-
-       
     }
 
     loading(){
@@ -134,5 +110,8 @@ class NewInvite extends Component {
 }
 
 
+const mapStateToProps = state => ({
+    members: state.fetchMember.members,
+})
   
-export default NewInvite;
+export default connect(mapStateToProps,{displayMember,sendInvite,displayHomeMember})(NewInvite);
