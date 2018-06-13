@@ -6,7 +6,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import firebase from 'react-native-firebase';
 import { connect } from 'react-redux';
-import { displayGroupMember  } from '../../actions/memberActions' ;
+import { displayGroupMember,displayHomeMember  } from '../../actions/memberActions' ;
 import { LeftHome } from '../shared/LeftHome';
 import Loading  from '../shared/Loading';
 var userdetails = require('../shared/userDetails');
@@ -67,6 +67,7 @@ class AddMember extends Component {
             }
 
             this.countMembers();
+            this.props.displayHomeMember();
 
 
     }
@@ -96,29 +97,6 @@ class AddMember extends Component {
 
 
    
-    confirmDelete(memberid){
-        Alert.alert(
-            'Comfirm Delete',
-            'Are you sure you want to delete the member?',
-            [
-              
-              {text: 'Yes', onPress: () => this.onDelete(memberid)},
-              {text: 'No', style: 'cancel'},
-            ],
-            { cancelable: true }
-          )
-    }
-    onDelete(memberid){
-        console.log(memberid)
-        let memberRef=firebase.database().ref().child("members/"+userdetails.userid+"/"+memberid);
-
-        memberRef.remove()
-        .catch(function(err) {
-            console.log('error', err);
-          });
-        this.initialize()
-        ToastAndroid.showWithGravityAndOffset("Member successfully deleted",ToastAndroid.LONG,ToastAndroid.BOTTOM, 25, 50);
-    }
     loading(){
         return (
           <Root>
@@ -203,7 +181,7 @@ const mapStateToProps = state => ({
   })
   
   
-  AddMember=connect(mapStateToProps,{displayGroupMember})(AddMember);
+  AddMember=connect(mapStateToProps,{displayGroupMember,displayHomeMember})(AddMember);
   
   
   

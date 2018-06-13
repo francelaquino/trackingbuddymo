@@ -54,6 +54,9 @@ export default class LeftDrawer extends Component<Props> {
                                 <Text style={{fontSize:15}}>Home</Text>
                                 </TouchableOpacity>
                             </Body>
+                            <Right>
+                                <SimpleLineIcons name="arrow-right" />
+                            </Right>
                             </ListItem>
                             <ListItem icon>
                             <Left>
@@ -62,6 +65,9 @@ export default class LeftDrawer extends Component<Props> {
                             <Body style={{width:'100%'}} >
                                 <Text style={{fontSize:15}}>Profile</Text>
                             </Body>
+                            <Right>
+                                <SimpleLineIcons name="arrow-right" />
+                            </Right>
                             </ListItem>
                             <ListItem icon>
                             <Left>
@@ -70,6 +76,9 @@ export default class LeftDrawer extends Component<Props> {
                             <Body style={{width:'100%'}} >
                                 <Text style={{fontSize:15}}>Locations</Text>
                             </Body>
+                            <Right>
+                                <SimpleLineIcons name="arrow-right" />
+                            </Right>
                             </ListItem>
                             <ListItem icon>
                             <Left>
@@ -80,6 +89,9 @@ export default class LeftDrawer extends Component<Props> {
                                 <Text style={{fontSize:15}}>Members</Text>
                                 </TouchableOpacity>
                             </Body>
+                            <Right>
+                                <SimpleLineIcons name="arrow-right" />
+                            </Right>
                             </ListItem>
                             <ListItem icon>
                             <Left>
@@ -90,6 +102,9 @@ export default class LeftDrawer extends Component<Props> {
                                 <Text style={{fontSize:15}}>Groups</Text>
                                 </TouchableOpacity>
                             </Body>
+                            <Right>
+                                <SimpleLineIcons name="arrow-right" />
+                            </Right>
                             </ListItem>
                             <ListItem icon>
                             <Left>
@@ -98,6 +113,9 @@ export default class LeftDrawer extends Component<Props> {
                             <Body style={{width:'100%'}} >
                                 <Text style={{fontSize:15}}>Settings</Text>
                             </Body>
+                            <Right>
+                                <SimpleLineIcons name="arrow-right" />
+                            </Right>
                             </ListItem>
                             <ListItem icon>
                             <Left>
@@ -108,6 +126,9 @@ export default class LeftDrawer extends Component<Props> {
                                 <Text style={{fontSize:15}}>Logout</Text>
                                 </TouchableOpacity>
                             </Body>
+                            <Right>
+                                <SimpleLineIcons name="arrow-right" />
+                            </Right>
                             </ListItem>
                         </List>
                     </Content>      

@@ -227,13 +227,13 @@ export const sendInvite=(invitationcode)=> dispatch=> {
             let parent=this;
             snapshot.forEach(function(childSnapshot) {
                 id = childSnapshot.key;
-                let userRef = firebase.database().ref().child("users/"+userdetails.userid+"/members/"+id);
-                userRef.set({ 
-                    id : id,
-                    dateadded: Date.now(),
-                }).catch(function(err) {
-                    resolve(false)
-                });
+                    let userRef = firebase.database().ref().child("users/"+userdetails.userid+"/members/"+id);
+                    userRef.set({ 
+                        id : id,
+                        dateadded: Date.now(),
+                    }).catch(function(err) {
+                        resolve(false)
+                    });
                 resolve(true)
             });
             resolve(false)
