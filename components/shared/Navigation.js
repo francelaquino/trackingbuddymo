@@ -55,13 +55,6 @@ export  default Navigation = createStackNavigator({
         },
         
     },
-    
-    
-    
-   
-    
-   
-    
    
     
     AddMemberGroup: { 

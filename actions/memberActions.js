@@ -10,9 +10,32 @@ export const displayHomeMember=()=> dispatch=> {
 
     if(userdetails.group==""){
         return new Promise((resolve) => {
+
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    members.push({
+                        id:userdetails.userid,
+                        firstname:userdetails.firstname,
+                        avatar: userdetails.avatar,
+                        address : '',
+                        coordinates:{
+                            longitude: Number(position.coords.longitude),
+                            latitude: Number(position.coords.latitude)
+                        }
+                    });
+                  
+                },
+                (err) => {
+                },
+                { enableHighAccuracy: false, timeout: 20000, maximumAge: 1000 }
+              );
+
+
+
             let memberRef = firebase.database().ref().child('users/'+userdetails.userid+"/members").on('value',function(snapshot){
                 resolve(snapshot)
             })
+            
             }).then(function(snapshot){
                 if(snapshot.val()===null){
                     dispatch({ 
@@ -29,6 +52,11 @@ export const displayHomeMember=()=> dispatch=> {
                                         id:snapshot.key,
                                         firstname:snapshot.val().firstname,
                                         avatar: snapshot.val().avatar,
+                                        address : snapshot.val().address,
+                                        coordinates:{
+                                            longitude: Number(snapshot.val().longitude),
+                                            latitude: Number(snapshot.val().latitude)
+                                        }
                                     });
                                 }
                                 resolve();
@@ -66,6 +94,11 @@ export const displayHomeMember=()=> dispatch=> {
                                         id:snapshot.key,
                                         firstname:snapshot.val().firstname,
                                         avatar: snapshot.val().avatar,
+                                        coordinates:{
+                                            longitude: Number(snapshot.val().longitude),
+                                            latitude: Number(snapshot.val().latitude)
+                                        },
+                                        address : snapshot.val().address,
                                     });
                                 }
 
@@ -96,7 +129,6 @@ export const displayGroupMember=(groupid)=> dispatch=> {
     let userid="";
     let count=0;
     let cnt=0;
-console.log(groupid)
         return new Promise((resolve,reject)=>{
             firebase.database().ref().child("users/"+userdetails.userid+'/members').once('value',function(snapshot){
                 resolve(snapshot);
@@ -209,7 +241,6 @@ export const getMember=(id)=> dispatch=> {
 
 
 export const deleteMember=(memberid)=> dispatch=> {
-    console.log(memberid)
     return new Promise((resolve) => {
         let memberRef=firebase.database().ref().child("users/"+userdetails.userid+"/members/"+memberid);
         memberRef.remove()

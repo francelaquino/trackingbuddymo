@@ -137,6 +137,11 @@ android {
 }
 
 dependencies {
+    /*compile(project(':react-native-firebase')) {
+        transitive = false
+    }*/
+    compile project(':react-native-geocoder')
+    compile project(':react-native-background-job')
     implementation(project(':react-native-firebase')) {
         transitive = false
     }
@@ -155,6 +160,7 @@ dependencies {
     implementation "com.google.firebase:firebase-storage:11.8.0"
     implementation "com.google.firebase:firebase-database:11.8.0"
     implementation "com.google.firebase:firebase-auth:11.8.0"
+    
 }
 
 // Run this once to be able to run the application with BUCK

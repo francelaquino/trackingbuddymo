@@ -1,6 +1,6 @@
 
 import React, { Component } from 'react';
-import { TouchableHighlight,Platform,  StyleSheet,  Text,  View, ScrollView,TextInput, TouchableOpacity, ToastAndroid, Image } from 'react-native';
+import { TouchableHighlight,Platform,  StyleSheet,  Text,  View, ScrollView,TextInput, TouchableOpacity, ToastAndroid, Image,Dimensions } from 'react-native';
 import { Drawer,Root, Container, Header, Body, Title, Item, Input, Label, Button, Icon, Content, List, ListItem,Left, Right,Switch, Thumbnail,Card,CardItem } from 'native-base';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
@@ -8,66 +8,94 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Entypo from 'react-native-vector-icons/Entypo';
-import MapView from 'react-native-maps';
+import MapView, { ProviderPropType, Marker, AnimatedRegion,Animated,Polyline } from 'react-native-maps';
 import Loading  from '../shared/Loading';
 import LeftDrawer from '../shared/LeftDrawer'
 import { connect } from 'react-redux';
 import { displayHomeMember  } from '../../actions/memberActions' ;
 var globalStyle = require('../../assets/style/GlobalStyle');
-
-
+var userdetails = require('../../components/shared/userDetails');
+const screen = Dimensions.get('window');
+const ASPECT_RATIO = screen.width / screen.height;
+const LATITUDE = 0;
+const LONGITUDE = 0;
+const LATITUDE_DELTA = .05;
+const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 
 class HomePlaces extends Component {
     constructor(props) {
         super(props)
+        this.map = null;
+
         this.state = {
-            groupname:''
+            groupname:'',
+            isLoading:true,
+            region:{
+                latitude: LATITUDE,
+                longitude: LONGITUDE,
+                latitudeDelta: LATITUDE_DELTA ,
+                longitudeDelta: LONGITUDE_DELTA,
+            },
+            centerMarker: [],
+            markers: [],
         };
       }
     
     
+    componentDidMount(){
+        setTimeout(() => {
 
+                    for (let i = 0; i < this.props.members.length; i++) {
+                        const coord = {
+                            id:i,
+                            location:this.props.members[i].coordinates.firstname,
+                            coordinates:{
+                              latitude: this.props.members[i].coordinates.latitude,
+                              longitude: this.props.members[i].coordinates.longitude,
+                              latitudeDelta: LATITUDE_DELTA ,
+                              longitudeDelta: LONGITUDE_DELTA,
+                            }
+                          };
+        
+                          if(i==0){
+                              this.setState({
+                                region:{
+                                    latitude:this.props.members[i].coordinates.latitude,
+                                    longitude:this.props.members[i].coordinates.longitude,
+                                    latitudeDelta: LATITUDE_DELTA ,
+                                    longitudeDelta: LONGITUDE_DELTA,
+
+                                }
+                            })
+                          }
+        
+                        if(!isNaN(this.props.members[i].coordinates.longitude) && !isNaN(this.props.members[i].coordinates.latitude)){
+                            this.setState({ isLoading:false,markers: this.state.markers.concat(coord),centerMarker: this.state.centerMarker.concat(coord.coordinates) })
+                            
+                        }
+                    }
+
+                    
+
+
+                
+           
+        }, 3000);
+        
+    }
+    fitToMap(){
+        setTimeout(() => {
+            this.map.fitToCoordinates(this.state.centerMarker, { edgePadding: { top: 10, right: 10, bottom: 10, left: 10 }, animated: true })  
+            }, 2000);
+
+    }
+    
     componentWillMount() {
+        
         this.initialize();
     }
     
-    getAllMembers(){
-        let members=[]
-
-        this.setState({members:members ,groupname:''});
-
-
-        let self=this;
-
-        return parentPromise= new Promise((resolve,reject)=>{
-            let memberRef = firebase.database().ref().child('users/'+userdetails.userid+"/members").on('value',function(snapshot){
-                resolve(snapshot)
-            })
-            }).then(function(snapshot){
-                if(snapshot.val()===null){
-                    self.setState({isLoading:false});
-                }else{
-                    snapshot.forEach(childSnapshot => {
-                        let userid=childSnapshot.key;
-                        return childPromise= new Promise((resolve,reject)=>{
-                            let childRef= firebase.database().ref().child('users/'+userid).once("value",function(snapshot){
-                                if(snapshot.val() !== null){
-                                    members.push({
-                                        id:snapshot.key,
-                                        firstname:snapshot.val().firstname,
-                                        avatar: snapshot.val().avatar,
-                                    });
-                                }
-                                resolve();
-                            })
-                        }).then(function(){
-                            self.setState({members: members,isLoading:false});
-                        })
-                    })
-                }
-            
-        })
-    }
+    
     changeGroup = (groupname) => {
         this.setState({groupname:groupname});
     }
@@ -108,12 +136,13 @@ class HomePlaces extends Component {
             </Left>
             <Body style={globalStyle.listBody} >
                 <Text style={globalStyle.listHeading}>{member.firstname}</Text>
-                <Text note style={{fontSize:10}}>Jubail Industrial</Text>
+                <Text note style={{fontSize:10}}>{member.address}</Text>
             </Body>
             
             </ListItem>
         ));
-
+        
+        
 
         return (
             <Drawer
@@ -151,8 +180,22 @@ class HomePlaces extends Component {
                     <View style={styles.mainContainer}>
                     
                         <View style={styles.mapContainer}>
-                            
-                            <MapView style={styles.map}>
+                        
+                        <MapView ref={map => {this.map = map}}
+                            showsUserLocation = {false}
+                            zoomEnabled = {true}
+                            style={styles.map}
+                            loadingEnabled={true}
+                            region={this.state.region}
+                            onLayout ={()=>this.fitToMap()}
+                            >
+                             {this.state.markers.map(marker => (
+                                    <MapView.Marker key={marker.id}
+                                    coordinate={marker.coordinates}
+                                    title={marker.location}
+                                    />
+                                ))}
+
                             </MapView>
                             { this.state.groupname!=='' &&
                             <View style={{flexDirection: 'column',marginVertical: 5,width:'100%', alignItems:'center',position:'absolute',bottom:0}}>
@@ -198,7 +241,7 @@ class HomePlaces extends Component {
 
 
     render() {
-            if(this.props.isLoading){
+            if(this.state.isLoading){
                 return this.loading();
             }else{
                 return this.ready();

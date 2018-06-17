@@ -4,6 +4,7 @@ import android.app.Application;
 
 import com.facebook.react.ReactApplication;
 import io.invertase.firebase.RNFirebasePackage;
+import com.pilloxa.backgroundjob.BackgroundJobPackage;
 import com.imagepicker.ImagePickerPackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
@@ -13,6 +14,7 @@ import com.airbnb.android.react.maps.MapsPackage;
 import io.invertase.firebase.storage.RNFirebaseStoragePackage;
 import io.invertase.firebase.database.RNFirebaseDatabasePackage; 
 import io.invertase.firebase.auth.RNFirebaseAuthPackage;
+import com.devfd.RNGeocoder.RNGeocoderPackage; 
 import java.util.Arrays;
 import java.util.List;
 
@@ -29,11 +31,13 @@ public class MainApplication extends Application implements ReactApplication {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
             new RNFirebasePackage(),
+            new BackgroundJobPackage(),
             new ImagePickerPackage(),
            new RNFirebaseStoragePackage(),
             new MapsPackage(),
             new RNFirebaseDatabasePackage(),
-            new RNFirebaseAuthPackage()
+            new RNFirebaseAuthPackage(),
+            new RNGeocoderPackage()
       );
     }
 

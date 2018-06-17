@@ -149,6 +149,7 @@ export const updateGroup=(group)=> dispatch=> {
                                         groupname : group.groupname,
                                         avatar: avatar,
                                         dateupdated: Date.now(),
+                                        
                                 })
                                 .catch(function(err) {
                                     resolve("")
