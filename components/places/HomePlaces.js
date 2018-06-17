@@ -46,7 +46,7 @@ class HomePlaces extends Component {
     componentDidMount(){
         setTimeout(() => {
 
-<<<<<<< HEAD
+
                     for (let i = 0; i < this.props.members.length; i++) {
                         const coord = {
                             id:i,
@@ -66,47 +66,9 @@ class HomePlaces extends Component {
                                     longitude:this.props.members[i].coordinates.longitude,
                                     latitudeDelta: LATITUDE_DELTA ,
                                     longitudeDelta: LONGITUDE_DELTA,
-=======
-    componentWillMount() {
-        this.initialize();
-
-  /*      var NY = {
-            lat: 27.140487,
-            lng:  49.564152 
-          };
-
-          Geocoder.geocodePosition(NY).then(res => {
-            console.log(res[0].formattedAddress);
-        })
-*/
-        
-    }
-    componentWillUnmount() {
-        console.log("f")
-      }
-    componentDidMount() {
-        this.watchId = navigator.geolocation.watchPosition(
-          (position) => {
-              console.log(position.coords)
-            /*this.setState({
-              latitude: position.coords.latitude,
-              longitude: position.coords.longitude,
-              error: null,
-            });*/
-          },
-          (error) => this.setState({ error: error.message }),
-          { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000, distanceFilter: 10 },
-        );
-      }
-    
-    getAllMembers(){
-        let members=[]
->>>>>>> c82ba3700b9dd968d8ee905c53b1bfc895d641e7
-
                                 }
                             })
-                          }
-        
+                        }
                         if(!isNaN(this.props.members[i].coordinates.longitude) && !isNaN(this.props.members[i].coordinates.latitude)){
                             this.setState({ isLoading:false,markers: this.state.markers.concat(coord),centerMarker: this.state.centerMarker.concat(coord.coordinates) })
                             

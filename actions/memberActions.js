@@ -1,6 +1,7 @@
 import { DISPLAY_MEMBER, INVITE_MEMBER, GET_MEMBER, DELETE_MEMBER, DISPLAY_HOME_MEMBER, DISPLAY_GROUP_MEMBER } from './types';
-import axios from 'axios';
 import firebase from 'react-native-firebase';
+import { createLogic } from 'redux-logic';
+
 var userdetails = require('../components/shared/userDetails');
 
 
@@ -11,7 +12,7 @@ export const displayHomeMember=()=> dispatch=> {
     if(userdetails.group==""){
         return new Promise((resolve) => {
 
-            navigator.geolocation.getCurrentPosition(
+           /* navigator.geolocation.getCurrentPosition(
                 (position) => {
                     members.push({
                         id:userdetails.userid,
@@ -28,7 +29,7 @@ export const displayHomeMember=()=> dispatch=> {
                 (err) => {
                 },
                 { enableHighAccuracy: false, timeout: 20000, maximumAge: 1000 }
-              );
+            );-*/
 
 
 
@@ -46,7 +47,7 @@ export const displayHomeMember=()=> dispatch=> {
                     snapshot.forEach(childSnapshot => {
                         let userid=childSnapshot.key;
                         return childPromise= new Promise((resolve,reject)=>{
-                            let childRef= firebase.database().ref().child('users/'+userid).once("value",function(snapshot){
+                            let childRef= firebase.database().ref().child('users/'+userid).on("value",function(snapshot){
                                 if(snapshot.val() !== null){
                                     members.push({
                                         id:snapshot.key,
@@ -65,7 +66,7 @@ export const displayHomeMember=()=> dispatch=> {
                             dispatch({ 
                                 type: DISPLAY_HOME_MEMBER,
                                 payload: members,
-                            });
+                            },{ allowMore: true ,latest:true});
 
 
                         })
@@ -191,22 +192,59 @@ export const displayGroupMember=(groupid)=> dispatch=> {
 export const displayMember=()=> dispatch=> {
    
     let members=[]
+        return parentPromise= new Promise((resolve,reject)=>{
+            let memberRef = firebase.database().ref().child('users/'+userdetails.userid+"/members").on('value',function(snapshot){
+                snapshot.forEach(childSnapshot => {
+                    let userid=childSnapshot.key;
+                    
+                    await firebase.database().ref().child('users/'+userid).once("value",function(snapshot){
+                            
+                        if(snapshot.val() !== null){
+                            members.push({
+                            id:snapshot.key,
+                            firstname:snapshot.val().firstname,
+                            avatar: snapshot.val().avatar,
+                            });
+                        }
+                    })
+
+                })
+                resolve()
+            })
+        }).then(function(snapshot){
+            dispatch({ 
+                type: DISPLAY_MEMBER,
+                payload: members
+            });
+        })
+        
+};
+
+
+/*
+export const displayMember=()=> dispatch=> {
+   
+    let members=[]
 
     return parentPromise= new Promise((resolve,reject)=>{
         let memberRef = firebase.database().ref().child('users/'+userdetails.userid+"/members").on('value',function(snapshot){
+            console.log("test")
             resolve(snapshot)
         })
         }).then(function(snapshot){
+            
             if(snapshot.val()===null){
                 dispatch({ 
                     type: DISPLAY_MEMBER,
                     payload: members
                 });
             }else{
+                
                 snapshot.forEach(childSnapshot => {
                 let userid=childSnapshot.key;
                 return childPromise= new Promise((resolve,reject)=>{
                     let childRef= firebase.database().ref().child('users/'+userid).once("value",function(snapshot){
+                        
                         if(snapshot.val() !== null){
                             members.push({
                             id:snapshot.key,
@@ -227,7 +265,7 @@ export const displayMember=()=> dispatch=> {
             }
         }).catch(function(err) {
         });
-};
+};*/
 
 export const getMember=(id)=> dispatch=> {
     axios.get(BASE_URL+'member/getmember/'+id)

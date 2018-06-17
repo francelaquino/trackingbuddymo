@@ -17,6 +17,13 @@ import GroupPlaces from '../places/GroupPlaces';
 import  { createStackNavigator }  from 'react-navigation';
 
 export  default Navigation = createStackNavigator({
+    DisplayMember: { 
+        screen: DisplayMember,
+        headerMode: 'none',
+        navigationOptions: {
+            header: null
+        } 
+    },
     HomePlaces: { 
         screen: HomePlaces,
         headerMode: 'none',
@@ -32,13 +39,7 @@ export  default Navigation = createStackNavigator({
         } 
     },
     
-    DisplayMember: { 
-        screen: DisplayMember,
-        headerMode: 'none',
-        navigationOptions: {
-            header: null
-        } 
-    },
+    
     Login: { 
         screen: Login,
         headerMode: 'none',
