@@ -14,6 +14,7 @@ import LeftDrawer from '../shared/LeftDrawer'
 import { connect } from 'react-redux';
 import { displayHomeMember  } from '../../actions/memberActions' ;
 import Geocoder from 'react-native-geocoder';
+import firebase from 'react-native-firebase';
 var globalStyle = require('../../assets/style/GlobalStyle');
 var userdetails = require('../../components/shared/userDetails');
 const screen = Dimensions.get('window');
@@ -42,9 +43,29 @@ class HomePlaces extends Component {
         };
       }
     
+
+    
+    onMemberUpdate(){
+       /* firebase.database().ref().child('users/'+userid).on("value",function(snapshot){
+            if(snapshot.val() !== null){
+                members.push({
+                    id:snapshot.key,
+                    firstname:snapshot.val().firstname,
+                    avatar: snapshot.val().avatar,
+                    address : snapshot.val().address,
+                    coordinates:{
+                        longitude: Number(snapshot.val().longitude),
+                        latitude: Number(snapshot.val().latitude)
+                    }
+                });
+            }
+            resolve();
+        })*/
+    }
     
     componentDidMount(){
-        setTimeout(() => {
+        this.setState({ isLoading:false});
+       /* setTimeout(() => {
 
 
                     for (let i = 0; i < this.props.members.length; i++) {
@@ -80,13 +101,13 @@ class HomePlaces extends Component {
 
                 
            
-        }, 3000);
+        }, 3000);*/
         
     }
     fitToMap(){
-        setTimeout(() => {
+        /*setTimeout(() => {
             this.map.fitToCoordinates(this.state.centerMarker, { edgePadding: { top: 10, right: 10, bottom: 10, left: 10 }, animated: true })  
-            }, 2000);
+            }, 2000);*/
 
     }
     
@@ -100,8 +121,10 @@ class HomePlaces extends Component {
         this.setState({groupname:groupname});
     }
     initialize(){
-
+        let self=this;
         this.props.displayHomeMember();
+       
+
 
     }
     loading(){
@@ -205,7 +228,7 @@ class HomePlaces extends Component {
                                 <Ionicons style={globalStyle.navBarIcon} name="md-swap"/>
                                 <Text style={globalStyle.navBarLabel}>Switch Group</Text>
                             </TouchableOpacity>
-                            <TouchableOpacity style={globalStyle.navBarButton} onPress={() =>closeDrawer()}>
+                            <TouchableOpacity style={globalStyle.navBarButton} onPress={() =>this.props.displayHomeMember()}>
                                 <Entypo style={globalStyle.navBarIcon} name="location"/>
                                 <Text style={globalStyle.navBarLabel}>Center Map</Text>
                             </TouchableOpacity>

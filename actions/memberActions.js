@@ -1,6 +1,5 @@
 import { DISPLAY_MEMBER, INVITE_MEMBER, GET_MEMBER, DELETE_MEMBER, DISPLAY_HOME_MEMBER, DISPLAY_GROUP_MEMBER } from './types';
 import firebase from 'react-native-firebase';
-import { createLogic } from 'redux-logic';
 
 var userdetails = require('../components/shared/userDetails');
 
@@ -11,29 +10,104 @@ export const displayHomeMember=()=> dispatch=> {
 
     if(userdetails.group==""){
         return new Promise((resolve) => {
-
-           /* navigator.geolocation.getCurrentPosition(
-                (position) => {
-                    members.push({
-                        id:userdetails.userid,
-                        firstname:userdetails.firstname,
-                        avatar: userdetails.avatar,
-                        address : '',
-                        coordinates:{
-                            longitude: Number(position.coords.longitude),
-                            latitude: Number(position.coords.latitude)
-                        }
+            let memberRef = firebase.database().ref().child('users/'+userdetails.userid+"/members").once('value',function(snapshot){
+                
+                resolve(snapshot)
+            })
+            
+            }).then(function(snapshot){
+                if(snapshot.val()===null){
+                    dispatch({ 
+                        type: DISPLAY_HOME_MEMBER,
+                        payload: members,
                     });
-                  
-                },
-                (err) => {
-                },
-                { enableHighAccuracy: false, timeout: 20000, maximumAge: 1000 }
-            );-*/
+                }else{
+                    snapshot.forEach(childSnapshot => {
+                        let userid=childSnapshot.key;
+                       
+                        return childPromise= new Promise((resolve,reject)=>{
+                            let childRef= firebase.database().ref().child('users/'+userid).once("value",function(snapshot){
+                                if(snapshot.val() !== null){
+                                    members.push({
+                                        id:snapshot.key,
+                                        firstname:snapshot.val().firstname,
+                                        avatar: snapshot.val().avatar,
+                                        address : snapshot.val().address,
+                                        coordinates:{
+                                            longitude: Number(snapshot.val().longitude),
+                                            latitude: Number(snapshot.val().latitude)
+                                        }
+                                    });
+                                }
+                                resolve();
+                            })
+                        }).then(function(){
+                            dispatch({ 
+                                type: DISPLAY_HOME_MEMBER,
+                                payload: members,
+                            });
+
+
+                        })
+                    })
+                }
+        })
+            
+           
+    }else{
+
+        return parentPromise= new Promise((resolve,reject)=>{
+            let memberRef = firebase.database().ref().child("groupmembers/"+userdetails.group).on('value',function(snapshot){
+                resolve(snapshot)
+            })
+            }).then(function(snapshot){
+                if(snapshot.val()===null){
+                    dispatch({ 
+                        type: DISPLAY_HOME_MEMBER,
+                        payload: members,
+                    });
+                }else{
+                    snapshot.forEach(childSnapshot => {
+                        let userid=childSnapshot.key;
+                        return childPromise= new Promise((resolve,reject)=>{
+                            let childRef= firebase.database().ref().child('users/'+userid).once("value",function(snapshot){
+                                if(snapshot.val() !== null){
+                                    members.push({
+                                        id:snapshot.key,
+                                        firstname:snapshot.val().firstname,
+                                        avatar: snapshot.val().avatar,
+                                        coordinates:{
+                                            longitude: Number(snapshot.val().longitude),
+                                            latitude: Number(snapshot.val().latitude)
+                                        },
+                                        address : snapshot.val().address,
+                                    });
+                                }
+                                resolve();
+                            })
+                        }).then(function(snapshot){
+                            dispatch({ 
+                                type: DISPLAY_HOME_MEMBER,
+                                payload: members,
+                            });
+                        })
+                    })
+                }
+            
+        })
+    }
+
+};
 
 
 
+export const displayHomeMember1=()=> dispatch=> {
+    let members=[];
+
+    if(userdetails.group==""){
+        return new Promise((resolve) => {
             let memberRef = firebase.database().ref().child('users/'+userdetails.userid+"/members").on('value',function(snapshot){
+               console.log("test")
                 resolve(snapshot)
             })
             
@@ -189,46 +263,14 @@ export const displayGroupMember=(groupid)=> dispatch=> {
 
 
 
-export const displayMember=()=> dispatch=> {
-   
-    let members=[]
-        return parentPromise= new Promise((resolve,reject)=>{
-            let memberRef = firebase.database().ref().child('users/'+userdetails.userid+"/members").on('value',function(snapshot){
-                snapshot.forEach(childSnapshot => {
-                    let userid=childSnapshot.key;
-                    
-                    await firebase.database().ref().child('users/'+userid).once("value",function(snapshot){
-                            
-                        if(snapshot.val() !== null){
-                            members.push({
-                            id:snapshot.key,
-                            firstname:snapshot.val().firstname,
-                            avatar: snapshot.val().avatar,
-                            });
-                        }
-                    })
-
-                })
-                resolve()
-            })
-        }).then(function(snapshot){
-            dispatch({ 
-                type: DISPLAY_MEMBER,
-                payload: members
-            });
-        })
-        
-};
 
 
-/*
 export const displayMember=()=> dispatch=> {
    
     let members=[]
 
     return parentPromise= new Promise((resolve,reject)=>{
         let memberRef = firebase.database().ref().child('users/'+userdetails.userid+"/members").on('value',function(snapshot){
-            console.log("test")
             resolve(snapshot)
         })
         }).then(function(snapshot){
@@ -265,7 +307,7 @@ export const displayMember=()=> dispatch=> {
             }
         }).catch(function(err) {
         });
-};*/
+};
 
 export const getMember=(id)=> dispatch=> {
     axios.get(BASE_URL+'member/getmember/'+id)
@@ -289,6 +331,8 @@ export const deleteMember=(memberid)=> dispatch=> {
     });
 };
 
+
+
 export const sendInvite=(invitationcode)=> dispatch=> {
     return new Promise((resolve) => {
         firebase.database().ref().child("users").orderByChild("invitationcode").equalTo(invitationcode).once("value",snapshot => {
@@ -298,11 +342,22 @@ export const sendInvite=(invitationcode)=> dispatch=> {
                 id = childSnapshot.key;
                     let userRef = firebase.database().ref().child("users/"+userdetails.userid+"/members/"+id);
                     userRef.set({ 
-                        id : id,
+                        userid : id,
+                        latitude:0,
+                        longitude:0,
+                        address:0,
                         dateadded: Date.now(),
                     }).catch(function(err) {
                         resolve(false)
                     });
+
+                    firebase.database().ref().child("memberof/"+id+"/"+userdetails.userid).update({ 
+                        userid : userdetails.userid,
+                        dateadded: Date.now(),
+                    }).catch(function(err) {
+                        resolve(false)
+                    });
+
                 resolve(true)
             });
             resolve(false)
@@ -312,4 +367,3 @@ export const sendInvite=(invitationcode)=> dispatch=> {
 
     });
 };
-
