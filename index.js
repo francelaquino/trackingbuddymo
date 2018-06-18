@@ -21,13 +21,12 @@ BackgroundJob.register(trackPosition);
 
 var trackPositionSchedule = {
     jobKey: "trackPositionJob",
-    period: 10000000,
+    period: 900000,
     exact: true,
     allowExecutionInForeground: true
 }
 
 trackLocation = async() =>{
-    console.log("test")
       navigator.geolocation.getCurrentPosition(
         (position) => {
             let coords = {

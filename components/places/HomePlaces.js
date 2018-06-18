@@ -65,44 +65,44 @@ class HomePlaces extends Component {
     
     componentDidMount(){
         this.setState({ isLoading:false});
+        this.plotMarker();
+        
+    }
+
+    plotMarker(){
         setTimeout(() => {
 
 
-                    for (let i = 0; i < this.props.members.length; i++) {
-                        const coord = {
-                            id:i,
-                            location:this.props.members[i].firstname,
-                            coordinates:{
-                              latitude: this.props.members[i].coordinates.latitude,
-                              longitude: this.props.members[i].coordinates.longitude,
-                              latitudeDelta: LATITUDE_DELTA ,
-                              longitudeDelta: LONGITUDE_DELTA,
-                            }
-                          };
-        
-                          if(i==0){
-                              this.setState({
-                                region:{
-                                    latitude:this.props.members[i].coordinates.latitude,
-                                    longitude:this.props.members[i].coordinates.longitude,
-                                    latitudeDelta: LATITUDE_DELTA ,
-                                    longitudeDelta: LONGITUDE_DELTA,
-                                }
-                            })
-                        }
-                        if(!isNaN(this.props.members[i].coordinates.longitude) && !isNaN(this.props.members[i].coordinates.latitude)){
-                            this.setState({ isLoading:false,markers: this.state.markers.concat(coord),centerMarker: this.state.centerMarker.concat(coord.coordinates) })
-                            
-                        }
+            for (let i = 0; i < this.props.members.length; i++) {
+                const coord = {
+                    id:i,
+                    firstname:this.props.members[i].firstname,
+                    address:this.props.members[i].address,
+                    coordinates:{
+                      latitude: this.props.members[i].coordinates.latitude,
+                      longitude: this.props.members[i].coordinates.longitude,
+                      latitudeDelta: LATITUDE_DELTA ,
+                      longitudeDelta: LONGITUDE_DELTA,
                     }
+                  };
 
+                  if(i==0){
+                      this.setState({
+                        region:{
+                            latitude:this.props.members[i].coordinates.latitude,
+                            longitude:this.props.members[i].coordinates.longitude,
+                            latitudeDelta: LATITUDE_DELTA ,
+                            longitudeDelta: LONGITUDE_DELTA,
+                        }
+                    })
+                }
+                if(!isNaN(this.props.members[i].coordinates.longitude) && !isNaN(this.props.members[i].coordinates.latitude)){
+                    this.setState({ isLoading:false,markers: this.state.markers.concat(coord),centerMarker: this.state.centerMarker.concat(coord.coordinates) })
                     
+                }
+            }
 
-
-                
-           
-        }, 3000);
-        
+        }, 5000);
     }
     fitToMap(){
         setTimeout(() => {
@@ -124,11 +124,18 @@ class HomePlaces extends Component {
         let self=this;
         let memberRef = firebase.database().ref().child('users/'+userdetails.userid+"/members").on('value',function(snapshot){
             self.props.displayHomeMember();
+            
+            self.plotMarker();
             self.fitToMap();
         })
        
 
 
+    }
+    reload(){
+        this.props.displayHomeMember();
+        this.plotMarker();
+        this.fitToMap();
     }
     loading(){
         return (
@@ -213,8 +220,19 @@ class HomePlaces extends Component {
                              {this.state.markers.map(marker => (
                                     <MapView.Marker key={marker.id}
                                     coordinate={marker.coordinates}
-                                    title={marker.location}
-                                    />
+                                    title={marker.firstname}>
+                                    <View style={styles.markerContainer}>
+                                        <View style={styles.marker}>
+                                            <Text style={styles.pinText}>{marker.firstname}</Text>
+                                        </View>
+                                        <Image style={{alignSelf: 'center',width:20,height:20,margin:0,padding:0,marginTop:-8}} 
+                                        source={require('../../images/markerdown.png')} />
+                                    </View>
+                                    <MapView.Callout>
+                                        <View style={styles.callOut}><Text style={styles.callOutText}>{marker.address}</Text></View>
+                                    </MapView.Callout>
+                                    </MapView.Marker>
+                                   
                                 ))}
 
                             </MapView>
@@ -231,7 +249,7 @@ class HomePlaces extends Component {
                                 <Ionicons style={globalStyle.navBarIcon} name="md-swap"/>
                                 <Text style={globalStyle.navBarLabel}>Switch Group</Text>
                             </TouchableOpacity>
-                            <TouchableOpacity style={globalStyle.navBarButton} onPress={() =>this.props.displayHomeMember()}>
+                            <TouchableOpacity style={globalStyle.navBarButton} onPress={() =>this.reload()}>
                                 <Entypo style={globalStyle.navBarIcon} name="location"/>
                                 <Text style={globalStyle.navBarLabel}>Center Map</Text>
                             </TouchableOpacity>
@@ -310,6 +328,30 @@ const styles = StyleSheet.create({
       map: {
         ...StyleSheet.absoluteFillObject,
       },
+      marker: {
+        width: 50,
+        height: 20,
+        borderRadius: 5,
+        backgroundColor:'#096d71',
+    },
+    markerArrow:{
+        width: 20,
+        height: 20,
+        transform: [{ rotateY: '180deg'}],
+        backgroundColor:'red',
+    },
+    pinText: {
+        color: 'white',
+        textAlign: 'center',
+        fontSize: 10,
+        marginTop:3,
+    },
+    callOut: {
+        width: 100,
+    },
+    callOutText:{
+        fontSize: 10,
+    }
   });
 
 
