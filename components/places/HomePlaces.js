@@ -65,13 +65,13 @@ class HomePlaces extends Component {
     
     componentDidMount(){
         this.setState({ isLoading:false});
-       /* setTimeout(() => {
+        setTimeout(() => {
 
 
                     for (let i = 0; i < this.props.members.length; i++) {
                         const coord = {
                             id:i,
-                            location:this.props.members[i].coordinates.firstname,
+                            location:this.props.members[i].firstname,
                             coordinates:{
                               latitude: this.props.members[i].coordinates.latitude,
                               longitude: this.props.members[i].coordinates.longitude,
@@ -101,18 +101,18 @@ class HomePlaces extends Component {
 
                 
            
-        }, 3000);*/
+        }, 3000);
         
     }
     fitToMap(){
-        /*setTimeout(() => {
+        setTimeout(() => {
             this.map.fitToCoordinates(this.state.centerMarker, { edgePadding: { top: 10, right: 10, bottom: 10, left: 10 }, animated: true })  
-            }, 2000);*/
+            }, 5000);
 
     }
     
     componentWillMount() {
-        
+       
         this.initialize();
     }
     
@@ -122,7 +122,10 @@ class HomePlaces extends Component {
     }
     initialize(){
         let self=this;
-        this.props.displayHomeMember();
+        let memberRef = firebase.database().ref().child('users/'+userdetails.userid+"/members").on('value',function(snapshot){
+            self.props.displayHomeMember();
+            self.fitToMap();
+        })
        
 
 

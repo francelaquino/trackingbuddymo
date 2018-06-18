@@ -7,11 +7,12 @@ var userdetails = require('../components/shared/userDetails');
 
 export const displayHomeMember=()=> dispatch=> {
     let members=[];
+    let count=0;
+    let cnt=0;
 
     if(userdetails.group==""){
         return new Promise((resolve) => {
-            let memberRef = firebase.database().ref().child('users/'+userdetails.userid+"/members").once('value',function(snapshot){
-                
+            let memberRef = firebase.database().ref().child('users/'+userdetails.userid+"/members").on('value',function(snapshot){
                 resolve(snapshot)
             })
             
@@ -22,11 +23,12 @@ export const displayHomeMember=()=> dispatch=> {
                         payload: members,
                     });
                 }else{
+                    count=snapshot.numChildren();
                     snapshot.forEach(childSnapshot => {
                         let userid=childSnapshot.key;
-                       
                         return childPromise= new Promise((resolve,reject)=>{
                             let childRef= firebase.database().ref().child('users/'+userid).once("value",function(snapshot){
+                               
                                 if(snapshot.val() !== null){
                                     members.push({
                                         id:snapshot.key,
@@ -39,8 +41,12 @@ export const displayHomeMember=()=> dispatch=> {
                                         }
                                     });
                                 }
-                                resolve();
+                                cnt++;
+                                if(cnt>=count){
+                                    resolve();
+                                }
                             })
+
                         }).then(function(){
                             dispatch({ 
                                 type: DISPLAY_HOME_MEMBER,
@@ -83,6 +89,7 @@ export const displayHomeMember=()=> dispatch=> {
                                         address : snapshot.val().address,
                                     });
                                 }
+                                
                                 resolve();
                             })
                         }).then(function(snapshot){
