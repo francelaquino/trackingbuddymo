@@ -4,6 +4,8 @@ import { connect } from 'react-redux';
 import { Platform,  StyleSheet,  View, TextInput, TouchableOpacity,ScrollView,Picker, Alert, ToastAndroid, Form, TouchableHighlight ,Image } from 'react-native';
 import { Root, Container, Header, Body, Title, Item, Input, Label, Button,Text, Icon } from 'native-base';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import Loading  from './shared/Loading';
+import Geocoder from 'react-native-geocoder';
 import ImagePicker from 'react-native-image-picker';
 import firebase from 'react-native-firebase';
 var registrationStyle = require('../assets/style/Registration');
@@ -14,14 +16,18 @@ class Register extends Component {
   constructor(props) {
     super(props)
     this.state = {
+        latitude:'',
+        longitude:'',
+        address:'',
+        emptyPhoto:'https://firebasestorage.googleapis.com/v0/b/trackingbuddy-3bebd.appspot.com/o/member_photos%2Ficons8-person-80.png?alt=media&token=59864ce7-cf1c-4c5e-a07d-76c286a2171d',
         isLoading:true,
-        email:'',
-        password:'',
-        retypepassword:'',
-        mobileno:'',
-        firstname:'',
-        middlename:'',
-        lastname:'',
+        email:'francel_aquino@yahoo.com',
+        password:'111111',
+        retypepassword:'111111',
+        mobileno:'0538191138',
+        firstname:'Francel',
+        middlename:'Dizon',
+        lastname:'Aquino',
         mobilecountrycode:'',
         mobilecountry:'Country Code',
         emailError:false,
@@ -112,6 +118,8 @@ class Register extends Component {
   
   
   onSubmit(){
+
+    
     
    
     var isvalid=true;
@@ -174,28 +182,38 @@ class Register extends Component {
       }
   }
   sendSubmit(){
+   
     firebase.auth().createUserAndRetrieveDataWithEmailAndPassword(this.state.email,this.state.password).then((res)=>{
       let uid=res.user.uid;
       let userRef = firebase.database().ref().child("users/"+uid);
-
-      userRef.set({ 
-        email : this.state.email,
-        firstname : this.state.firstname,
-        middlename: this.state.middlename,
-        lastname: this.state.lastname,
-        mobileno: this.state.mobileno,
-        mobilecountrycode: this.state.mobilecountrycode,
-		avatar: this.state.avatar,
-		datecreated: Date.now(),
-		dateupdated: Date.now(),
-		invitationcode:'',
-
-	  });
+                if(this.state.avatar==""){
+                  this.setState({avatar:this.state.emptyPhoto});
+                }
+                userRef.set({ 
+                  email : this.state.email,
+                  firstname : this.state.firstname,
+                  middlename: this.state.middlename,
+                  lastname: this.state.lastname,
+                  mobileno: this.state.mobileno,
+                  mobilecountrycode: this.state.mobilecountrycode,
+                  avatar: this.state.avatar,
+                  datecreated: Date.now(),
+                  dateupdated: Date.now(),
+                  invitationcode:'',
+                  latitude: this.state.latitude,
+                  longitude: this.state.longitude,
+                  address : this.state.address,
+              });
+     
 	  this.resetState();
 	  ToastAndroid.showWithGravityAndOffset("Registration successfully completed",ToastAndroid.LONG,ToastAndroid.BOTTOM, 25, 50);
 
     }).catch(function(e){
-      ToastAndroid.showWithGravityAndOffset(e.Error,ToastAndroid.LONG,ToastAndroid.BOTTOM, 25, 50);
+        if(e.code==='auth/email-already-in-use'){
+          ToastAndroid.showWithGravityAndOffset("Email aready used",ToastAndroid.LONG,ToastAndroid.BOTTOM, 25, 50);
+        }else{
+           ToastAndroid.showWithGravityAndOffset("Something went wrong...",ToastAndroid.LONG,ToastAndroid.BOTTOM, 25, 50);
+        }
     })
   }
   required(){
@@ -234,13 +252,7 @@ class Register extends Component {
   }
   loading(){
 	  return (
-		<Root>
-		<Container style={registrationStyle.containerWrapper}>
-		<View>
-			<Text>Loading</Text>
-		</View>
-		</Container>
-		</Root>
+		<Loading/>
 	  )
   }
   ready(){
@@ -255,13 +267,13 @@ class Register extends Component {
 					<View  style={registrationStyle.header}>
 						<TouchableOpacity onPress={this.selectPhoto.bind(this)}>
 							<View style={registrationStyle.avatarContainer}>
-							{ this.state.avatarsource === '' ? <Text style={{fontSize:10,marginTop:32,color:'#32acce'}}>Select a Photo</Text> :
+							{ this.state.avatarsource === '' ? <Text style={{fontSize:10,marginTop:32,color:'white'}}>Select a Photo</Text> :
 							<Image style={registrationStyle.avatar} source={this.state.avatarsource} />
 							}
 							</View>
 						</TouchableOpacity>
 					</View>
-						
+
 					<View style={registrationStyle.container}>
 					
 						<Item  stackedLabel  style={registrationStyle.item}  >

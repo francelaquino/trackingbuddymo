@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import {  Platform,  StyleSheet,  Text,  View, ScrollView,TextInput, TouchableOpacity, Image, TouchableHighlight,ToastAndroid, NavigationActions  } from 'react-native';
 import { Root, Container, Header, Body, Title, Item, Input, Label, Button, Icon } from 'native-base';
 import firebase from 'react-native-firebase';
+import Geocoder from 'react-native-geocoder';
 import HomePlaces from './places/HomePlaces';
 var userDetails = require('./shared/userDetails');
 var registrationStyle = require('../assets/style/Registration');
@@ -12,7 +13,7 @@ class Login extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            email: 'francelaquino@yahoo.com',
+            email: 'francel_aquino@yahoo.com',
             password:'111111',
             
         };
@@ -20,6 +21,33 @@ class Login extends Component {
        
 
       }
+      
+    trackLocation(){
+    
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+          let coords = {
+              lat: position.coords.latitude,
+              lng:  position.coords.longitude
+            };
+      
+          Geocoder.geocodePosition(coords).then(res => {
+              fetch("https://us-central1-trackingbuddy-3bebd.cloudfunctions.net/saveLocation?lat="+ coords.lat +"&lon="+ coords.lng +"&userid="+userDetails.userid+"&address="+res[1].formattedAddress)
+              .then((response) => response)
+              .then((response) => {
+              })
+              .catch((error) => {
+              console.error(error);
+              });
+          }).catch(err => console.log(err))
+      },
+      (err) => {
+      },
+      { enableHighAccuracy: false, timeout: 20000, maximumAge: 1000 }
+    );
+  }
+ 
+
     onLogin (){
         let self=this;
         if(this.state.email=="" || this.state.password==""){
@@ -28,16 +56,21 @@ class Login extends Component {
         }
 
         firebase.auth().signInAndRetrieveDataWithEmailAndPassword(this.state.email,this.state.password).then((res)=>{
-            //userDetails.userid=user.uid;
           let memberRef = firebase.database().ref().child('users/'+res.user.uid).on('value',function(snapshot){
+            
               userDetails.userid=res.user.uid;
               userDetails.email=snapshot.val().email;
               userDetails.firstname=snapshot.val().firstname;
               userDetails.lastname=snapshot.val().lastname;
-
+              self.trackLocation();
+              
               
 
-              self.props.navigation.navigate('HomePlaces');
+
+
+              setTimeout(() => {
+                self.props.navigation.navigate('HomePlaces');
+              }, 2000);
             });
 
 

@@ -13,8 +13,9 @@ import Loading  from '../shared/Loading';
 import LeftDrawer from '../shared/LeftDrawer'
 import { connect } from 'react-redux';
 import { displayHomeMember  } from '../../actions/memberActions' ;
-import Geocoder from 'react-native-geocoder';
 import firebase from 'react-native-firebase';
+import BackgroundJob from 'react-native-background-job';
+import Geocoder from 'react-native-geocoder';
 var globalStyle = require('../../assets/style/GlobalStyle');
 var userdetails = require('../../components/shared/userDetails');
 const screen = Dimensions.get('window');
@@ -23,6 +24,54 @@ const LATITUDE = 0;
 const LONGITUDE = 0;
 const LATITUDE_DELTA = .05;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
+
+
+BackgroundJob.cancelAll();
+
+
+
+const trackPosition = {
+    jobKey: "trackPositionJob",
+    job: () =>this.trackLocation().done(),
+};
+    
+BackgroundJob.register(trackPosition);
+
+
+var trackPositionSchedule = {
+    jobKey: "trackPositionJob",
+    period: 9000000,
+    exact: true,
+    allowExecutionInForeground: true
+}
+
+trackLocation = async() =>{
+    
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+            let coords = {
+                lat: position.coords.latitude,
+                lng:  position.coords.longitude
+              };
+        
+            Geocoder.geocodePosition(coords).then(res => {
+                fetch("https://us-central1-trackingbuddy-3bebd.cloudfunctions.net/saveLocation?lat="+ coords.lat +"&lon="+ coords.lng +"&userid="+userdetails.userid+"&address="+res[1].formattedAddress)
+                .then((response) => response)
+                .then((response) => {
+                })
+                .catch((error) => {
+                console.error(error);
+                });
+            }).catch(err => console.log(err))
+        },
+        (err) => {
+        },
+        { enableHighAccuracy: false, timeout: 20000, maximumAge: 1000 }
+      );
+    }
+   
+
+
 
 class HomePlaces extends Component {
     constructor(props) {
@@ -45,39 +94,24 @@ class HomePlaces extends Component {
     
 
     
-    onMemberUpdate(){
-       /* firebase.database().ref().child('users/'+userid).on("value",function(snapshot){
-            if(snapshot.val() !== null){
-                members.push({
-                    id:snapshot.key,
-                    firstname:snapshot.val().firstname,
-                    avatar: snapshot.val().avatar,
-                    address : snapshot.val().address,
-                    coordinates:{
-                        longitude: Number(snapshot.val().longitude),
-                        latitude: Number(snapshot.val().latitude)
-                    }
-                });
-            }
-            resolve();
-        })*/
-    }
-    
+   
     componentDidMount(){
         this.setState({ isLoading:false});
-        this.plotMarker();
+        BackgroundJob.schedule(trackPositionSchedule);
         
     }
 
     plotMarker(){
+        
         setTimeout(() => {
 
-
+            this.setState({markers:[],centerMarker:[]})
             for (let i = 0; i < this.props.members.length; i++) {
                 const coord = {
                     id:i,
                     firstname:this.props.members[i].firstname,
                     address:this.props.members[i].address,
+                    avatar:this.props.members[i].avatar,
                     coordinates:{
                       latitude: this.props.members[i].coordinates.latitude,
                       longitude: this.props.members[i].coordinates.longitude,
@@ -124,9 +158,7 @@ class HomePlaces extends Component {
         let self=this;
         let memberRef = firebase.database().ref().child('users/'+userdetails.userid+"/members").on('value',function(snapshot){
             self.props.displayHomeMember();
-            
             self.plotMarker();
-            self.fitToMap();
         })
        
 
@@ -135,7 +167,6 @@ class HomePlaces extends Component {
     reload(){
         this.props.displayHomeMember();
         this.plotMarker();
-        this.fitToMap();
     }
     loading(){
         return (
@@ -215,7 +246,6 @@ class HomePlaces extends Component {
                             style={styles.map}
                             loadingEnabled={true}
                             region={this.state.region}
-                            onLayout ={()=>this.fitToMap()}
                             >
                              {this.state.markers.map(marker => (
                                     <MapView.Marker key={marker.id}
@@ -229,7 +259,14 @@ class HomePlaces extends Component {
                                         source={require('../../images/markerdown.png')} />
                                     </View>
                                     <MapView.Callout>
-                                        <View style={styles.callOut}><Text style={styles.callOutText}>{marker.address}</Text></View>
+                                    
+                                        <View style={styles.callOut}>
+                                        <View style={globalStyle.listAvatarContainerSmall} >
+                                        { marker.avatar==='' ?  <Thumbnail  style={globalStyle.listAvatar} source={{uri: this.state.emptyPhoto}} /> :
+                                        <Thumbnail  style={globalStyle.listAvatarSmall} source={{uri: marker.avatar}} />
+                                        }
+                                        </View>
+                                        <Text style={styles.callOutText}>{marker.address}</Text></View>
                                     </MapView.Callout>
                                     </MapView.Marker>
                                    
@@ -348,9 +385,11 @@ const styles = StyleSheet.create({
     },
     callOut: {
         width: 100,
+        alignItems:'center',
     },
     callOutText:{
         fontSize: 10,
+        textAlign: 'center',
     }
   });
 

@@ -12,6 +12,22 @@ export const displayHomeMember=()=> dispatch=> {
 
     if(userdetails.group==""){
         return new Promise((resolve) => {
+            firebase.database().ref().child('users/'+userdetails.userid).once("value",function(snapshot){
+                               
+                if(snapshot.val() !== null){
+                    members.push({
+                        id:snapshot.key,
+                        firstname:snapshot.val().firstname,
+                        avatar: snapshot.val().avatar,
+                        address : snapshot.val().address,
+                        coordinates:{
+                            longitude: Number(snapshot.val().longitude),
+                            latitude: Number(snapshot.val().latitude)
+                        }
+                    });
+                }
+            })
+
             let memberRef = firebase.database().ref().child('users/'+userdetails.userid+"/members").on('value',function(snapshot){
                 resolve(snapshot)
             })
@@ -74,6 +90,7 @@ export const displayHomeMember=()=> dispatch=> {
                         payload: members,
                     });
                 }else{
+                    count=snapshot.numChildren();
                     snapshot.forEach(childSnapshot => {
                         let userid=childSnapshot.key;
                         return childPromise= new Promise((resolve,reject)=>{
@@ -90,8 +107,11 @@ export const displayHomeMember=()=> dispatch=> {
                                         address : snapshot.val().address,
                                     });
                                 }
+                                cnt++;
+                                if(cnt>=count){
+                                    resolve();
+                                }
                                 
-                                resolve();
                             })
                         }).then(function(snapshot){
                             dispatch({ 
@@ -115,7 +135,7 @@ export const displayHomeMember1=()=> dispatch=> {
     if(userdetails.group==""){
         return new Promise((resolve) => {
             let memberRef = firebase.database().ref().child('users/'+userdetails.userid+"/members").on('value',function(snapshot){
-               console.log("test")
+               
                 resolve(snapshot)
             })
             
@@ -276,6 +296,8 @@ export const displayGroupMember=(groupid)=> dispatch=> {
 export const displayMember=()=> dispatch=> {
    
     let members=[]
+    let count=0;
+    let cnt=0;
 
     return parentPromise= new Promise((resolve,reject)=>{
         let memberRef = firebase.database().ref().child('users/'+userdetails.userid+"/members").on('value',function(snapshot){
@@ -289,7 +311,7 @@ export const displayMember=()=> dispatch=> {
                     payload: members
                 });
             }else{
-                
+                count=snapshot.numChildren();
                 snapshot.forEach(childSnapshot => {
                 let userid=childSnapshot.key;
                 return childPromise= new Promise((resolve,reject)=>{
@@ -302,8 +324,13 @@ export const displayMember=()=> dispatch=> {
                             avatar: snapshot.val().avatar,
                             });
                         }
-                        resolve(snapshot);
+                        cnt++;
+                        if(cnt>=count){
+                            resolve();
+                        }
                     })
+
+
                     }).then(function(){
                         dispatch({ 
                             type: DISPLAY_MEMBER,
