@@ -35,6 +35,7 @@ class Login extends Component {
               fetch("https://us-central1-trackingbuddy-3bebd.cloudfunctions.net/saveLocation?lat="+ coords.lat +"&lon="+ coords.lng +"&userid="+userDetails.userid+"&address="+res[1].formattedAddress)
               .then((response) => response)
               .then((response) => {
+                this.props.navigation.navigate('HomePlaces');
               })
               .catch((error) => {
               console.error(error);
@@ -63,14 +64,10 @@ class Login extends Component {
               userDetails.firstname=snapshot.val().firstname;
               userDetails.lastname=snapshot.val().lastname;
               self.trackLocation();
-              
-              
 
-
-
-              setTimeout(() => {
-                self.props.navigation.navigate('HomePlaces');
-              }, 2000);
+              //setTimeout(() => {
+               
+              //}, 1000);
             });
 
 

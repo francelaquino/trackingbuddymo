@@ -79,7 +79,6 @@ class HomePlaces extends Component {
         this.map = null;
 
         this.state = {
-            isMapReady:false,
             groupname:'',
             isLoading:true,
             region:{
@@ -103,6 +102,8 @@ class HomePlaces extends Component {
     }
 
     plotMarker(){
+        
+        //setTimeout(() => {
 
             this.setState({markers:[],centerMarker:[]})
             for (let i = 0; i < this.props.members.length; i++) {
@@ -129,17 +130,18 @@ class HomePlaces extends Component {
                         }
                     })
                 }
-                
                 if(!isNaN(this.props.members[i].coordinates.longitude) && !isNaN(this.props.members[i].coordinates.latitude)){
                     this.setState({ isLoading:false,markers: this.state.markers.concat(coord),centerMarker: this.state.centerMarker.concat(coord.coordinates) })
                     
                 }
-                   
             }
 
+        //}, 5000);
     }
     fitToMap(){
-            this.map.fitToCoordinates(this.state.centerMarker, { edgePadding: { top: 10, right: 10, bottom: 10, left: 10 }, animated: false })  
+        setTimeout(() => {
+            this.map.fitToCoordinates(this.state.centerMarker, { edgePadding: { top: 10, right: 10, bottom: 10, left: 10 }, animated: true })  
+            }, 5000);
 
     }
     
@@ -155,11 +157,8 @@ class HomePlaces extends Component {
     initialize(){
         let self=this;
         let memberRef = firebase.database().ref().child('users/'+userdetails.userid+"/members").on('value',function(snapshot){
-            self.props.displayHomeMember().then(res=>{
-                setTimeout(() => {
-                    self.plotMarker();
-                }, 1000);
-            });
+            self.props.displayHomeMember();
+            self.plotMarker();
         })
        
 
@@ -178,9 +177,6 @@ class HomePlaces extends Component {
           </Root>
         )
     }
-
-  
-    
 
     closeDrawer = () => {
         this.drawer._root.close()
@@ -208,32 +204,6 @@ class HomePlaces extends Component {
             </Body>
             
             </ListItem>
-        ));
-
-        const markers =this.state.markers.map(marker=>(
-                <MapView.Marker key={marker.id}
-                onLayout = {() => this.fitToMap()}
-                coordinate={marker.coordinates}
-                title={marker.firstname}>
-                <View style={styles.markerContainer}>
-                    <View style={styles.marker}>
-                        <Text style={styles.pinText}>{marker.firstname}</Text>
-                    </View>
-                    <Image style={{alignSelf: 'center',width:20,height:20,margin:0,padding:0,marginTop:-8}} 
-                    source={require('../../images/markerdown.png')} />
-                </View>
-                <MapView.Callout>
-                
-                    <View style={styles.callOut}>
-                    <View style={globalStyle.listAvatarContainerSmall} >
-                    { marker.avatar==='' ?  <Thumbnail  style={globalStyle.listAvatar} source={{uri: this.state.emptyPhoto}} /> :
-                    <Thumbnail  style={globalStyle.listAvatarSmall} source={{uri: marker.avatar}} />
-                    }
-                    </View>
-                    <Text style={styles.callOutText}>{marker.address}</Text></View>
-                </MapView.Callout>
-                </MapView.Marker>
-               
         ));
         
         
@@ -277,8 +247,30 @@ class HomePlaces extends Component {
                             loadingEnabled={true}
                             region={this.state.region}
                             >
-                            {markers}
-
+                             {this.state.markers.map(marker => (
+                                    <MapView.Marker key={marker.id}
+                                    coordinate={marker.coordinates}
+                                    title={marker.firstname}>
+                                    <View style={styles.markerContainer}>
+                                        <View style={styles.marker}>
+                                            <Text style={styles.pinText}>{marker.firstname}</Text>
+                                        </View>
+                                        <Image style={{alignSelf: 'center',width:20,height:20,margin:0,padding:0,marginTop:-8}} 
+                                        source={require('../../images/markerdown.png')} />
+                                    </View>
+                                    <MapView.Callout>
+                                    
+                                        <View style={styles.callOut}>
+                                        <View style={globalStyle.listAvatarContainerSmall} >
+                                        { marker.avatar==='' ?  <Thumbnail  style={globalStyle.listAvatar} source={{uri: this.state.emptyPhoto}} /> :
+                                        <Thumbnail  style={globalStyle.listAvatarSmall} source={{uri: marker.avatar}} />
+                                        }
+                                        </View>
+                                        <Text style={styles.callOutText}>{marker.address}</Text></View>
+                                    </MapView.Callout>
+                                    </MapView.Marker>
+                                   
+                                ))}
 
                             </MapView>
                             { this.state.groupname!=='' &&
@@ -294,7 +286,7 @@ class HomePlaces extends Component {
                                 <Ionicons style={globalStyle.navBarIcon} name="md-swap"/>
                                 <Text style={globalStyle.navBarLabel}>Switch Group</Text>
                             </TouchableOpacity>
-                            <TouchableOpacity style={globalStyle.navBarButton} onPress={() =>this.fitToMap()}>
+                            <TouchableOpacity style={globalStyle.navBarButton} onPress={() =>this.reload()}>
                                 <Entypo style={globalStyle.navBarIcon} name="location"/>
                                 <Text style={globalStyle.navBarLabel}>Center Map</Text>
                             </TouchableOpacity>

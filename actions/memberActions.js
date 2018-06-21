@@ -64,7 +64,6 @@ export const displayHomeMember=()=> dispatch=> {
                             })
 
                         }).then(function(){
-                            console.log(members)
                             dispatch({ 
                                 type: DISPLAY_HOME_MEMBER,
                                 payload: members,

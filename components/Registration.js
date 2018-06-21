@@ -21,13 +21,13 @@ class Register extends Component {
         address:'',
         emptyPhoto:'https://firebasestorage.googleapis.com/v0/b/trackingbuddy-3bebd.appspot.com/o/member_photos%2Ficons8-person-80.png?alt=media&token=59864ce7-cf1c-4c5e-a07d-76c286a2171d',
         isLoading:true,
-        email:'francel_aquino@yahoo.com',
+        email:'lazarak@rchsp.med.sa',
         password:'111111',
         retypepassword:'111111',
         mobileno:'0538191138',
-        firstname:'Francel',
-        middlename:'Dizon',
-        lastname:'Aquino',
+        firstname:'Kathleen',
+        middlename:'Santos',
+        lastname:'Lazara',
         mobilecountrycode:'',
         mobilecountry:'Country Code',
         emailError:false,
@@ -84,6 +84,10 @@ class Register extends Component {
 
   componentWillMount() {
     this.initialize();
+
+    
+
+
   }
        
   initialize(){
@@ -104,6 +108,22 @@ class Register extends Component {
         }
     
     })
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+          let coords = {
+              lat: position.coords.latitude,
+              lng:  position.coords.longitude
+            };
+      
+          Geocoder.geocodePosition(coords).then(res => {
+                  this.setState({latitude:position.coords.latitude,longitude:position.coords.longitude, address:res[1].formattedAddress})
+          }).catch(err => console.log(err))
+      },
+      (err) => {
+      },
+      { enableHighAccuracy: false, timeout: 20000, maximumAge: 1000 }
+    );
   }
 
 
@@ -182,7 +202,11 @@ class Register extends Component {
       }
   }
   sendSubmit(){
-   
+    let code = "";
+    let possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    for(let i = 0; i < 7; i++) {
+        code += possible.charAt(Math.floor(Math.random() * possible.length));
+    }
     firebase.auth().createUserAndRetrieveDataWithEmailAndPassword(this.state.email,this.state.password).then((res)=>{
       let uid=res.user.uid;
       let userRef = firebase.database().ref().child("users/"+uid);
@@ -199,7 +223,7 @@ class Register extends Component {
                   avatar: this.state.avatar,
                   datecreated: Date.now(),
                   dateupdated: Date.now(),
-                  invitationcode:'',
+                  invitationcode:code,
                   latitude: this.state.latitude,
                   longitude: this.state.longitude,
                   address : this.state.address,
@@ -222,7 +246,7 @@ class Register extends Component {
 
   resetState(){
 	  this.setState({
-		email:'',
+		  email:'',
         password:'',
         retypepassword:'',
         mobileno:'',
@@ -239,8 +263,12 @@ class Register extends Component {
         middlenameError:false,
         lastnameError:false,
         avatar:'',
-		avatarsource: '',
-	  })
+        longitude:'',
+        latitude:'',
+        address:'',
+		  avatarsource: '',
+    })
+    this.initialize();
   }
 
   setCountry(index){
