@@ -31,6 +31,18 @@ export default class LeftDrawer extends Component<Props> {
     this.props.navigation.navigate('HomePlaces');
     this.props.closeDrawer();
   }
+  displayProfile(){
+    this.props.navigation.navigate('UserProfile');
+    this.props.closeDrawer();
+  }
+  displaySettings(){
+    this.props.navigation.navigate('HomeSettings');
+    this.props.closeDrawer();
+  }
+  displayLogout(){
+    this.props.navigation.navigate('Login');
+    this.props.closeDrawer();
+  }
   render() {
     const navigation = this.props.navigation;    
     return (
@@ -46,7 +58,7 @@ export default class LeftDrawer extends Component<Props> {
                         <List>
                             <ListItem icon>
                             <Left>
-                                <FontAwesome style={{color:'#096d71',fontSize:20,width:20}} name="home" />
+                                <FontAwesome style={{color:'#096d71',fontSize:20,width:25}} name="home" />
                             </Left>
                             <Body style={{width:'100%'}} >
                                 
@@ -60,33 +72,25 @@ export default class LeftDrawer extends Component<Props> {
                             </ListItem>
                             <ListItem icon>
                             <Left>
-                                <FontAwesome style={{color:'#096d71',fontSize:20,width:20}} name="user" />
+                                <FontAwesome style={{color:'#096d71',fontSize:20,width:25}} name="user" />
                             </Left>
                             <Body style={{width:'100%'}} >
+                            <TouchableOpacity  onPress={() =>this.displayProfile()}>
                                 <Text style={{fontSize:15}}>Profile</Text>
+                                </TouchableOpacity>
                             </Body>
                             <Right>
                                 <SimpleLineIcons name="arrow-right" />
                             </Right>
                             </ListItem>
+                           
                             <ListItem icon>
                             <Left>
-                                <MaterialIcons style={{color:'#096d71',fontSize:20,width:20}} name="location-on" />
-                            </Left>
-                            <Body style={{width:'100%'}} >
-                                <Text style={{fontSize:15}}>Locations</Text>
-                            </Body>
-                            <Right>
-                                <SimpleLineIcons name="arrow-right" />
-                            </Right>
-                            </ListItem>
-                            <ListItem icon>
-                            <Left>
-                                <MaterialIcons style={{color:'#096d71',fontSize:20,width:20}} name="group" />
+                                <MaterialIcons style={{color:'#096d71',fontSize:25,width:25}} name="group" />
                             </Left>
                             <Body style={{width:'100%'}} >
                                 <TouchableOpacity  onPress={() =>this.displayMember()}>
-                                <Text style={{fontSize:15}}>Members</Text>
+                                <Text style={{fontSize:15}}>Member</Text>
                                 </TouchableOpacity>
                             </Body>
                             <Right>
@@ -95,11 +99,11 @@ export default class LeftDrawer extends Component<Props> {
                             </ListItem>
                             <ListItem icon>
                             <Left>
-                                <FontAwesome style={{color:'#096d71',fontSize:19,width:20}} name="group" />
+                                <FontAwesome style={{color:'#096d71',fontSize:19,width:25}} name="group" />
                             </Left>
                             <Body style={{width:'100%'}} >
                             <TouchableOpacity  onPress={() =>this.displayGroup()}>
-                                <Text style={{fontSize:15}}>Groups</Text>
+                                <Text style={{fontSize:15}}>Group</Text>
                                 </TouchableOpacity>
                             </Body>
                             <Right>
@@ -108,10 +112,10 @@ export default class LeftDrawer extends Component<Props> {
                             </ListItem>
                             <ListItem icon>
                             <Left>
-                                <MaterialIcons style={{color:'#096d71',fontSize:20,width:20}} name="settings" />
+                                <MaterialIcons style={{color:'#096d71',fontSize:20,width:25}} name="location-on" />
                             </Left>
                             <Body style={{width:'100%'}} >
-                                <Text style={{fontSize:15}}>Settings</Text>
+                                <Text style={{fontSize:15}}>Places</Text>
                             </Body>
                             <Right>
                                 <SimpleLineIcons name="arrow-right" />
@@ -119,11 +123,24 @@ export default class LeftDrawer extends Component<Props> {
                             </ListItem>
                             <ListItem icon>
                             <Left>
-                                <FontAwesome style={{color:'#096d71',fontSize:20,width:20}} name="sign-out" />
+                                <MaterialIcons style={{color:'#096d71',fontSize:20,width:25}} name="settings" />
                             </Left>
                             <Body style={{width:'100%'}} >
-                                <TouchableOpacity  onPress={() =>navigation.navigate('Login')}>
-                                <Text style={{fontSize:15}}>Logout</Text>
+                                <TouchableOpacity  onPress={() =>this.displaySettings()}>
+                                    <Text style={{fontSize:15}}>Settings</Text>
+                                </TouchableOpacity>
+                            </Body>
+                            <Right>
+                                <SimpleLineIcons name="arrow-right" />
+                            </Right>
+                            </ListItem>
+                            <ListItem icon>
+                            <Left>
+                                <FontAwesome style={{color:'#096d71',fontSize:20,width:25}} name="sign-out" />
+                            </Left>
+                            <Body style={{width:'100%'}} >
+                            <TouchableOpacity  onPress={() =>this.displayLogout()}>
+                                    <Text style={{fontSize:15}}>Logout</Text>
                                 </TouchableOpacity>
                             </Body>
                             <Right>

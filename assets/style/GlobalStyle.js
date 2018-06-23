@@ -130,14 +130,18 @@ module.exports = StyleSheet.create({
         borderBottomWidth:0,
         padding:0,
         flexDirection: 'row',
+        width:40,
+        height:40,
+        
     },
     listRightOptionIcon:{
         fontSize:20,
         color:'silver',
+
     },
     listRightTouchable:{
-        position:'absolute'
-        ,top:10
+        position:'absolute',
+        top:10
     },
     listAvatarContainer:{
         borderRadius: 50,

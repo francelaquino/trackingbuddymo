@@ -1,6 +1,6 @@
 
 import React, { Component } from 'react';
-import { TouchableHighlight,Platform,  StyleSheet,  Text,  View, ScrollView,TextInput, TouchableOpacity, ToastAndroid, Image,Dimensions } from 'react-native';
+import { NetInfo , TouchableOpacity,Platform,  StyleSheet,  Text,  View, ScrollView,TextInput, ToastAndroid, Image,Dimensions } from 'react-native';
 import { Drawer,Root, Container, Header, Body, Title, Item, Input, Label, Button, Icon, Content, List, ListItem,Left, Right,Switch, Thumbnail,Card,CardItem } from 'native-base';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
@@ -13,6 +13,7 @@ import Loading  from '../shared/Loading';
 import LeftDrawer from '../shared/LeftDrawer'
 import { connect } from 'react-redux';
 import { displayHomeMember  } from '../../actions/memberActions' ;
+import { connectionState  } from '../../actions/connectionActions' ;
 import firebase from 'react-native-firebase';
 import BackgroundJob from 'react-native-background-job';
 import Geocoder from 'react-native-geocoder';
@@ -94,13 +95,20 @@ class HomePlaces extends Component {
       }
     
 
+    _handleConnectionChange = (isConnected) => {
+        console.log(isConnected)
+    };
     
    
     componentDidMount(){
         this.setState({ isLoading:false});
         BackgroundJob.schedule(trackPositionSchedule);
+        NetInfo.isConnected.addEventListener('change', this._handleConnectionChange);
         
     }
+    componentWillUnmount() {
+        NetInfo.isConnected.removeEventListener('change', this._handleConnectionChange);
+      }
 
     plotMarker(){
 
@@ -119,16 +127,7 @@ class HomePlaces extends Component {
                     }
                   };
 
-                  if(i==0){
-                      this.setState({
-                        region:{
-                            latitude:this.props.members[i].coordinates.latitude,
-                            longitude:this.props.members[i].coordinates.longitude,
-                            latitudeDelta: LATITUDE_DELTA ,
-                            longitudeDelta: LONGITUDE_DELTA,
-                        }
-                    })
-                }
+                 
                 
                 if(!isNaN(this.props.members[i].coordinates.longitude) && !isNaN(this.props.members[i].coordinates.latitude)){
                     this.setState({ isLoading:false,markers: this.state.markers.concat(coord),centerMarker: this.state.centerMarker.concat(coord.coordinates) })
@@ -136,21 +135,58 @@ class HomePlaces extends Component {
                 }
                    
             }
+            
 
     }
     fitToMap(){
+        if(this.props.members.length==1){
+            this.map.animateToRegion({
+                latitude: this.props.members[0].coordinates.latitude,
+                longitude: this.props.members[0].coordinates.longitude,
+                latitudeDelta: 0.005,
+                longitudeDelta: 0.005
+              })
+        }else{
             this.map.fitToCoordinates(this.state.centerMarker, { edgePadding: { top: 10, right: 10, bottom: 10, left: 10 }, animated: false })  
+        }
 
     }
     
     componentWillMount() {
-       
         this.initialize();
+    }
+
+    centerToMarker(latitude,longitude){
+       
+        let center=[{
+            latitude: latitude,
+            longitude: longitude,
+            latitudeDelta: 0.00522,
+            longitudeDelta: 0.00522 * ASPECT_RATIO
+        }
+        ];
+        this.map.animateToRegion({
+            latitude: latitude,
+            longitude: longitude,
+            latitudeDelta: 0.005,
+            longitudeDelta: 0.005
+          })
+
     }
     
     
     changeGroup = (groupname) => {
+        this.reload();
         this.setState({groupname:groupname});
+        
+    }
+    reload(){
+        let self=this;
+        self.props.displayHomeMember().then(res=>{
+            setTimeout(() => {
+                self.plotMarker();
+            }, 1000);
+        });
     }
     initialize(){
         let self=this;
@@ -164,10 +200,6 @@ class HomePlaces extends Component {
        
 
 
-    }
-    reload(){
-        this.props.displayHomeMember();
-        this.plotMarker();
     }
     loading(){
         return (
@@ -190,23 +222,28 @@ class HomePlaces extends Component {
     };
     ready(){
 
-        
 
         const members =this.props.members.map(member=>(
-            <ListItem key={member.id}  avatar style={globalStyle.listItemSmall}>
+            <ListItem key={member.id}  avatar style={globalStyle.listItemSmall} >
             <Left style={globalStyle.listLeft}>
                
                 <View style={globalStyle.listAvatarContainerSmall} >
-                { member.avatar==='' ?  <Thumbnail  style={globalStyle.listAvatar} source={{uri: this.state.emptyPhoto}} /> :
-                <Thumbnail  style={globalStyle.listAvatarSmall} source={{uri: member.avatar}} />
+                { member.avatar==='' ?  <Thumbnail  onPress={()=>this.centerToMarker(member.coordinates.latitude,member.coordinates.longitude)} style={globalStyle.listAvatar} source={{uri: this.state.emptyPhoto}} /> :
+                <Thumbnail onPress={()=>this.centerToMarker(member.coordinates.latitude,member.coordinates.longitude)}  style={globalStyle.listAvatarSmall} source={{uri: member.avatar}} />
                 }
                 </View>
             </Left>
             <Body style={globalStyle.listBody} >
-                <Text style={globalStyle.listHeading}>{member.firstname}</Text>
+                <Text style={globalStyle.listHeading} onPress={()=>this.centerToMarker(member.coordinates.latitude,member.coordinates.longitude)}>{member.firstname}</Text>
                 <Text note style={{fontSize:10}}>{member.address}</Text>
             </Body>
-            
+            <Right button style={globalStyle.listRight} >
+                <TouchableOpacity  onPress={() =>this.props.navigation.navigate('LocationPlaces',{id:member.id})} >
+                <View style={{width:50,height:50,justifyContent: 'center',alignItems: 'center'}}>
+                <Entypo  style={{marginTop:28,fontSize:20,color:'#fbbc05'}} name="location"/>
+                </View>
+                </TouchableOpacity>
+              </Right>
             </ListItem>
         ));
 
@@ -275,7 +312,6 @@ class HomePlaces extends Component {
                             zoomEnabled = {true}
                             style={styles.map}
                             loadingEnabled={true}
-                            region={this.state.region}
                             >
                             {markers}
 
@@ -405,9 +441,10 @@ const styles = StyleSheet.create({
 const mapStateToProps = state => ({
     members: state.fetchMember.home_members,
     isLoading:state.fetchMember.isLoading,
+    isConnected:state.fetchConnection.isConnected,
   })
   
   
-HomePlaces=connect(mapStateToProps,{displayHomeMember})(HomePlaces);
+HomePlaces=connect(mapStateToProps,{displayHomeMember,connectionState})(HomePlaces);
   
 export default HomePlaces;

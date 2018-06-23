@@ -5,6 +5,7 @@ import { Root, Container, Header, Body, Title, Item, Input, Label, Button, Icon,
 import ImagePicker from 'react-native-image-picker';
 import { connect } from 'react-redux';
 import { displayGroup,updateGroup, deleteGroup  } from '../../actions/groupActions' ;
+import Loader  from '../shared/Loader';
 var globalStyle = require('../../assets/style/GlobalStyle');
 var registrationStyle = require('../../assets/style/Registration');
 
@@ -13,6 +14,7 @@ class EditGroup extends Component {
         super(props)
         this.state = {
             isLoading: true,
+            loading:false,
             emptyPhoto:'https://firebasestorage.googleapis.com/v0/b/trackingbuddy-3bebd.appspot.com/o/group_photos%2Fgroup.png?alt=media&token=d1bade4b-6fee-43f7-829a-0b6f76005b40',
             groupNameOld:'',
             groupname:'',
@@ -85,14 +87,16 @@ class EditGroup extends Component {
           )
     }
     onDelete(){
-
+        this.setState({loading:true})
         this.props.deleteGroup(this.state.groupid).then(res=>{
         	if(res!==""){
+                this.setState({loading:false})
                 ToastAndroid.showWithGravityAndOffset(res,ToastAndroid.LONG,ToastAndroid.BOTTOM, 25, 50);
                 this.props.displayGroup();
-                this.pros.navigation.goBack();
+                this.props.navigation.goBack();
             }
         }).catch(function(err) {
+            this.setState({loading:false})
         });
 
 
@@ -106,7 +110,7 @@ class EditGroup extends Component {
         if(this.state.groupname==""){
             return false;
         }
-
+        this.setState({loading:true})
         let group={
             groupname:this.state.groupname,
             groupid: this.state.groupid,
@@ -116,8 +120,10 @@ class EditGroup extends Component {
 
         this.props.updateGroup(group).then(res=>{
             if(res!==""){
+                this.setState({loading:false})
                 ToastAndroid.showWithGravityAndOffset(res,ToastAndroid.LONG,ToastAndroid.BOTTOM, 25, 50);
                 this.props.displayGroup();
+               
             }
         }).catch(function(err) {
         });
@@ -143,6 +149,7 @@ class EditGroup extends Component {
 
         return(
             <Root>
+                <Loader loading={this.state.loading} />
                 <Container style={globalStyle.containerWrapper}>
                     <Header style={globalStyle.header}>
                         <Left style={globalStyle.headerLeft} >

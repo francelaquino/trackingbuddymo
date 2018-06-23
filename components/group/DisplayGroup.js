@@ -1,7 +1,7 @@
 
 import React, { Component } from 'react';
-import { TouchableHighlight,Modal, Platform,  StyleSheet,  Text,  View, ScrollView,TextInput, TouchableOpacity, ToastAndroid, Image  } from 'react-native';
-import { Root, Container, Header, Body, Title, Item, Input, Label, Button, Icon, Content, List, ListItem,Left, Right,Switch,Thumbnail, Card,CardItem } from 'native-base';
+import { TouchableOpacity,Modal, Platform,  StyleSheet,  Text,  View, ScrollView,TextInput, ToastAndroid, Image  } from 'react-native';
+import { Badge,Root, Container, Header, Body, Title, Item, Input, Label, Button, Icon, Content, List, ListItem,Left, Right,Switch,Thumbnail, Card,CardItem } from 'native-base';
 import { connect } from 'react-redux';
 import { displayGroup  } from '../../actions/groupActions' ;
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -36,22 +36,7 @@ class DisplayGroup extends Component {
 
     
     }
-    openGroupOption(groupid,groupname,groupavatar){
-        this.setState({groupid:groupid,groupname:groupname,groupavatar:groupavatar});
-        this.setModalVisible(true)
-    }
-    setModalVisible(visible) {
-        this.setState({modalVisible: visible});
-    }
-    onReload = () => {
-        this.setState({isLoading:true})
-        this.initialize();
-    }
-
-    editGroup(){
-        this.setModalVisible(false)
-        this.props.navigation.navigate('EditGroup',{id:this.state.groupid,groupname:this.state.groupname,avatar:this.state.groupavatar})
-    }
+   
 
     addMember(){
         this.setModalVisible(false)
@@ -89,15 +74,19 @@ class DisplayGroup extends Component {
                                 }
                                 </View>
                             </Left>
-                            <Body style={globalStyle.listBody} >
-                                <Text style={globalStyle.listHeading}>{group.groupname}</Text>
+                            <Body style={globalStyle.listBody}  >
+                            <TouchableOpacity onPress={() => {
+                                    this.props.navigation.navigate('EditGroup',{id:group.id,groupname:group.groupname,avatar:group.avatar})}}  >
+                                <Text  style={globalStyle.listHeading} >{group.groupname}</Text>
+                                    </TouchableOpacity>
                             </Body>
-                            <Right style={globalStyle.listRight} >
-                                <TouchableHighlight  style={globalStyle.listRightTouchable}  
-                                    onPress={() => 
-                                    this.openGroupOption(group.id,group.groupname,group.avatar)}>
-                                <SimpleLineIcons  style={globalStyle.listRightOptionIcon}   name='options-vertical' />
-                                </TouchableHighlight>
+
+                            <Right style={[globalStyle.listRight]} >
+                            <TouchableOpacity  style={{width:35,height:30,position:'absolute',right:0}}  
+                                    onPress={() => { this.props.navigation.navigate('AddMemberGroup',{id:group.id,groupname:group.groupname})}}>
+                                 <MaterialIcons style={[globalStyle.listRightOptionIcon],{fontSize:30}} name="group"/>
+                                </TouchableOpacity>
+                               
                             </Right>
                             </ListItem>
 
@@ -134,48 +123,7 @@ class DisplayGroup extends Component {
                          
                     </View>
                     </ScrollView>
-                    <Modal 
-                        animationType="fade"
-                        transparent={true}
-                        visible={this.state.modalVisible}
-                        onRequestClose={() => {
-                            this.setModalVisible(!this.state.modalVisible);
-                        }}>
-                        <View style={globalStyle.modalWrapper} >
-                            <View style={[globalStyle.modalContainer,{height:168}]} >
-                                <List>
-                                    <ListItem avatar onPress={()=>this.addMember()} 
-                                    style={globalStyle.modalAvatar}>
-                                    <Left style={globalStyle.modalLeft}>
-                                    <MaterialIcons style={[globalStyle.avatarIcon],{fontSize:40}} name="group"/>
-                                    </Left>
-                                    <Body style={{borderBottomWidth:0,marginLeft:0}}>
-                                        <Text style={{color:'#2b2a2a',fontSize:16}}>Members</Text>
-                                    </Body>
-                                    </ListItem>
-                                    <ListItem avatar onPress={()=>this.editGroup()} 
-                                     style={globalStyle.modalAvatar}>
-                                    <Left style={globalStyle.modalLeft}>
-                                        <MaterialIcons style={[globalStyle.avatarIcon],{fontSize:40}} name="mode-edit"/>
-                                    </Left>
-                                    <Body style={{borderBottomWidth:0,marginLeft:0}}>
-                                        <Text style={{color:'#2b2a2a',fontSize:16}}>Edit Group</Text>
-                                    </Body>
-                                    </ListItem>
-                                   
-                                </List>
-
-                                <TouchableHighlight 
-                                    onPress={() => {
-                                    this.setModalVisible(!this.state.modalVisible);
-                                    }}>
-                                    <View style={{alignItems:'center',flexDirection:'row'}}>
-                                    <Right><Text style={globalStyle.modalCancel} >CANCEL</Text></Right>
-                                    </View>
-                                </TouchableHighlight>
-                            </View>
-                        </View>
-                        </Modal>
+                   
                     </Content>
                 </Container>
             </Root>

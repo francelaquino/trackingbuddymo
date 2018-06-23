@@ -87,11 +87,17 @@ class AddMember extends Component {
        
         this.setState({
             groupname:this.props.navigation.state.params.groupname,
-            groupid:this.props.navigation.state.params.groupid,
+            groupid:this.props.navigation.state.params.id,
         })
             setTimeout(() => {
-                this.props.displayGroupMember(this.state.groupid);    
-                this.countMembers();
+                this.props.displayGroupMember(this.state.groupid).then(res=>{
+                    this.countMembers();
+                    this.setState({isLoading:false})
+
+                }).catch(function(err) {
+                });
+
+               
             }, 1);
     }
 
@@ -162,7 +168,7 @@ class AddMember extends Component {
 
 
     render() {
-        if(this.props.isLoading){
+        if(this.state.isLoading){
             return this.loading();
         }else{
             return this.ready();

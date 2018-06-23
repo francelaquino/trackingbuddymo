@@ -1,7 +1,7 @@
 
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Platform,  StyleSheet,  View, TextInput, TouchableOpacity,ScrollView,Picker, Alert, ToastAndroid, Form, TouchableHighlight ,Image } from 'react-native';
+import { Platform,  StyleSheet,  View, TextInput, TouchableOpacity,ScrollView,Picker, Alert, ToastAndroid, Form ,Image } from 'react-native';
 import { Root, Container, Header, Body, Title, Item, Input, Label, Button,Text, Icon } from 'native-base';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Loading  from './shared/Loading';
@@ -21,13 +21,13 @@ class Register extends Component {
         address:'',
         emptyPhoto:'https://firebasestorage.googleapis.com/v0/b/trackingbuddy-3bebd.appspot.com/o/member_photos%2Ficons8-person-80.png?alt=media&token=59864ce7-cf1c-4c5e-a07d-76c286a2171d',
         isLoading:true,
-        email:'lazarak@rchsp.med.sa',
+        email:'aquinof@rchsp.med.sa',
         password:'111111',
         retypepassword:'111111',
         mobileno:'0538191138',
-        firstname:'Kathleen',
-        middlename:'Santos',
-        lastname:'Lazara',
+        firstname:'Yasmine',
+        middlename:'Lazara',
+        lastname:'Aquino',
         mobilecountrycode:'',
         mobilecountry:'Country Code',
         emailError:false,
@@ -224,9 +224,18 @@ class Register extends Component {
                   datecreated: Date.now(),
                   dateupdated: Date.now(),
                   invitationcode:code,
+                  invitationcodeexpiration: Date.now()+5,
                   latitude: this.state.latitude,
                   longitude: this.state.longitude,
                   address : this.state.address,
+              });
+
+              fetch("https://us-central1-trackingbuddy-3bebd.cloudfunctions.net/saveLocation?lat="+ this.state.latitude +"&lon="+ this.state.longitude +"&userid="+uid+"&address="+this.state.address)
+              .then((response) => response)
+              .then((response) => {
+              })
+              .catch((error) => {
+              console.error(error);
               });
      
 	  this.resetState();
@@ -401,9 +410,9 @@ class Register extends Component {
 							full rounded style={registrationStyle.registrationbutton}>
 							<Text>Register</Text>
 						</Button>
-						<TouchableHighlight  style={{marginTop:20}} underlayColor={'transparent'} onPress={() =>navigate('Login')}>
+						<TouchableOpacity  style={{marginTop:20}} underlayColor={'transparent'} onPress={() =>navigate('Login')}>
 						<Text style={registrationStyle.haveaccount}>Already have an acccount? <Text style={registrationStyle.loginButton}>Login</Text></Text>
-						</TouchableHighlight>
+						</TouchableOpacity>
 						
 					</View>
 					</View>

@@ -14,32 +14,33 @@ import InfoMember from '../member/InfoMember';
 import NewInvite from '../member/NewInvite';
 import HomePlaces from '../places/HomePlaces';
 import GroupPlaces from '../places/GroupPlaces';
+import LocationPlaces from '../places/LocationPlaces';
+import HomeSettings from '../settings/HomeSettings';
+import UserProfile from '../user/UserProfile';
 import  { createStackNavigator }  from 'react-navigation';
 
 export  default Navigation = createStackNavigator({
-    Login: { 
-        screen: Login,
-        headerMode: 'none',
-        navigationOptions: {
-            header: null
-        },
-        
-    },
-    Register: { 
-        screen: Register,
-        headerMode: 'none',
-        navigationOptions: {
-            header: null
-        } 
-    },
-   
-  
     HomePlaces: { 
         screen: HomePlaces,
         headerMode: 'none',
         navigationOptions: {
             header: null
         }
+    },
+    UserProfile: { 
+        screen: UserProfile,
+        headerMode: 'none',
+        navigationOptions: {
+            header: null
+        }
+    },
+   
+    DisplayGroup: { 
+        screen: DisplayGroup,
+        headerMode: 'none',
+        navigationOptions: {
+            header: null
+        } 
     },
     
     DisplayMember: { 
@@ -50,19 +51,51 @@ export  default Navigation = createStackNavigator({
         } 
     },
     
-   
     
-   
-    
-   
-    DisplayGroup: { 
-        screen: DisplayGroup,
+    GenerateInviteCode: { 
+        screen: GenerateInviteCode,
         headerMode: 'none',
         navigationOptions: {
             header: null
         } 
     },
     
+
+    HomeSettings: { 
+        screen: HomeSettings,
+        headerMode: 'none',
+        navigationOptions: {
+            header: null
+        } 
+    },
+   
+
+    Login: { 
+        screen: Login,
+        headerMode: 'none',
+        navigationOptions: {
+            header: null
+        },
+        
+    },
+    
+
+    LocationPlaces: { 
+        screen: LocationPlaces,
+        headerMode: 'none',
+        navigationOptions: {
+            header: null
+        }
+    },
+
+   
+    Register: { 
+        screen: Register,
+        headerMode: 'none',
+        navigationOptions: {
+            header: null
+        } 
+    },
     
     
     SelectGroup: { 
@@ -93,17 +126,6 @@ export  default Navigation = createStackNavigator({
     },
    
   
-    GenerateInviteCode: { 
-        screen: GenerateInviteCode,
-        headerMode: 'none',
-        navigationOptions: {
-            header: null
-        } 
-    },
-    
-    
-   
-    
     
     CreateGroup: { 
         screen: CreateGroup,
@@ -114,16 +136,6 @@ export  default Navigation = createStackNavigator({
     },
    
     
-    
-    
-   
-   
-   
-   
-    
-    
-    
-   
     
   
     DisplayHomeGroup: { 

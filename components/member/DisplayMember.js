@@ -1,13 +1,13 @@
 
 import React, { Component } from 'react';
-import { Modal,TouchableHighlight, Platform,  StyleSheet,  Text,  View, ScrollView,TextInput, TouchableOpacity, ToastAndroid, Image, Alert,RefreshControl } from 'react-native';
+import { Modal,TouchableOpacity, Platform,  StyleSheet,  Text,  View, ScrollView,TextInput, ToastAndroid, Image, Alert,RefreshControl } from 'react-native';
 import { Root, Container, Header, Body, Title, Item, Input, Label, Button, Icon, Content, List, ListItem,Left, Right,Switch, Thumbnail, CardItem, Card } from 'native-base';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import Entypo from 'react-native-vector-icons/Entypo';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import { connect } from 'react-redux';
-import { displayMember, deleteMember,displayHomeMember  } from '../../actions/memberActions' ;
+import { displayMember  } from '../../actions/memberActions' ;
 import Loading  from '../shared/Loading';
 var globalStyle = require('../../assets/style/GlobalStyle');
 
@@ -27,6 +27,11 @@ class DisplayMember extends Component {
         this.setState({memberid:memberid})
         this.setModalVisible(true)
     }
+    openLocations(){
+        this.props.navigation.navigate("LocationPlaces",{id:this.state.memberid})
+        this.setModalVisible(false);
+    }
+   
     setModalVisible(visible) {
         this.setState({modalVisible: visible});
     }
@@ -89,15 +94,16 @@ class DisplayMember extends Component {
                                 </View>
                             </Left>
                             <Body style={globalStyle.listBody} >
-                                <Text style={globalStyle.listHeading}>{member.firstname}</Text>
+                                <Text  onPress={() => {
+                                    this.props.navigation.navigate("InfoMember",{id:member.id,firstname:member.firstname})}} style={globalStyle.listHeading}>{member.firstname}</Text>
                             </Body>
                             <Right style={globalStyle.listRight} >
-                                <TouchableHighlight  style={globalStyle.listRightTouchable}  
+                                <TouchableOpacity  style={globalStyle.listRightTouchable}  
                                     onPress={() => {
                                     this.openMemberOption(member.id);
                                     }}>
                                 <SimpleLineIcons  style={globalStyle.listRightOptionIcon}   name='options-vertical' />
-                                </TouchableHighlight>
+                                </TouchableOpacity>
                             </Right>
                             </ListItem>
           ));
@@ -141,7 +147,7 @@ class DisplayMember extends Component {
                             this.setModalVisible(!this.state.modalVisible);
                         }}>
                         <View style={globalStyle.modalWrapper} >
-                            <View style={[globalStyle.modalContainer,{height:220}]} >
+                            <View style={[globalStyle.modalContainer,{height:170}]} >
                                 <List>
                                     <ListItem avatar onPress={()=>this.openMembers()} 
                                     style={globalStyle.modalAvatar}>
@@ -152,34 +158,26 @@ class DisplayMember extends Component {
                                         <Text style={{color:'#2b2a2a',fontSize:16}}>Message</Text>
                                     </Body>
                                     </ListItem>
-                                    <ListItem avatar onPress={()=>this.openMembers()} 
+                                    <ListItem avatar onPress={()=>this.openLocations()} 
                                     style={globalStyle.modalAvatar}>
                                     <Left style={globalStyle.modalLeft}>
-                                        <MaterialIcons style={[globalStyle.avatarIcon],{fontSize:35}} name="location-on"/>
+                                        <Entypo  style={[globalStyle.avatarIcon],{fontSize:35}} name="location"/>
                                     </Left>
                                     <Body style={{borderBottomWidth:0,marginLeft:0}}>
-                                        <Text style={{color:'#2b2a2a',fontSize:16}}>Places</Text>
+                                        <Text style={{color:'#2b2a2a',fontSize:16}}>Locations</Text>
                                     </Body>
                                     </ListItem>
-                                    <ListItem avatar onPress={()=>this.confirmDelete()}  
-                                     style={globalStyle.modalAvatar}>
-                                    <Left style={globalStyle.modalLeft}>
-                                        <MaterialIcons style={[globalStyle.avatarIcon],{fontSize:40}} name="delete"/>
-                                    </Left>
-                                    <Body style={{borderBottomWidth:0,marginLeft:0}}>
-                                        <Text style={{color:'#2b2a2a',fontSize:16}}>Delete Member</Text>
-                                    </Body>
-                                    </ListItem>
+                                    
                                 </List>
 
-                                <TouchableHighlight 
+                                <TouchableOpacity 
                                     onPress={() => {
                                     this.setModalVisible(!this.state.modalVisible);
                                     }}>
                                     <View style={{alignItems:'center',flexDirection:'row'}}>
                                     <Right><Text style={globalStyle.modalCancel} >CANCEL</Text></Right>
                                     </View>
-                                </TouchableHighlight>
+                                </TouchableOpacity>
                             </View>
                         </View>
                         </Modal>
@@ -208,7 +206,7 @@ const mapStateToProps = state => ({
   })
   
   
-DisplayMember=connect(mapStateToProps,{displayMember,deleteMember,displayHomeMember})(DisplayMember);
+DisplayMember=connect(mapStateToProps,{displayMember})(DisplayMember);
   
   
 export default DisplayMember;

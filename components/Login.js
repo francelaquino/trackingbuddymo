@@ -1,10 +1,11 @@
 
 import React, { Component } from 'react';
-import {  Platform,  StyleSheet,  Text,  View, ScrollView,TextInput, TouchableOpacity, Image, TouchableHighlight,ToastAndroid, NavigationActions  } from 'react-native';
+import {  Platform,  StyleSheet,  Text,  View, ScrollView,TextInput, TouchableOpacity, Image,ToastAndroid, NavigationActions  } from 'react-native';
 import { Root, Container, Header, Body, Title, Item, Input, Label, Button, Icon } from 'native-base';
 import firebase from 'react-native-firebase';
 import Geocoder from 'react-native-geocoder';
 import HomePlaces from './places/HomePlaces';
+import Loader from './shared/Loader';
 var userDetails = require('./shared/userDetails');
 var registrationStyle = require('../assets/style/Registration');
 
@@ -13,11 +14,11 @@ class Login extends Component {
     constructor(props) {
         super(props)
         this.state = {
+            loading:false,
             email: 'francel_aquino@yahoo.com',
             password:'111111',
             
         };
-
        
 
       }
@@ -35,14 +36,16 @@ class Login extends Component {
               fetch("https://us-central1-trackingbuddy-3bebd.cloudfunctions.net/saveLocation?lat="+ coords.lat +"&lon="+ coords.lng +"&userid="+userDetails.userid+"&address="+res[1].formattedAddress)
               .then((response) => response)
               .then((response) => {
+                this.setState({loading:false});
                 this.props.navigation.navigate('HomePlaces');
               })
               .catch((error) => {
-              console.error(error);
+              this.setState({loading:false});
               });
-          }).catch(err => console.log(err))
+          }).catch(err => this.setState({loading:false}))
       },
       (err) => {
+        this.setState({loading:false})
       },
       { enableHighAccuracy: false, timeout: 20000, maximumAge: 1000 }
     );
@@ -50,12 +53,13 @@ class Login extends Component {
  
 
     onLogin (){
+        
         let self=this;
         if(this.state.email=="" || this.state.password==""){
             ToastAndroid.showWithGravityAndOffset("Invalid username or wrong password",ToastAndroid.LONG,ToastAndroid.BOTTOM,25,50);
             return false;
         }
-
+        this.setState({loading:true});
         firebase.auth().signInAndRetrieveDataWithEmailAndPassword(this.state.email,this.state.password).then((res)=>{
           let memberRef = firebase.database().ref().child('users/'+res.user.uid).on('value',function(snapshot){
             
@@ -65,16 +69,12 @@ class Login extends Component {
               userDetails.lastname=snapshot.val().lastname;
               self.trackLocation();
 
-              //setTimeout(() => {
-               
-              //}, 1000);
             });
-
-
-         
          
         }).catch(function(e){
+            
             self.setState({
+                loading:false,
                 email:'',
                 password:'',
               });
@@ -87,13 +87,12 @@ class Login extends Component {
     render() {
 
         
-        
     const { navigate } = this.props.navigation;
     return (
         <Root>
             <Container style={registrationStyle.containerWrapper}>
         	   
-          	
+          	<Loader loading={this.state.loading} />
             <ScrollView  contentContainerStyle={{flexGrow: 1}} keyboardShouldPersistTaps={"always"}>
                     <View style={registrationStyle.container}>
                         <View style={registrationStyle.logoContainer}>
@@ -124,12 +123,12 @@ class Login extends Component {
                                 full rounded style={registrationStyle.registrationbutton}>
                                 <Text style={{color:'white'}}>Login</Text>
                             </Button>
-                            <TouchableHighlight underlayColor={'transparent'}>
+                            <TouchableOpacity underlayColor={'transparent'}>
                             <Text style={registrationStyle.haveaccount}>Forgot Password?</Text>
-                            </TouchableHighlight>
-                            <TouchableHighlight  underlayColor={'transparent'}  onPress={() =>navigate('Register')}>
+                            </TouchableOpacity>
+                            <TouchableOpacity  underlayColor={'transparent'}  onPress={() =>navigate('Register')}>
                             <Text style={registrationStyle.haveaccount}>Not a member? <Text style={registrationStyle.loginButton}>Register</Text></Text>
-                            </TouchableHighlight>
+                            </TouchableOpacity>
                         </View>
 
                     </View>

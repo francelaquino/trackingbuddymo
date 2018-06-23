@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import {  Platform,  StyleSheet,  Text,  View, ScrollView,TextInput, TouchableOpacity, ToastAndroid } from 'react-native';
 import { Content,Root, Container, Header, Body, Title, Item, Input, Label, Button, Icon, Left, Right } from 'native-base';
 import { connect } from 'react-redux';
+import Loader from '../shared/Loader';
 import { sendInvite, displayMember, displayHomeMember } from '../../actions/memberActions' ;
 var globalStyle = require('../../assets/style/GlobalStyle');
 
@@ -11,7 +12,8 @@ class NewInvite extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            invitationcode:'3DG73I3',
+            loading:false,
+            invitationcode:'',
         };
       }
     
@@ -32,17 +34,19 @@ class NewInvite extends Component {
         if(this.state.invitationcode==""){
             return false;
         }
+        this.setState({loading:true})
         this.props.sendInvite(this.state.invitationcode).then(res=>{
         	if(res==true){
                 ToastAndroid.showWithGravityAndOffset("Member successfully added",ToastAndroid.LONG,ToastAndroid.BOTTOM, 25, 50);
                 this.props.displayMember();
-                this.props.displayHomeMember();
-                this.setState({invitationcode:''})
+                this.setState({invitationcode:'',loading:false})
             }else{
                 ToastAndroid.showWithGravityAndOffset("Invalid invitation code",ToastAndroid.LONG,ToastAndroid.BOTTOM, 25, 50);
+                this.setState({invitationcode:'',loading:false})
             }
         }).catch(function(err) {
             ToastAndroid.showWithGravityAndOffset("Invalid invitation code",ToastAndroid.LONG,ToastAndroid.BOTTOM, 25, 50);
+            this.setState({invitationcode:'',loading:false})
         });
     }
 
@@ -60,6 +64,7 @@ class NewInvite extends Component {
     ready(){
         return (
             <Root>
+                <Loader loading={this.state.loading} />
                 <Container style={globalStyle.containerWrapper}>
                     <Header style={globalStyle.header}>
                         <Left style={globalStyle.headerLeft} >
@@ -77,7 +82,7 @@ class NewInvite extends Component {
                         <View style={globalStyle.container}>
                             <Item  stackedLabel style={globalStyle.item}>
                                 <View style={globalStyle.inputicon}>  
-                                <TextInput style={globalStyle.textinputCenter} 
+                                <TextInput style={globalStyle.textinputCenter} autoCapitalize="characters"
                                 name="invitationcode" autoCorrect={false}
                                 value={this.state.invitationcode}  maxLength = {20}
                                 onChangeText={invitationcode=>this.setState({invitationcode})}/>

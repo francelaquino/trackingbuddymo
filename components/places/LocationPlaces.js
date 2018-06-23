@@ -3,8 +3,8 @@ import React, { Component } from 'react';
 import { TouchableOpacity,Modal, Platform,  StyleSheet,  Text,  View, ScrollView,TextInput, ToastAndroid, Image  } from 'react-native';
 import { Root, Container, Header, Body, Title, Item, Input, Label, Button, Icon, Content, List, ListItem,Left, Right,Switch,Thumbnail, Card,CardItem } from 'native-base';
 import { connect } from 'react-redux';
-import { displayGroup  } from '../../actions/groupActions' ;
-import { displayHomeMember  } from '../../actions/memberActions' ;
+import Entypo from 'react-native-vector-icons/Entypo';
+import { displayLocations  } from '../../actions/locationActions' ;
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
@@ -15,12 +15,9 @@ var globalStyle = require('../../assets/style/GlobalStyle');
 
 
 
-class SelectGroup extends Component {
+class LocationPlaces extends Component {
     constructor(props) {
         super(props)
-        this.state = {
-            emptyPhoto:'https://firebasestorage.googleapis.com/v0/b/trackingbuddy-3bebd.appspot.com/o/group_photos%2Fgroup.png?alt=media&token=d1bade4b-6fee-43f7-829a-0b6f76005b40',
-        };
         
 
 
@@ -32,23 +29,12 @@ class SelectGroup extends Component {
     }
         
     initialize(){
-        this.props.displayGroup();
+        let id=this.props.navigation.state.params.id;
+        this.props.displayLocations(id);
     }
 
 
 
-
-    changeGroup(groupid,groupname){
-        userdetails.group=groupid;
-        this.props.navigation.state.params.changeGroup(groupname);
-        this.props.navigation.goBack();
-    }
-
-    allMembers(){
-        userdetails.group="";
-        this.props.navigation.state.params.changeGroup("");
-        this.props.navigation.goBack();
-    }
 
     
 
@@ -63,18 +49,18 @@ class SelectGroup extends Component {
     }
     ready(){
         const { navigate } = this.props.navigation;
-        const groups =this.props.groups.map(group=>(
-            <ListItem key={group.id}  avatar style={globalStyle.listItem} onPress={()=>this.changeGroup(group.id,group.groupname)}>
+        const locations =this.props.locations.map(location=>(
+            <ListItem key={location.id}  avatar style={globalStyle.listItem} >
                 <Left style={globalStyle.listLeft}>
-                    <View style={globalStyle.listAvatarContainer} >
-                        { group.avatar==='' ?  <Thumbnail  style={globalStyle.listAvatar} source={{uri: this.state.emptyPhoto}} /> :
-                        <Thumbnail  style={globalStyle.listAvatar} source={{uri: group.avatar}} />
-                        }
-                    </View>
+                        <Entypo  style={{fontSize:25,color:'#fbbc05'}} name="location"/>
                 </Left>
                 <Body style={globalStyle.listBody} >
-                    <Text style={globalStyle.listHeading}>{group.groupname}</Text>
+                    <Text style={globalStyle.listHeading}>{location.address}</Text>
+                    <Text note style={{fontSize:15}}>{location.dateadded}</Text>
                 </Body>
+                <Right style={globalStyle.listRight}>
+                    <SimpleLineIcons name="arrow-right" />
+                </Right>
             </ListItem>
 
            
@@ -91,7 +77,7 @@ class SelectGroup extends Component {
                             </Button> 
                         </Left>
                         <Body>
-                            <Title>Switch Group</Title>
+                            <Title>Locations</Title>
                         </Body>
                     </Header>
                     <Content padder>
@@ -99,17 +85,7 @@ class SelectGroup extends Component {
                     <View style={globalStyle.container}>
                     
                         <List>
-                        <ListItem  avatar style={globalStyle.listItem} onPress={()=>this.allMembers()}>
-                            <Left style={globalStyle.listLeft}>
-                                <View style={globalStyle.listAvatarContainer} >
-                                    <Thumbnail  style={globalStyle.listAvatar} source={{uri: this.state.emptyPhoto}} />
-                                </View>
-                            </Left>
-                            <Body style={globalStyle.listBody} >
-                                <Text style={globalStyle.listHeading}>All Members</Text>
-                            </Body>
-                        </ListItem>
-                            {groups}
+                            {locations}
                         </List>
 
                          
@@ -134,11 +110,11 @@ class SelectGroup extends Component {
   
 
 const mapStateToProps = state => ({
-    groups: state.fetchGroup.groups,
-    isLoading: state.fetchGroup.isLoadingGroup,
+    locations: state.fetchLocation.locations,
+    isLoading: state.fetchLocation.isLoading,
   })
   
-  SelectGroup=connect(mapStateToProps,{displayGroup,displayHomeMember})(SelectGroup);
+  LocationPlaces=connect(mapStateToProps,{displayLocations})(LocationPlaces);
   
-export default SelectGroup;
+export default LocationPlaces;
 

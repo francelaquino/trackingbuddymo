@@ -1,9 +1,11 @@
-import {  POST_DATA, SIGNIN_USER, NO_CONNECTION } from '../actions/types';
+import {  GET_PROFILE, POST_DATA, SIGNIN_USER, NO_CONNECTION } from '../actions/types';
 
 const initialState = {
     items:[],
     item:[],
-    isready:false
+    profile:[],
+    isready:false,
+    isLoading:true,
 }
 
 
@@ -19,6 +21,12 @@ export default function(state=initialState,action){
                 ...state,
                 item: action.payload,
                 isready:true,
+            };
+        case GET_PROFILE:
+            return {
+                ...state,
+                profile: action.payload,
+                isLoading:false,
             };
         case NO_CONNECTION:
             return {

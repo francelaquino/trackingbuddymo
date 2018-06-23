@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import {  Platform,  StyleSheet,  Text,  View, ScrollView,TextInput, TouchableOpacity, ToastAndroid, Image } from 'react-native';
 import { Root, Container, Header, Body, Title, Item, Input, Label, Button, Icon, Left } from 'native-base';
 import ImagePicker from 'react-native-image-picker';
+import Loader  from '../shared/Loader';
 import { connect } from 'react-redux';
 import { createGroup,displayGroup  } from '../../actions/groupActions' ;
 var globalStyle = require('../../assets/style/GlobalStyle');
@@ -14,7 +15,7 @@ class CreateGroup extends Component {
     constructor(props) {
         super(props)
         this.state = {
-						isLoading:true,
+                        loading:false,
 						emptyPhoto:'https://firebasestorage.googleapis.com/v0/b/trackingbuddy-3bebd.appspot.com/o/group_photos%2Fgroup.png?alt=media&token=d1bade4b-6fee-43f7-829a-0b6f76005b40',
             groupname:'',
 						avatarsource:'',
@@ -72,9 +73,10 @@ class CreateGroup extends Component {
         if(this.state.groupname==""){
             return false;
         }
+        this.setState({loading:true})
 		    this.props.createGroup(this.state.groupname,this.state.avatarsource).then(res=>{
                 if(res!==""){
-                    
+                    this.setState({loading:false})
                     ToastAndroid.showWithGravityAndOffset(res,ToastAndroid.LONG,ToastAndroid.BOTTOM, 25, 50);
                     this.props.displayGroup();
                     this.props.navigation.goBack();
@@ -97,6 +99,7 @@ class CreateGroup extends Component {
   ready(){
 		return (
 			<Root>
+                  <Loader loading={this.state.loading} />
                 <Container style={globalStyle.containerWrapper}>
                     <Header style={globalStyle.header}>
                         <Left style={globalStyle.headerLeft} >

@@ -3,39 +3,25 @@ import React, { Component } from 'react';
 import {  Platform,  StyleSheet,  Text,  View, ScrollView,TextInput, TouchableOpacity, ToastAndroid, Alert, Image } from 'react-native';
 import { Root, Container, Header, Body, Title, Item, Input, Label, Button, Icon, Left, Right, List, ListItem } from 'native-base';
 import { connect } from 'react-redux';
-import {  getMember, displayMember, deleteMember,displayHomeMember } from '../../actions/memberActions' ;
-
+import {  getProfile } from '../../actions/userActions' ;
+import Loading  from '../shared/Loading';
 var globalStyle = require('../../assets/style/GlobalStyle');
 
 
 
-class InfoMember extends Component {
+class UserProfile extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            id:this.props.navigation.state.params.id,
-            firstname:this.props.navigation.state.params.firstname,
         };
       }
 
       
     componentWillMount() {
-        this.props.getMember(this.state.id);
+        this.props.getProfile();
     }
 
-    onDelete(){
-
-        this.props.deleteMember(this.state.id).then(res=>{
-        	if(res==true){
-                ToastAndroid.showWithGravityAndOffset("Member successfully deleted",ToastAndroid.LONG,ToastAndroid.BOTTOM, 25, 50);
-                this.props.isLoading=true;
-                this.props.displayMember();
-                this.props.displayHomeMember();
-                this.props.navigation.goBack();
-            }
-        }).catch(function(err) {
-        });
-    }
+   
 
 
     confirmDelete(){
@@ -73,7 +59,7 @@ class InfoMember extends Component {
                             </Button> 
                         </Left>
                         <Body>
-                            <Title>{this.state.firstname}</Title>
+                            <Title>Profile</Title>
                         </Body>
                         
                     </Header>
@@ -82,7 +68,7 @@ class InfoMember extends Component {
                     <View style={globalStyle.container}>
                         <View style={{marginTop:20}}>
                         <View style={globalStyle.avatarContainer}>
-                            <Image style={globalStyle.avatarBig} source={{uri : this.props.member.avatar}} />
+                            <Image style={globalStyle.avatarBig} source={{uri : this.props.profile.avatar}} />
                         </View>
                         </View>
 
@@ -91,40 +77,39 @@ class InfoMember extends Component {
                             <ListItem >
                                 <Body>
                                     <Text style={globalStyle.label}>First Name</Text>
-                                    <Text style={globalStyle.value} note>{this.props.member.firstname}</Text>
+                                    <Text style={globalStyle.value} note>{this.props.profile.firstname}</Text>
                                 </Body>
                             </ListItem>
                             <ListItem >
                                 <Body>
                                     <Text style={globalStyle.label}>Middle Name</Text>
-                                    <Text style={globalStyle.value} note>{this.props.member.middlename}</Text>
+                                    <Text style={globalStyle.value} note>{this.props.profile.middlename}</Text>
                                 </Body>
                             </ListItem>
                             <ListItem >
                             <Body>
                                 <Text style={globalStyle.label}>Last Name</Text>
-                                <Text style={globalStyle.value} note>{this.props.member.lastname}</Text>
+                                <Text style={globalStyle.value} note>{this.props.profile.lastname}</Text>
                             </Body>
                             </ListItem>
                             <ListItem >
                             <Body>
                                 <Text style={globalStyle.label}>Mobile No.</Text>
-                                <Text style={globalStyle.value} note>{this.props.member.mobileno}</Text>
+                                <Text style={globalStyle.value} note>{this.props.profile.mobileno}</Text>
                             </Body>
                             </ListItem>
                             <ListItem >
                             <Body>
                                 <Text style={globalStyle.label}>Email</Text>
-                                <Text style={globalStyle.value} note>{this.props.member.email}</Text>
+                                <Text style={globalStyle.value} note>{this.props.profile.email}</Text>
                             </Body>
                             </ListItem>
                             
                            
                             <ListItem last>
                                 <Button 
-                                onPress={()=>this.confirmDelete()}
-                                bordered light full rounded style={globalStyle.deleteButton}>
-                                <Text style={{color:'white'}}>Delete Member</Text>
+                                bordered light full rounded style={globalStyle.secondaryButton}>
+                                <Text style={{color:'white'}}>Update Profile</Text>
                                 </Button>
                             </ListItem>
                             </View>
@@ -149,13 +134,13 @@ class InfoMember extends Component {
 
 
 const mapStateToProps = state => ({
-    member: state.fetchMember.member,
-    isLoading:state.fetchMember.isLoading,
+    profile: state.fetchUser.profile,
+    isLoading:state.fetchUser.isLoading,
   })
   
   
-InfoMember=connect(mapStateToProps,{getMember,displayMember,deleteMember,displayHomeMember})(InfoMember);
+  UserProfile=connect(mapStateToProps,{getProfile})(UserProfile);
   
-export default InfoMember;
+export default UserProfile;
   
 

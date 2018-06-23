@@ -1,9 +1,10 @@
-import {  DISPLAY_MEMBER,INVITE_MEMBER, GET_MEMBER, DELETE_MEMBER, DISPLAY_HOME_MEMBER, DISPLAY_GROUP_MEMBER } from '../actions/types';
+import {  GET_INVITATIONCODE, GENERATE_INVITATIONCODE, DISPLAY_MEMBER,INVITE_MEMBER, GET_MEMBER, DELETE_MEMBER, DISPLAY_HOME_MEMBER, DISPLAY_GROUP_MEMBER } from '../actions/types';
 
 const initialState = {
     members:[],
     member:[],
     home_members:[],
+    invitationcode:[],
     isLoading:true,
     success:true,
 }
@@ -23,6 +24,13 @@ export default function(state=initialState,action){
                 home_members: action.payload,
                 isLoading:false,
             };
+        case GET_INVITATIONCODE:
+            return {
+                ...state,
+                invitationcode: action.payload,
+                isLoading:false,
+            };
+            
         case DISPLAY_GROUP_MEMBER:
             return {
                 ...state,
@@ -32,8 +40,8 @@ export default function(state=initialState,action){
         case GET_MEMBER:
             return {
                 ...state,
-                members: action.payload,
-                isready:true,
+                member: action.payload,
+                isLoading:false,
             };
         case DELETE_MEMBER:
             return {
