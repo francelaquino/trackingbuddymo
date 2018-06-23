@@ -1,4 +1,4 @@
-import { CONNECTION_STATE } from '../actions/types';
+import { CONNECTION_STATE, GET_CONNECTION } from '../actions/types';
 
 const initialState = {
     isConnected:true,
@@ -8,6 +8,11 @@ const initialState = {
 export default function(state=initialState,action){
     switch(action.type){
         case CONNECTION_STATE:
+            return{
+                ...state,
+                isConnected:action.payload,
+            }
+        case GET_CONNECTION:
             return{
                 ...state,
                 isConnected:action.payload,

@@ -1,6 +1,7 @@
-import { DISPLAY_LOCATION } from './types';
+import { DISPLAY_LOCATION, SAVE_LOCATION_OFFLINE, SAVE_LOCATION_ONLINE } from './types';
 import firebase from 'react-native-firebase';
 import Moment from 'moment';
+import Geocoder from 'react-native-geocoder';
 
 var userdetails = require('../components/shared/userDetails');
 
@@ -17,7 +18,6 @@ export const displayLocations=(userid)=> dispatch=> {
                     resolve();
                 }else{
                     snapshot.forEach(childSnapshot => {
-                console.log(childSnapshot)
                         
                         let dateadded= Moment(new Date(parseInt(childSnapshot.val().dateadded))).format("DD-MMM-YYYY ddd HH:mm A");
                         locations.push({
@@ -50,6 +50,56 @@ export const displayLocations=(userid)=> dispatch=> {
            
     
 };
+
+
+export const saveLocationOffline=(coordinate)=> dispatch=> {
+        let coord = {
+            lat: coordinate.lat,
+            lng:  coordinate.lng,
+        };
+
+          dispatch({ 
+            type: SAVE_LOCATION_OFFLINE,
+            payload: coord,
+        });
+    
+};
+
+export const saveLocationOnline=(coordinate)=> dispatch=> {
+    let coord = {
+        lat: coordinate.lat,
+        lng:  coordinate.lng,
+    };
+
+    let dateadded=Date.now();
+    
+    Geocoder.geocodePosition(coord).then(res => {
+            fetch("https://us-central1-trackingbuddy-3bebd.cloudfunctions.net/saveLocation?lat="+ coords.lat +"&lon="+ coords.lng +"&userid="+userdetails.userid+"&address="+res[1].formattedAddress+"&dateadded="+dateadded)
+            .then((response) => response)
+            .then((response) => {
+                dispatch({ 
+                    type: SAVE_LOCATION_ONLINE,
+                    payload: [],
+                });
+            })
+            .catch((error) => {
+                dispatch({ 
+                    type: SAVE_LOCATION_ONLINE,
+                    payload: [],
+                });
+            });
+            
+    }).catch(err => {
+        dispatch({ 
+            type: SAVE_LOCATION_ONLINE,
+            payload: [],
+        });
+    })
+
+      
+
+};
+
 
 
 

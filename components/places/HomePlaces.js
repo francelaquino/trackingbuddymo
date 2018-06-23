@@ -13,10 +13,11 @@ import Loading  from '../shared/Loading';
 import LeftDrawer from '../shared/LeftDrawer'
 import { connect } from 'react-redux';
 import { displayHomeMember  } from '../../actions/memberActions' ;
-import { connectionState  } from '../../actions/connectionActions' ;
+import { setConnection  } from '../../actions/connectionActions' ;
+import { saveLocationOffline, saveLocationOnline  } from '../../actions/locationActions' ;
 import firebase from 'react-native-firebase';
 import BackgroundJob from 'react-native-background-job';
-import Geocoder from 'react-native-geocoder';
+
 var globalStyle = require('../../assets/style/GlobalStyle');
 var userdetails = require('../../components/shared/userDetails');
 const screen = Dimensions.get('window');
@@ -26,44 +27,56 @@ const LONGITUDE = 0;
 const LATITUDE_DELTA = .05;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 
-
 BackgroundJob.cancelAll();
-
-
 
 const trackPosition = {
     jobKey: "trackPositionJob",
-    job: () =>this.trackLocation().done(),
+    job: () =>trackLocation(),
 };
     
 BackgroundJob.register(trackPosition);
 
-
 var trackPositionSchedule = {
     jobKey: "trackPositionJob",
-    period: 9000000,
+    period: 300000,
     exact: true,
     allowExecutionInForeground: true
 }
 
-trackLocation = async() =>{
-    
+  
+let trackLocation;
+trackLocation1 = async() =>{
       navigator.geolocation.getCurrentPosition(
         (position) => {
             let coords = {
                 lat: position.coords.latitude,
                 lng:  position.coords.longitude
               };
-        
+            NetInfo.isConnected.fetch().done((isConnected) => {
+                if(isConnected){
+                    saveLocationOffline(coords);
+                }else{
+                    saveLocationOffline(coords);
+                }
+            });
+
+
+        /*
             Geocoder.geocodePosition(coords).then(res => {
-                fetch("https://us-central1-trackingbuddy-3bebd.cloudfunctions.net/saveLocation?lat="+ coords.lat +"&lon="+ coords.lng +"&userid="+userdetails.userid+"&address="+res[1].formattedAddress)
-                .then((response) => response)
-                .then((response) => {
-                })
-                .catch((error) => {
-                console.error(error);
-                });
-            }).catch(err => console.log(err))
+                if(NetInfo.isConnected.isConnected==true){
+                    fetch("https://us-central1-trackingbuddy-3bebd.cloudfunctions.net/saveLocation?lat="+ coords.lat +"&lon="+ coords.lng +"&userid="+userdetails.userid+"&address="+res[1].formattedAddress)
+                    .then((response) => response)
+                    .then((response) => {
+                    })
+                    .catch((error) => {
+                    console.error(error);
+                    });
+                }else{
+                    this.props.saveLocationOffline(coords,res[1].formattedAddress);
+
+                }
+
+            }).catch(err => console.log(err))*/
         },
         (err) => {
         },
@@ -92,23 +105,49 @@ class HomePlaces extends Component {
             centerMarker: [],
             markers: [],
         };
+
       }
     
 
-    _handleConnectionChange = (isConnected) => {
-        console.log(isConnected)
-    };
+    
+
     
    
     componentDidMount(){
+        let self=this;
+        trackLocation =function() {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    let coords = {
+                        lat: position.coords.latitude,
+                        lng:  position.coords.longitude,
+                        dateadded : Date.now()
+                      };
+                    NetInfo.isConnected.fetch().done((isConnected) => {
+                        if(isConnected){
+
+                            self.props.saveLocationOnline(coords);
+
+                        }else{
+                            self.props.saveLocationOffline(coords);
+                        }
+                    });
+        
+        
+               
+                },
+                (err) => {
+                },
+                { enableHighAccuracy: false, timeout: 20000, maximumAge: 1000 }
+              );
+            }
+
+    
         this.setState({ isLoading:false});
         BackgroundJob.schedule(trackPositionSchedule);
-        NetInfo.isConnected.addEventListener('change', this._handleConnectionChange);
         
     }
-    componentWillUnmount() {
-        NetInfo.isConnected.removeEventListener('change', this._handleConnectionChange);
-      }
+  
 
     plotMarker(){
 
@@ -442,9 +481,12 @@ const mapStateToProps = state => ({
     members: state.fetchMember.home_members,
     isLoading:state.fetchMember.isLoading,
     isConnected:state.fetchConnection.isConnected,
+    coordinates:state.fetchLocation.coordinates,
+    
   })
   
   
-HomePlaces=connect(mapStateToProps,{displayHomeMember,connectionState})(HomePlaces);
+  
+HomePlaces=connect(mapStateToProps,{displayHomeMember,setConnection,saveLocationOffline,saveLocationOnline})(HomePlaces);
   
 export default HomePlaces;

@@ -1,4 +1,4 @@
-import { CONNECTION_STATE } from './types';
+import { CONNECTION_STATE, GET_CONNECTION } from './types';
 import { BASE_URL } from '../constants';
 import axios from 'axios';
 
@@ -8,3 +8,10 @@ export const setConnection=(connection)=> dispatch=> {
         payload: connection
     });
 };
+
+export const getConnection=()=> dispatch=> {
+    dispatch({ 
+        type: GET_CONNECTION,
+    });
+};
+

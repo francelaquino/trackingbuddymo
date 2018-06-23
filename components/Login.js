@@ -111,7 +111,7 @@ class Login extends Component {
                             <Label style={registrationStyle.stackedlabel}>Password</Label>
                             <View style={registrationStyle.inputicon}>  
                             <TextInput style={registrationStyle.textinput} 
-                            name="password" autoCorrect={false}
+                            name="password" autoCorrect={false} secureTextEntry
                             value={this.state.password}  maxLength = {50}
                             onChangeText={password=>this.setState({password})}/>
                             </View>
