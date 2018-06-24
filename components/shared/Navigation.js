@@ -20,6 +20,14 @@ import UserProfile from '../user/UserProfile';
 import  { createStackNavigator }  from 'react-navigation';
 
 export  default Navigation = createStackNavigator({
+    Login: { 
+        screen: Login,
+        headerMode: 'none',
+        navigationOptions: {
+            header: null
+        },
+        
+    },
     HomePlaces: { 
         screen: HomePlaces,
         headerMode: 'none',
@@ -70,14 +78,7 @@ export  default Navigation = createStackNavigator({
     },
    
 
-    Login: { 
-        screen: Login,
-        headerMode: 'none',
-        navigationOptions: {
-            header: null
-        },
-        
-    },
+   
     
 
     LocationPlaces: { 

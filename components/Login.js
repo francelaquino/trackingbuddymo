@@ -1,9 +1,11 @@
 
 import React, { Component } from 'react';
-import {  Platform,  StyleSheet,  Text,  View, ScrollView,TextInput, TouchableOpacity, Image,ToastAndroid, NavigationActions  } from 'react-native';
+import {  NetInfo, Platform,  StyleSheet,  Text,  View, ScrollView,TextInput, TouchableOpacity, Image,ToastAndroid, NavigationActions  } from 'react-native';
 import { Root, Container, Header, Body, Title, Item, Input, Label, Button, Icon } from 'native-base';
 import firebase from 'react-native-firebase';
 import Geocoder from 'react-native-geocoder';
+import { connect } from 'react-redux';
+import { saveLocationOffline, saveLocationOnline  } from '../actions/locationActions' ;
 import HomePlaces from './places/HomePlaces';
 import Loader from './shared/Loader';
 var userDetails = require('./shared/userDetails');
@@ -24,25 +26,28 @@ class Login extends Component {
       }
       
     trackLocation(){
-    
+    let self=this;
     navigator.geolocation.getCurrentPosition(
       (position) => {
-          let coords = {
-              lat: position.coords.latitude,
-              lng:  position.coords.longitude
-            };
       
-          Geocoder.geocodePosition(coords).then(res => {
-              fetch("https://us-central1-trackingbuddy-3bebd.cloudfunctions.net/saveLocation?lat="+ coords.lat +"&lon="+ coords.lng +"&userid="+userDetails.userid+"&address="+res[1].formattedAddress)
-              .then((response) => response)
-              .then((response) => {
+            let coords = {
+                lat: position.coords.latitude,
+                lng:  position.coords.longitude,
+                dateadded : Date.now()
+              };
+            NetInfo.isConnected.fetch().done((isConnected) => {
+                if(isConnected){
+
+                    self.props.saveLocationOnline(coords);
+
+                }else{
+                    self.props.saveLocationOffline(coords);
+                }
                 this.setState({loading:false});
                 this.props.navigation.navigate('HomePlaces');
-              })
-              .catch((error) => {
-              this.setState({loading:false});
-              });
-          }).catch(err => this.setState({loading:false}))
+            });
+
+         
       },
       (err) => {
         this.setState({loading:false})
@@ -141,4 +146,12 @@ class Login extends Component {
 
 
   
-  export default Login;
+const mapStateToProps = state => ({
+    
+  })
+  
+  
+  
+  Login=connect(mapStateToProps,{saveLocationOffline,saveLocationOnline})(Login);
+  
+export default Login;

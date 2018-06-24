@@ -38,53 +38,13 @@ BackgroundJob.register(trackPosition);
 
 var trackPositionSchedule = {
     jobKey: "trackPositionJob",
-    period: 300000,
+    period: 200000,
     exact: true,
     allowExecutionInForeground: true
 }
 
   
 let trackLocation;
-trackLocation1 = async() =>{
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-            let coords = {
-                lat: position.coords.latitude,
-                lng:  position.coords.longitude
-              };
-            NetInfo.isConnected.fetch().done((isConnected) => {
-                if(isConnected){
-                    saveLocationOffline(coords);
-                }else{
-                    saveLocationOffline(coords);
-                }
-            });
-
-
-        /*
-            Geocoder.geocodePosition(coords).then(res => {
-                if(NetInfo.isConnected.isConnected==true){
-                    fetch("https://us-central1-trackingbuddy-3bebd.cloudfunctions.net/saveLocation?lat="+ coords.lat +"&lon="+ coords.lng +"&userid="+userdetails.userid+"&address="+res[1].formattedAddress)
-                    .then((response) => response)
-                    .then((response) => {
-                    })
-                    .catch((error) => {
-                    console.error(error);
-                    });
-                }else{
-                    this.props.saveLocationOffline(coords,res[1].formattedAddress);
-
-                }
-
-            }).catch(err => console.log(err))*/
-        },
-        (err) => {
-        },
-        { enableHighAccuracy: false, timeout: 20000, maximumAge: 1000 }
-      );
-    }
-   
-
 
 
 class HomePlaces extends Component {

@@ -66,14 +66,13 @@ export const saveLocationOffline=(coordinate)=> dispatch=> {
 };
 
 export const saveLocationOnline=(coordinate)=> dispatch=> {
-    let coord = {
+    let coords = {
         lat: coordinate.lat,
         lng:  coordinate.lng,
     };
 
     let dateadded=Date.now();
-    
-    Geocoder.geocodePosition(coord).then(res => {
+    Geocoder.geocodePosition(coords).then(res => {
             fetch("https://us-central1-trackingbuddy-3bebd.cloudfunctions.net/saveLocation?lat="+ coords.lat +"&lon="+ coords.lng +"&userid="+userdetails.userid+"&address="+res[1].formattedAddress+"&dateadded="+dateadded)
             .then((response) => response)
             .then((response) => {
