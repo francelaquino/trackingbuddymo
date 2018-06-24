@@ -77,7 +77,7 @@ class DisplayGroup extends Component {
                             <Body style={globalStyle.listBody}  >
                             <TouchableOpacity onPress={() => {
                                     this.props.navigation.navigate('EditGroup',{id:group.id,groupname:group.groupname,avatar:group.avatar})}}  >
-                                <Text  style={globalStyle.listHeading} >{group.groupname}</Text>
+                                <Text  numberOfLines={1} style={globalStyle.listHeading} >{group.groupname}</Text>
                                     </TouchableOpacity>
                             </Body>
 

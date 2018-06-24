@@ -49,14 +49,14 @@ class LocationPlaces extends Component {
     }
     ready(){
         const { navigate } = this.props.navigation;
-        const locations =this.props.locations.map(location=>(
+        const locations =this.props.locations.reverse().map(location=>(
             <ListItem key={location.id}  avatar style={globalStyle.listItem} >
                 <Left style={globalStyle.listLeft}>
                         <Entypo  style={{fontSize:25,color:'#fbbc05'}} name="location"/>
                 </Left>
                 <Body style={globalStyle.listBody} >
-                    <Text style={globalStyle.listHeading}>{location.address}</Text>
-                    <Text note style={{fontSize:15}}>{location.dateadded}</Text>
+                    <Text numberOfLines={1} style={globalStyle.listHeading}>{location.address}</Text>
+                    <Text note style={{fontSize:12}}>{location.dateadded}</Text>
                 </Body>
                 <Right style={globalStyle.listRight}>
                     <SimpleLineIcons name="arrow-right" />

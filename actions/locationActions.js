@@ -13,7 +13,7 @@ export const displayLocations=(userid)=> dispatch=> {
     let cnt=0;
 
         return new Promise((resolve) => {
-            firebase.database().ref().child('locations/'+userid).orderByChild("dateadded").on("value",function(snapshot){
+            firebase.database().ref().child('locations/'+userid).orderByChild("dateadded").limitToFirst(100).on("value",function(snapshot){
                 if(snapshot.val()===null){
                     resolve();
                 }else{

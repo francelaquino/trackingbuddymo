@@ -21,7 +21,7 @@ class Loader extends Component{
             visible={this.props.loading}>
             <View style={styles.modalBackground}>
                 <View style={styles.activityIndicatorWrapper}>
-                <ActivityIndicator
+                <ActivityIndicator  color="white" 
                     animating={this.props.loading} />
                 </View>
             </View>
@@ -40,10 +40,10 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         flexDirection: 'column',
         justifyContent: 'space-around',
-        backgroundColor: '#00000040'
+        backgroundColor: 'transparent'
       },
       activityIndicatorWrapper: {
-        backgroundColor: '#FFFFFF',
+        backgroundColor: '#46c9d6',
         height: 50,
         width: 50,
         borderRadius: 10,

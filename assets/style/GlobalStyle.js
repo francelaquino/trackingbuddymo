@@ -213,10 +213,11 @@ module.exports = StyleSheet.create({
         height:36,
     },
     label:{
+        color:theme.primaryColor,
         fontSize:14,
     },
     value:{
-        color:'#313030',
+        color:'black',
         fontSize: 17,
     },
     cardNavBar: {

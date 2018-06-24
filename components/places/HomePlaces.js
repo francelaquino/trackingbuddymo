@@ -233,8 +233,8 @@ class HomePlaces extends Component {
                 </View>
             </Left>
             <Body style={globalStyle.listBody} >
-                <Text style={globalStyle.listHeading} onPress={()=>this.centerToMarker(member.coordinates.latitude,member.coordinates.longitude)}>{member.firstname}</Text>
-                <Text note style={{fontSize:10}}>{member.address}</Text>
+                <Text numberOfLines={1} style={globalStyle.listHeading} onPress={()=>this.centerToMarker(member.coordinates.latitude,member.coordinates.longitude)}>{member.firstname}</Text>
+                <Text numberOfLines={1} note style={{fontSize:10}}>{member.address}</Text>
             </Body>
             <Right button style={globalStyle.listRight} >
                 <TouchableOpacity  onPress={() =>this.props.navigation.navigate('LocationPlaces',{id:member.id})} >
@@ -251,13 +251,10 @@ class HomePlaces extends Component {
                 onLayout = {() => this.fitToMap()}
                 coordinate={marker.coordinates}
                 title={marker.firstname}>
-                <View style={styles.markerContainer}>
-                    <View style={styles.marker}>
-                        <Text style={styles.pinText}>{marker.firstname}</Text>
-                    </View>
-                    <Image style={{alignSelf: 'center',width:20,height:20,margin:0,padding:0,marginTop:-8}} 
-                    source={require('../../images/markerdown.png')} />
-                </View>
+                <Image style={styles.marker} 
+                    source={require('../../images/marker.png')} />
+                        <Text   style={styles.markerText}>{marker.firstname}</Text>
+                   
                 <MapView.Callout>
                 
                     <View style={styles.callOut}>
@@ -266,7 +263,7 @@ class HomePlaces extends Component {
                     <Thumbnail  style={globalStyle.listAvatarSmall} source={{uri: marker.avatar}} />
                     }
                     </View>
-                    <Text style={styles.callOutText}>{marker.address}</Text></View>
+                    <Text  style={styles.callOutText}>{marker.address}</Text></View>
                 </MapView.Callout>
                 </MapView.Marker>
                
@@ -275,7 +272,7 @@ class HomePlaces extends Component {
         
 
         return (
-            <Drawer
+            <Drawer leftDrawerWidth={40}
             tapToClose={true} 
                 ref={(ref) => { this.drawer = ref; }}
                 content={<LeftDrawer closeDrawer = {this.closeDrawer} navigation={this.props.navigation}/>}
@@ -409,22 +406,22 @@ const styles = StyleSheet.create({
         ...StyleSheet.absoluteFillObject,
       },
       marker: {
-        width: 50,
-        height: 20,
-        borderRadius: 5,
-        backgroundColor:'#096d71',
+        alignSelf: 'center',
+        width:45,
+        height:55,
+        margin:0,padding:0 
     },
-    markerArrow:{
-        width: 20,
-        height: 20,
-        transform: [{ rotateY: '180deg'}],
-        backgroundColor:'red',
-    },
-    pinText: {
-        color: 'white',
+    markerText: {
         textAlign: 'center',
-        fontSize: 10,
-        marginTop:3,
+        flex: 1,
+        color: 'black',
+        fontSize: 6,
+        width:32,
+        marginLeft:6,
+        marginTop:15,
+        position:'absolute',
+
+
     },
     callOut: {
         width: 100,

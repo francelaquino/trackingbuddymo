@@ -282,11 +282,24 @@ export const getMember=(userid)=> dispatch=> {
 
 export const deleteMember=(memberid)=> dispatch=> {
     return new Promise((resolve) => {
-        let memberRef=firebase.database().ref().child("users/"+userdetails.userid+"/members/"+memberid);
-        memberRef.remove()
+        
+        firebase.database().ref().child("users/"+userdetails.userid+"/members/"+memberid).remove()
         .catch(function(err) {
             resolve(false)
         });
+
+        firebase.database().ref().child("memberof/"+memberid+"/"+userdetails.userid).remove()
+        .catch(function(err) {
+            resolve(false)
+        });
+
+        firebase.database().ref().child("groupmembers").orderByKey().equalTo(memberid).remove()
+        .catch(function(err) {
+            resolve(false)
+        });
+
+
+        
         resolve(true)
     });
 };

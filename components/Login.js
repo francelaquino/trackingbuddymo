@@ -35,17 +35,8 @@ class Login extends Component {
                 lng:  position.coords.longitude,
                 dateadded : Date.now()
               };
-            NetInfo.isConnected.fetch().done((isConnected) => {
-                if(isConnected){
-
-                    self.props.saveLocationOnline(coords);
-
-                }else{
-                    self.props.saveLocationOffline(coords);
-                }
-                this.setState({loading:false});
-                this.props.navigation.navigate('HomePlaces');
-            });
+              self.props.saveLocationOnline(coords);
+              this.props.navigation.navigate('HomePlaces');
 
          
       },

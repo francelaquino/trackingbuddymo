@@ -1,7 +1,7 @@
 
 import React, { Component } from 'react';
 import {  Platform,  StyleSheet,  Text,  View, ScrollView,TextInput, TouchableOpacity, ToastAndroid, Alert, Image } from 'react-native';
-import { Root, Container, Header, Body, Title, Item, Input, Label, Button, Icon, Left, Right, List, ListItem } from 'native-base';
+import { Root, Container, Header, Body, Title, Item, Input, Label, Button, Icon, Left, Right, List, ListItem,Tab,Badge, Tabs, TabHeading } from 'native-base';
 import { connect } from 'react-redux';
 import {  getMember, displayMember, deleteMember,displayHomeMember } from '../../actions/memberActions' ;
 
@@ -85,7 +85,17 @@ class InfoMember extends Component {
                             <Image style={globalStyle.avatarBig} source={{uri : this.props.member.avatar}} />
                         </View>
                         </View>
-
+                        <Tabs>
+          <Tab heading={ <TabHeading><Text>Profile</Text></TabHeading>}>
+            <View><Text>1</Text></View>
+          </Tab>
+          <Tab heading={ <TabHeading><Text>Message</Text></TabHeading>}>
+          <View><Text>2</Text></View>
+          </Tab>
+          <Tab heading={ <TabHeading><Text>Location</Text></TabHeading>}>
+          <View><Text>3</Text></View>
+          </Tab>
+        </Tabs>
                         <List >
                         <View >
                             <ListItem >
