@@ -123,7 +123,7 @@ class DisplayMember extends Component {
                         </Body>
                         <Right  >
                             <Button transparent onPress={() => this.props.navigation.navigate("NewInvite",{onReload : this.onReload})}>
-                                <Ionicons style={{color:'white',fontSize:25}}  name='md-person-add' />
+                                <Text style={globalStyle.headerRightText}>Invite Member</Text>
                             </Button> 
                             
                             

@@ -108,7 +108,7 @@ class DisplayGroup extends Component {
                         </Body>
                         <Right  >
                             <Button transparent onPress={() =>navigate('CreateGroup')}>
-                                <MaterialIcons style={{color:'white',fontSize:30}}  name='group-add' />
+                                <Text style={globalStyle.headerRightText}>Create Group</Text>
                             </Button> 
                             
                         </Right>

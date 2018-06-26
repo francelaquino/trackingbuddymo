@@ -1,8 +1,8 @@
 
 var style = {
-    primaryColor: "#096d71",
-    primaryColorDisabled:'#0eb9c0',
-    lightColor: "#46c9d6",
+    primaryColor: "#1eaec5",
+    primaryColorDisabled:'#5fd2e4',
+    lightColor: "#30d6f1",
     darkColor: "#174e54",
     deleteColor: "#f64949"
 }

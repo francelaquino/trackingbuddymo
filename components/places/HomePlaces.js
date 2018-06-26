@@ -255,8 +255,8 @@ class HomePlaces extends Component {
                     source={require('../../images/marker.png')} />
                         <Text   style={styles.markerText}>{marker.firstname}</Text>
                    
-                <MapView.Callout>
-                
+                <MapView.Callout >
+               
                     <View style={styles.callOut}>
                     <View style={globalStyle.listAvatarContainerSmall} >
                     { marker.avatar==='' ?  <Thumbnail  style={globalStyle.listAvatar} source={{uri: this.state.emptyPhoto}} /> :
@@ -285,11 +285,11 @@ class HomePlaces extends Component {
                     <Header style={globalStyle.header}>
                         <Left style={globalStyle.headerMenu} >
                             <Button transparent onPress={()=>this.openDrawer()} >
-                                <Icon size={30} name='menu' />
+                                <Icon size={30} name='menu' style={globalStyle.headerLeftMenuIcon} />
                             </Button> 
                         </Left>
                         <Body>
-                            <Title>Home</Title>
+                            <Title style={globalStyle.headerTitle}>Home</Title>
                         </Body>
                         
                        
@@ -299,12 +299,15 @@ class HomePlaces extends Component {
                             
                         
                     </Header>
+                    <ScrollView  contentContainerStyle={{flexGrow: 1}} keyboardShouldPersistTaps={"always"}>
                     <View style={styles.mainContainer}>
-                    
+                   
                         <View style={styles.mapContainer}>
                         
                         <MapView ref={map => {this.map = map}}
-                            showsUserLocation = {false}
+                        showsUserLocation={true}
+                        loadingEnabled={true}
+                        followsUserLocation={true}
                             zoomEnabled = {true}
                             style={styles.map}
                             loadingEnabled={true}
@@ -338,12 +341,14 @@ class HomePlaces extends Component {
                         </View>
                         
                         <View style={styles.memberContainer} >
-                        <ScrollView  contentContainerStyle={{flexGrow: 1}} keyboardShouldPersistTaps={"always"}>
+                       
                             {members}
                             
-                        </ScrollView>
+                        
                         </View>
+                        
                     </View>
+                    </ScrollView>
           
 
                     
@@ -378,12 +383,12 @@ const styles = StyleSheet.create({
     },
     navBar: {
         flexDirection: 'row',
-        height: 50,
+        height: 40,
         padding:2,
-        backgroundColor: '#35bcc1',
+        backgroundColor: 'white',
         alignItems:'center',
         borderTopWidth:0,
-        borderTopColor:'#009da3',
+        //borderTopColor:'silver',
         shadowOpacity: 0.75,
         shadowRadius: 5,
         shadowColor: 'red',
@@ -392,13 +397,14 @@ const styles = StyleSheet.create({
     
     mapContainer: {
       flex: 1,
-      display: 'flex',
+      //display: 'flex',
+      height:300,
       
     },
     memberContainer: {
-        height: 160,
+        //height: 160,
         display: 'flex',
-        borderTopColor:'#848482',
+        borderTopColor:'silver',
         borderTopWidth:.5,
         
       },
@@ -407,18 +413,18 @@ const styles = StyleSheet.create({
       },
       marker: {
         alignSelf: 'center',
-        width:45,
-        height:55,
+        width:50,
+        height:60,
         margin:0,padding:0 
     },
     markerText: {
         textAlign: 'center',
         flex: 1,
         color: 'black',
-        fontSize: 6,
-        width:32,
-        marginLeft:6,
-        marginTop:15,
+        fontSize: 9,
+        width:40,
+        marginLeft:5,
+        marginTop:16,
         position:'absolute',
 
 

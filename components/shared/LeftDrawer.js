@@ -50,7 +50,7 @@ export default class LeftDrawer extends Component<Props> {
     return (
                 <Container > 
                     <Content style={{backgroundColor:'white',height:'100%'}}>
-                    <View style={{backgroundColor:'#096d71',height:140,padding:15}} >
+                    <View style={{height:140,padding:15}} >
                                 <View style={globalStyle.avatarContainer}>
                                 <Image style={globalStyle.avatarBig} source={{uri : this.state.emptyPhoto}} />
                                 </View>
@@ -60,7 +60,7 @@ export default class LeftDrawer extends Component<Props> {
                         <List>
                             <ListItem icon>
                             <Left>
-                                <FontAwesome style={{color:'#096d71',fontSize:20,width:25}} name="home" />
+                                <FontAwesome style={{fontSize:20,width:25}} name="home" />
                             </Left>
                             <Body style={{width:'100%',borderBottomWidth:0}} >
                                 
@@ -71,7 +71,7 @@ export default class LeftDrawer extends Component<Props> {
                             </ListItem>
                             <ListItem icon>
                             <Left>
-                                <FontAwesome style={{color:'#096d71',fontSize:20,width:25}} name="user" />
+                                <FontAwesome style={{fontSize:20,width:25}} name="user" />
                             </Left>
                             <Body style={{width:'100%',borderBottomWidth:0}} >
                             <TouchableOpacity  onPress={() =>this.displayProfile()}>
@@ -82,7 +82,7 @@ export default class LeftDrawer extends Component<Props> {
                            
                             <ListItem icon>
                             <Left>
-                                <MaterialIcons style={{color:'#096d71',fontSize:25,width:25}} name="group" />
+                                <MaterialIcons style={{fontSize:25,width:25}} name="group" />
                             </Left>
                             <Body style={{width:'100%',borderBottomWidth:0}} >
                                 <TouchableOpacity  onPress={() =>this.displayMember()}>
@@ -92,9 +92,9 @@ export default class LeftDrawer extends Component<Props> {
                             </ListItem>
                             <ListItem icon>
                             <Left>
-                                <FontAwesome style={{color:'#096d71',fontSize:19,width:25}} name="group" />
+                                <FontAwesome style={{fontSize:19,width:25}} name="group" />
                             </Left>
-                            <Body style={{width:'100%'}} >
+                            <Body style={{width:'100%',borderBottomWidth:0}} >
                             <TouchableOpacity  onPress={() =>this.displayGroup()}>
                                 <Text style={{fontSize:16}}>Group</Text>
                                 </TouchableOpacity>
@@ -102,7 +102,7 @@ export default class LeftDrawer extends Component<Props> {
                             </ListItem>
                             <ListItem icon>
                             <Left>
-                            <Entypo  style={{color:'#096d71',fontSize:19,width:25}} name="location"/>
+                            <Entypo  style={{fontSize:19,width:25}} name="location"/>
                             </Left>
                             <Body style={{width:'100%',borderBottomWidth:0}} >
                             <TouchableOpacity  onPress={() =>this.displayGroup()}>
@@ -113,17 +113,17 @@ export default class LeftDrawer extends Component<Props> {
                             <ListItem icon>
                             <Left>
                                 
-                                <MaterialIcons style={{color:'#096d71',fontSize:20,width:25}} name="location-on" />
+                                <MaterialIcons style={{fontSize:20,width:25}} name="location-on" />
                             </Left>
-                            <Body style={{width:'100%'}} >
+                            <Body style={{width:'100%',borderBottomWidth:0}} >
                                 <Text style={{fontSize:16}}>Places</Text>
                             </Body>
                             </ListItem>
                             <ListItem icon>
                             <Left>
-                                <MaterialIcons style={{color:'#096d71',fontSize:20,width:25}} name="settings" />
+                                <MaterialIcons style={{fontSize:20,width:25}} name="settings" />
                             </Left>
-                            <Body style={{width:'100%'}} >
+                            <Body style={{width:'100%',borderBottomWidth:0}} >
                                 <TouchableOpacity  onPress={() =>this.displaySettings()}>
                                     <Text style={{fontSize:16}}>Settings</Text>
                                 </TouchableOpacity>
@@ -131,7 +131,7 @@ export default class LeftDrawer extends Component<Props> {
                             </ListItem>
                             <ListItem icon>
                             <Left>
-                                <FontAwesome style={{color:'#096d71',fontSize:20,width:25}} name="sign-out" />
+                                <FontAwesome style={{fontSize:20,width:25}} name="sign-out" />
                             </Left>
                             <Body style={{width:'100%',borderBottomWidth:0}} >
                             <TouchableOpacity  onPress={() =>this.displayLogout()}>

@@ -23,6 +23,16 @@ module.exports = StyleSheet.create({
         color:'white',
         flex:0,
     },
+    headerRightText:{
+        color:'white',
+    },
+    headerLeftMenuIcon:{
+        color:'white',
+    },
+    headerTitle:{
+        color:'white',
+        fontSize:17,
+    },
     container: {
         backgroundColor:'white',
         flex: 1,
@@ -262,14 +272,14 @@ module.exports = StyleSheet.create({
         padding:2,
     },
     navBarIcon:{
-        fontSize:25,
-        color:'white',
+        fontSize:20,
+        color:'gray',
         alignItems:'center',
     },
     navBarLabel:{
-        fontSize:10,
+        fontSize:8,
         height:15,
-        color:'white',
+        color:'gray',
     },
     deleteButtonSmall:{
         color:'white',

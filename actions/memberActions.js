@@ -153,44 +153,46 @@ export const displayGroupMember=(groupid)=> dispatch=> {
             }else{
                 return new Promise((resolve,reject)=>{
                     count=snapshot.numChildren();
+                    
                     snapshot.forEach(snapshot1 => {
+                        
                         userid=snapshot1.key;
+                       
                         return new Promise((resolve,reject)=>{
                             firebase.database().ref().child('users/'+userid).once("value",function(snapshot2){
                                 key=snapshot2.key;
                                 firstname=snapshot2.val().firstname;
                                 avatar= snapshot2.val().avatar;
-
-                               
-
-
-                                resolve()
-                            });
-                        }).then(function(){
-                            return new Promise((resolve,reject)=>{
-                                firebase.database().ref().child('groupmembers/'+groupid).orderByChild("member").equalTo(key).once("value",function(snapshot3){
+                                firebase.database().ref().child('groupmembers/'+groupid+"/"+key).once("value",function(snapshot3){
                                     let selected=false;
                                     if(snapshot3.val()===null){
                                         selected=false;
+                                         members.push({
+                                            id:snapshot2.key,
+                                            firstname:snapshot2.val().firstname,
+                                            avatar: snapshot2.val().avatar,
+                                            selected:false,
+                                            });
+                                            resolve();
                                     }else{
-                                        selected=true;
+                                        members.push({
+                                            id:snapshot2.key,
+                                            firstname:snapshot2.val().firstname,
+                                            avatar: snapshot2.val().avatar,
+                                            selected:true,
+                                            });
+                                            resolve();
                                     }
-                                    members.push({
-                                        id:key,
-                                        firstname:firstname,
-                                        avatar: avatar,
-                                        selected : selected,
-                                    });
-                                    resolve();
-                                    
-                                })
-                            }).then(function(){
-                                
-                                cnt++;
+
+
+                            });
+                        });
+                        }).then(function(){
+                           
+                            cnt++;
                                 if(cnt>=count){
                                     resolve();
                                 }
-                            });
                         });
                     });
                     
