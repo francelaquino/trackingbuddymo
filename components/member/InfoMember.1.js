@@ -3,9 +3,10 @@ import React, { Component } from 'react';
 import {  Platform,  StyleSheet,  Text,  View, ScrollView,TextInput, TouchableOpacity, ToastAndroid, Alert, Image } from 'react-native';
 import { Root, Container, Header, Body, Title, Item, Input, Label, Button, Icon, Left, Right, List, ListItem,Tab,Badge, Tabs, TabHeading,FooterTab, Footer } from 'native-base';
 import { connect } from 'react-redux';
-import { NavigationActions } from 'react-navigation'
 import {  getMember, displayMember, deleteMember,displayHomeMember } from '../../actions/memberActions' ;
-import Loading  from '../shared/Loading';
+import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import Entypo from 'react-native-vector-icons/Entypo';
 var globalStyle = require('../../assets/style/GlobalStyle');
 
 
@@ -16,8 +17,6 @@ class InfoMember extends Component {
         this.state = {
             id:this.props.navigation.state.params.id,
             firstname:this.props.navigation.state.params.firstname,
-            //id:'D0rZ9ZIjyif0qBlyTPUMJj9oZHf2',
-            //firstname:'Kathleen'
         };
       }
 
@@ -71,7 +70,7 @@ class InfoMember extends Component {
                 <Container style={globalStyle.containerWrapper}>
                     <Header style={globalStyle.header} >
                         <Left style={globalStyle.headerLeft} >
-                        <Button transparent onPress={()=> {this.props.navigation.dispatch(NavigationActions.back())}} >
+                            <Button transparent onPress={()=> {this.props.navigation.goBack()}} >
                                 <Icon size={30} name='arrow-back' />
                             </Button> 
                         </Left>
@@ -88,7 +87,8 @@ class InfoMember extends Component {
                             <Image style={globalStyle.avatarBig} source={{uri : this.props.member.avatar}} />
                         </View>
                         </View>
-                        
+                        <Tabs>
+                        <Tab heading={ <TabHeading><Text>Profile</Text></TabHeading>}>
                             <View><List >
                             <ListItem >
                                 <Body>
@@ -130,12 +130,38 @@ class InfoMember extends Component {
                                 </Button>
                             </ListItem>
                         </List></View>
-                        
+                        </Tab>
+                        <Tab heading={ <TabHeading><Text>Message</Text></TabHeading>}>
+                        <View><Text>2</Text></View>
+                        </Tab>
+                        <Tab heading={ <TabHeading><Text>Location</Text></TabHeading>}>
+                        <View><Text>3</Text></View>
+                        </Tab>
+                        </Tabs>
                         
                         </View>
                     </ScrollView>
 
-                    
+                    <Footer>
+                    <FooterTab>
+                        <Button vertical>
+                        <MaterialIcons style={{fontSize:25}} name="group" />
+                        <Text>Profile</Text>
+                        </Button>
+                        <Button vertical>
+                        <Icon name="camera" />
+                        <Text>Camera</Text>
+                        </Button>
+                        <Button vertical active>
+                        <Icon active name="navigate" />
+                        <Text>Navigate</Text>
+                        </Button>
+                        <Button vertical>
+                        <Icon name="person" />
+                        <Text>Contact</Text>
+                        </Button>
+                    </FooterTab>
+                    </Footer>
                             
                     
                 </Container>

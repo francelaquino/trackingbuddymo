@@ -53,7 +53,7 @@ module.exports = StyleSheet.create({
         alignItems: 'center',
     },
     secondaryButton:{
-        backgroundColor:theme.primaryColor,
+        backgroundColor:theme.primaryButtonColor,
         marginBottom:10,
         width:'90%',
         alignSelf: "center",
@@ -135,13 +135,14 @@ module.exports = StyleSheet.create({
     },
     listHeading:{
         color:'black',
+        fontSize:15,
     },
     listRight:{
         borderBottomWidth:0,
         padding:0,
-        flexDirection: 'row',
         width:40,
         height:40,
+        alignItems: 'flex-end',
         
     },
     listRightOptionIcon:{
@@ -165,8 +166,8 @@ module.exports = StyleSheet.create({
         height:46,
     },
     listItemSmall:{
-        borderBottomColor:'#e5e5e5',
-        borderBottomWidth:.5,
+        borderTopColor:'#e5e5e5',
+        borderTopWidth:.5,
         marginLeft:0,
         padding:5,
         height:48,
@@ -272,14 +273,14 @@ module.exports = StyleSheet.create({
         padding:2,
     },
     navBarIcon:{
-        fontSize:20,
-        color:'gray',
+        fontSize:21,
+        color:'white',
         alignItems:'center',
     },
     navBarLabel:{
-        fontSize:8,
+        fontSize:11,
         height:15,
-        color:'gray',
+        color:'white',
     },
     deleteButtonSmall:{
         color:'white',

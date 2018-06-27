@@ -34,7 +34,7 @@ export default class LeftDrawer extends Component<Props> {
     this.props.closeDrawer();
   }
   displayProfile(){
-    this.props.navigation.navigate('UserProfile');
+    this.props.navigation.navigate('ProfileHome',{id:userdetails.userid});
     this.props.closeDrawer();
   }
   displaySettings(){
@@ -110,15 +110,7 @@ export default class LeftDrawer extends Component<Props> {
                                 </TouchableOpacity>
                             </Body>
                             </ListItem>
-                            <ListItem icon>
-                            <Left>
-                                
-                                <MaterialIcons style={{fontSize:20,width:25}} name="location-on" />
-                            </Left>
-                            <Body style={{width:'100%',borderBottomWidth:0}} >
-                                <Text style={{fontSize:16}}>Places</Text>
-                            </Body>
-                            </ListItem>
+                            
                             <ListItem icon>
                             <Left>
                                 <MaterialIcons style={{fontSize:20,width:25}} name="settings" />

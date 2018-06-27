@@ -4,6 +4,7 @@ import {  Platform,  StyleSheet,  Text,  View, ScrollView,TextInput, TouchableOp
 import { Root, Container, Header, Body, Title, Item, Input, Label, Button, Icon, Left, Right, List, ListItem } from 'native-base';
 import { connect } from 'react-redux';
 import {  getProfile } from '../../actions/userActions' ;
+import { NavigationActions } from 'react-navigation'
 import Loading  from '../shared/Loading';
 var globalStyle = require('../../assets/style/GlobalStyle');
 
@@ -54,7 +55,7 @@ class UserProfile extends Component {
                 <Container style={globalStyle.containerWrapper}>
                     <Header style={globalStyle.header} >
                         <Left style={globalStyle.headerLeft} >
-                            <Button transparent onPress={()=> {this.props.navigation.goBack()}} >
+                        <Button transparent onPress={()=> {this.props.navigation.dispatch(NavigationActions.back())}} >
                                 <Icon size={30} name='arrow-back' />
                             </Button> 
                         </Left>

@@ -75,18 +75,15 @@ class DisplayGroup extends Component {
                                 </View>
                             </Left>
                             <Body style={globalStyle.listBody}  >
-                            <TouchableOpacity onPress={() => {
-                                    this.props.navigation.navigate('EditGroup',{id:group.id,groupname:group.groupname,avatar:group.avatar})}}  >
                                 <Text  numberOfLines={1} style={globalStyle.listHeading} >{group.groupname}</Text>
-                                    </TouchableOpacity>
                             </Body>
 
                             <Right style={[globalStyle.listRight]} >
-                            <TouchableOpacity  style={{width:35,height:30,position:'absolute',right:0}}  
-                                    onPress={() => { this.props.navigation.navigate('AddMemberGroup',{id:group.id,groupname:group.groupname})}}>
-                                 <MaterialIcons style={[globalStyle.listRightOptionIcon],{fontSize:30}} name="group"/>
+                                <TouchableOpacity  style={globalStyle.listRightTouchable}  
+                                    onPress={() => {this.props.navigation.navigate("GroupHome",{id:group.id,groupname:group.groupname,avatar:group.avatar})}}>
+                                    <SimpleLineIcons  style={globalStyle.listRightOptionIcon}   name='arrow-right' />
                                 </TouchableOpacity>
-                               
+
                             </Right>
                             </ListItem>
 

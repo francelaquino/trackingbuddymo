@@ -51,15 +51,16 @@ class LocationPlaces extends Component {
         const { navigate } = this.props.navigation;
         const locations =this.props.locations.reverse().map(location=>(
             <ListItem key={location.id}  avatar style={globalStyle.listItem} >
-                <Left style={globalStyle.listLeft}>
-                        <Entypo  style={{fontSize:25,color:'#fbbc05'}} name="location"/>
-                </Left>
                 <Body style={globalStyle.listBody} >
                     <Text numberOfLines={1} style={globalStyle.listHeading}>{location.address}</Text>
                     <Text note style={{fontSize:12}}>{location.dateadded}</Text>
                 </Body>
+               
                 <Right style={globalStyle.listRight}>
-                    <SimpleLineIcons name="arrow-right" />
+                <TouchableOpacity  style={globalStyle.listRightTouchable}  
+                                    onPress={() => {this.props.navigation.navigate("MemberHome",{id:member.id,firstname:member.firstname})}}>
+                                <SimpleLineIcons  style={globalStyle.listRightOptionIcon}   name='arrow-right' />
+                                </TouchableOpacity>
                 </Right>
             </ListItem>
 

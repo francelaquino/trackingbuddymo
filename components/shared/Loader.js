@@ -17,7 +17,6 @@ class Loader extends Component{
             <Modal style={styles.modalWrapper}
             transparent={true} 
             onRequestClose={() => null}
-            animationType={'none'}
             visible={this.props.loading}>
             <View style={styles.modalBackground}>
                 <View style={styles.activityIndicatorWrapper}>
@@ -32,15 +31,16 @@ class Loader extends Component{
 
 const styles = StyleSheet.create({
     modalWrapper:{
-        height:'100%',
-        zIndex: 1000,
+        flex: 1,
+        height: Dimensions.get('window').height+200,
     },
     modalBackground: {
+        height: Dimensions.get('window').height+200,
         flex: 1,
         alignItems: 'center',
         flexDirection: 'column',
         justifyContent: 'space-around',
-        backgroundColor: 'transparent'
+        backgroundColor: '#00000040'
       },
       activityIndicatorWrapper: {
         backgroundColor: '#46c9d6',

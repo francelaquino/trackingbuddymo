@@ -6,6 +6,7 @@ import ImagePicker from 'react-native-image-picker';
 import { connect } from 'react-redux';
 import { displayGroup,updateGroup, deleteGroup  } from '../../actions/groupActions' ;
 import Loader  from '../shared/Loader';
+import { NavigationActions } from 'react-navigation'
 var globalStyle = require('../../assets/style/GlobalStyle');
 var registrationStyle = require('../../assets/style/Registration');
 
@@ -153,7 +154,7 @@ class EditGroup extends Component {
                 <Container style={globalStyle.containerWrapper}>
                     <Header style={globalStyle.header}>
                         <Left style={globalStyle.headerLeft} >
-                            <Button transparent onPress={()=> {this.props.navigation.goBack()}} >
+                            <Button transparent onPress={()=> {this.props.navigation.dispatch(NavigationActions.back())}} >
                                 <Icon size={30} name='arrow-back' />
                             </Button> 
                         </Left>

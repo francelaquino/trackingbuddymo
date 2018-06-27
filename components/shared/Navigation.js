@@ -5,28 +5,23 @@ import CreateGroup from '../group/CreateGroup';
 import DisplayGroup from '../group/DisplayGroup';
 import SelectGroup from '../group/SelectGroup';
 import DisplayHomeGroup from '../group/DisplayHomeGroup';
-import EditGroup from '../group/EditGroup';
-import AddMember from '../group/AddMember';
+//import EditGroup from '../group/EditGroup';
+//import AddMember from '../group/AddMember';
 import MembersGroup from '../group/MembersGroup';
 import DisplayMember from '../member/DisplayMember';
 import GenerateInviteCode from '../member/GenerateInviteCode';
-import InfoMember from '../member/InfoMember';
+import MemberHome from '../member/MemberHome';
+import GroupHome from '../group/GroupHome';
+import ProfileHome from '../user/ProfileHome';
 import NewInvite from '../member/NewInvite';
 import HomePlaces from '../places/HomePlaces';
 import GroupPlaces from '../places/GroupPlaces';
-import LocationPlaces from '../places/LocationPlaces';
 import HomeSettings from '../settings/HomeSettings';
-import UserProfile from '../user/UserProfile';
+
 import  { createStackNavigator }  from 'react-navigation';
 
-export  default Navigation = createStackNavigator({
-    HomePlaces: { 
-        screen: HomePlaces,
-        headerMode: 'none',
-        navigationOptions: {
-            header: null
-        }
-    },
+
+export const Stack = createStackNavigator({
     Login: { 
         screen: Login,
         headerMode: 'none',
@@ -35,17 +30,37 @@ export  default Navigation = createStackNavigator({
         },
         
     },
-  
-    UserProfile: { 
-        screen: UserProfile,
+    HomePlaces: { 
+        screen: HomePlaces,
+        headerMode: 'none',
+        navigationOptions: {
+            header: null
+        }
+    },
+    ProfileHome: { 
+        screen: ProfileHome,
+        headerMode: 'none',
+        navigationOptions: {
+            header: null
+        }
+    },
+    DisplayGroup: { 
+        screen: DisplayGroup,
+        headerMode: 'none',
+        navigationOptions: {
+            header: null
+        } 
+    },
+    GroupHome: { 
+        screen: GroupHome,
         headerMode: 'none',
         navigationOptions: {
             header: null
         }
     },
    
-    DisplayGroup: { 
-        screen: DisplayGroup,
+    MemberHome: { 
+        screen: MemberHome,
         headerMode: 'none',
         navigationOptions: {
             header: null
@@ -59,6 +74,16 @@ export  default Navigation = createStackNavigator({
             header: null
         } 
     },
+  
+
+    
+   
+   
+    
+   
+  
+    
+   
     
     
     GenerateInviteCode: { 
@@ -82,13 +107,13 @@ export  default Navigation = createStackNavigator({
    
     
 
-    LocationPlaces: { 
+    /*LocationPlaces: { 
         screen: LocationPlaces,
         headerMode: 'none',
         navigationOptions: {
             header: null
         }
-    },
+    },*/
 
    
     Register: { 
@@ -108,7 +133,7 @@ export  default Navigation = createStackNavigator({
         },
         
     },
-   
+   /*
     
     AddMemberGroup: { 
         screen: AddMember,
@@ -116,7 +141,7 @@ export  default Navigation = createStackNavigator({
         navigationOptions: {
             header: null
         } 
-    },
+    },*/
    
    
     NewInvite: { 
@@ -149,7 +174,7 @@ export  default Navigation = createStackNavigator({
     },
    
     
-    
+    /*
     
     InfoMember: { 
         screen: InfoMember,
@@ -157,18 +182,18 @@ export  default Navigation = createStackNavigator({
         navigationOptions: {
             header: null
         } 
-    },
+    },*/
    
     
     
-    
+    /*
     EditGroup: { 
         screen: EditGroup,
         headerMode: 'none',
         navigationOptions: {
             header: null
         } 
-    },
+    },*/
     MembersGroup: { 
         screen: MembersGroup,
         headerMode: 'none',
@@ -180,4 +205,21 @@ export  default Navigation = createStackNavigator({
   });
 
 
+
+/*
   
+let routeConfig={
+    InfoMember: { 
+        screen: InfoMember,
+    },
+    LocationPlaces: { 
+        screen: LocationPlaces,
+    },
+}
+
+let tabNavConfig={
+    tabBarPosition:'top',
+    animationEnabled: true,
+}
+
+export const MemberTab = TabNavigator(routeConfig,tabNavConfig);*/

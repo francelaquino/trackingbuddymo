@@ -94,15 +94,12 @@ class DisplayMember extends Component {
                                 </View>
                             </Left>
                             <Body style={globalStyle.listBody} >
-                                <Text  onPress={() => {
-                                    this.props.navigation.navigate("InfoMember",{id:member.id,firstname:member.firstname})}} style={globalStyle.listHeading}>{member.firstname}</Text>
+                                <Text  style={globalStyle.listHeading}>{member.firstname}</Text>
                             </Body>
                             <Right style={globalStyle.listRight} >
                                 <TouchableOpacity  style={globalStyle.listRightTouchable}  
-                                    onPress={() => {
-                                    this.openMemberOption(member.id);
-                                    }}>
-                                <SimpleLineIcons  style={globalStyle.listRightOptionIcon}   name='options-vertical' />
+                                    onPress={() => {this.props.navigation.navigate("MemberHome",{id:member.id,firstname:member.firstname})}}>
+                                <SimpleLineIcons  style={globalStyle.listRightOptionIcon}   name='arrow-right' />
                                 </TouchableOpacity>
                             </Right>
                             </ListItem>

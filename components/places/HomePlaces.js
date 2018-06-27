@@ -16,6 +16,8 @@ import { displayHomeMember  } from '../../actions/memberActions' ;
 import { setConnection  } from '../../actions/connectionActions' ;
 import { saveLocationOffline, saveLocationOnline  } from '../../actions/locationActions' ;
 import firebase from 'react-native-firebase';
+var screenHeight = Dimensions.get('window').height; 
+
 import BackgroundJob from 'react-native-background-job';
 
 var globalStyle = require('../../assets/style/GlobalStyle');
@@ -38,7 +40,8 @@ BackgroundJob.register(trackPosition);
 
 var trackPositionSchedule = {
     jobKey: "trackPositionJob",
-    period: 200000,
+    //period: 200000,
+    period: 10000,
     exact: true,
     allowExecutionInForeground: true
 }
@@ -299,15 +302,13 @@ class HomePlaces extends Component {
                             
                         
                     </Header>
-                    <ScrollView  contentContainerStyle={{flexGrow: 1}} keyboardShouldPersistTaps={"always"}>
+                    
                     <View style={styles.mainContainer}>
                    
                         <View style={styles.mapContainer}>
                         
                         <MapView ref={map => {this.map = map}}
-                        showsUserLocation={true}
                         loadingEnabled={true}
-                        followsUserLocation={true}
                             zoomEnabled = {true}
                             style={styles.map}
                             loadingEnabled={true}
@@ -324,31 +325,30 @@ class HomePlaces extends Component {
                         </View>
                         
                         
-                        <View style={styles.navBar} >
-                            <TouchableOpacity style={globalStyle.navBarButton} onPress={() =>this.props.navigation.navigate('SelectGroup',{changeGroup : this.changeGroup})}>
-                                <Ionicons style={globalStyle.navBarIcon} name="md-swap"/>
-                                <Text style={globalStyle.navBarLabel}>Switch Group</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity style={globalStyle.navBarButton} onPress={() =>this.fitToMap()}>
-                                <Entypo style={globalStyle.navBarIcon} name="location"/>
-                                <Text style={globalStyle.navBarLabel}>Center Map</Text>
-                            </TouchableOpacity>
-                            <View style={globalStyle.navBarButton}>
-                                <MaterialIcons style={globalStyle.navBarIcon} name="my-location"/>
-                                <Text style={globalStyle.navBarLabel}>Checkin</Text>
-                            </View>
-                            
-                        </View>
                         
+                        <ScrollView  contentContainerStyle={{flexGrow: 1}} contentContainerStyle={{flex: 0}} keyboardShouldPersistTaps={"always"}>
                         <View style={styles.memberContainer} >
                        
                             {members}
                             
                         
                         </View>
+                        </ScrollView>
                         
+                        <View style={styles.navBar} >
+                            <TouchableOpacity style={globalStyle.navBarButton} onPress={() =>this.props.navigation.navigate('SelectGroup',{changeGroup : this.changeGroup})}>
+                                <Ionicons style={globalStyle.navBarIcon} name="md-swap"/>
+                                <Text style={globalStyle.navBarLabel}>Switch Group</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity style={globalStyle.navBarButton} onPress={() =>this.fitToMap()}>
+                            <MaterialIcons style={globalStyle.navBarIcon} name="my-location"/>
+                                <Text style={globalStyle.navBarLabel}>Center Map</Text>
+                            </TouchableOpacity>
+                            
+                        </View>
                     </View>
-                    </ScrollView>
+
+                   
           
 
                     
@@ -376,36 +376,31 @@ class HomePlaces extends Component {
 
 const styles = StyleSheet.create({
     mainContainer: {
-      height: '100%',
       display: 'flex',
       flex: 1,
       flexDirection: 'column',
     },
     navBar: {
         flexDirection: 'row',
-        height: 40,
+        height: 50,
         padding:2,
-        backgroundColor: 'white',
+        backgroundColor: '#1eaec5',
         alignItems:'center',
         borderTopWidth:0,
-        //borderTopColor:'silver',
-        shadowOpacity: 0.75,
-        shadowRadius: 5,
-        shadowColor: 'red',
-        shadowOffset: { height: 0, width: 0 },
     },
     
     mapContainer: {
-      flex: 1,
-      //display: 'flex',
-      height:300,
+      flex: 3,
+      display: 'flex',
+      borderBottomColor:'silver',
+      borderBottomWidth:.5,
       
     },
     memberContainer: {
-        //height: 160,
+        flex: 1,
+        height: 195,
         display: 'flex',
-        borderTopColor:'silver',
-        borderTopWidth:.5,
+       
         
       },
       map: {

@@ -36,6 +36,7 @@ class Login extends Component {
                 dateadded : Date.now()
               };
               self.props.saveLocationOnline(coords);
+              this.setState({loading:false})
               this.props.navigation.navigate('HomePlaces');
 
          
@@ -63,7 +64,9 @@ class Login extends Component {
               userDetails.email=snapshot.val().email;
               userDetails.firstname=snapshot.val().firstname;
               userDetails.lastname=snapshot.val().lastname;
-              self.trackLocation();
+              self.setState({loading:false})
+              self.props.navigation.navigate('HomePlaces');
+              //self.trackLocation();
 
             });
          
