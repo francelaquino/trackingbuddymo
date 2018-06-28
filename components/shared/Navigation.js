@@ -5,8 +5,6 @@ import CreateGroup from '../group/CreateGroup';
 import DisplayGroup from '../group/DisplayGroup';
 import SelectGroup from '../group/SelectGroup';
 import DisplayHomeGroup from '../group/DisplayHomeGroup';
-//import EditGroup from '../group/EditGroup';
-//import AddMember from '../group/AddMember';
 import MembersGroup from '../group/MembersGroup';
 import DisplayMember from '../member/DisplayMember';
 import GenerateInviteCode from '../member/GenerateInviteCode';
@@ -14,7 +12,8 @@ import MemberHome from '../member/MemberHome';
 import GroupHome from '../group/GroupHome';
 import ProfileHome from '../user/ProfileHome';
 import NewInvite from '../member/NewInvite';
-import HomePlaces from '../places/HomePlaces';
+import Home from '../places/Home';
+import CreatePlace from '../places/CreatePlace';
 import GroupPlaces from '../places/GroupPlaces';
 import HomeSettings from '../settings/HomeSettings';
 
@@ -22,6 +21,20 @@ import  { createStackNavigator }  from 'react-navigation';
 
 
 export const Stack = createStackNavigator({
+    CreatePlace: { 
+        screen: CreatePlace,
+        headerMode: 'none',
+        navigationOptions: {
+            header: null
+        }
+    },
+    Home: { 
+        screen: Home,
+        headerMode: 'none',
+        navigationOptions: {
+            header: null
+        }
+    },
     Login: { 
         screen: Login,
         headerMode: 'none',
@@ -30,13 +43,7 @@ export const Stack = createStackNavigator({
         },
         
     },
-    HomePlaces: { 
-        screen: HomePlaces,
-        headerMode: 'none',
-        navigationOptions: {
-            header: null
-        }
-    },
+    
     ProfileHome: { 
         screen: ProfileHome,
         headerMode: 'none',
@@ -200,7 +207,7 @@ export const Stack = createStackNavigator({
         navigationOptions: {
             header: null
         } 
-    },initialRouteName: 'HomePlaces'
+    },initialRouteName: 'Home'
 
   });
 

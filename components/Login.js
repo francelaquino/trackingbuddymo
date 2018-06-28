@@ -6,7 +6,7 @@ import firebase from 'react-native-firebase';
 import Geocoder from 'react-native-geocoder';
 import { connect } from 'react-redux';
 import { saveLocationOffline, saveLocationOnline  } from '../actions/locationActions' ;
-import HomePlaces from './places/HomePlaces';
+import Home from './places/Home';
 import Loader from './shared/Loader';
 var userDetails = require('./shared/userDetails');
 var registrationStyle = require('../assets/style/Registration');
@@ -37,7 +37,7 @@ class Login extends Component {
               };
               self.props.saveLocationOnline(coords);
               this.setState({loading:false})
-              this.props.navigation.navigate('HomePlaces');
+              this.props.navigation.navigate('Home');
 
          
       },
