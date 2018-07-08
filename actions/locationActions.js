@@ -25,8 +25,8 @@ export const displayLocations=(userid)=> dispatch=> {
                             address:childSnapshot.val().address,
                             dateadded: dateadded,
                             coordinates:{
-                                longitude: Number(childSnapshot.val().lat),
-                                latitude: Number(childSnapshot.val().lon)
+                                longitude: Number(childSnapshot.val().lon),
+                                latitude: Number(childSnapshot.val().lat)
                             }
                             
                         });
@@ -255,7 +255,7 @@ export const displayPlaces=()=> dispatch=> {
         return new Promise((resolve) => {
             firebase.database().ref().child('places/'+userdetails.userid).orderByKey().on("value",function(snapshot){
                 snapshot.forEach(childSnapshot => {
-                    let dateadded= Moment(new Date(parseInt(childSnapshot.val().dateadded))).format("DD-MMM-YYYY ddd hh:mm A");
+                    let dateadded= Moment(new Date(parseInt(childSnapshot.val().dateadded))).format("ddd DD-MMM-YYYY hh:mm A");
                     places.push({
                         id:childSnapshot.key,
                         address:childSnapshot.val().address,

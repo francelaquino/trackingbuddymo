@@ -58,7 +58,7 @@ class LocationPlaces extends Component {
                
                 <Right style={globalStyle.listRight}>
                 <TouchableOpacity  style={globalStyle.listRightTouchable}  
-                                    onPress={() => {this.props.navigation.navigate("MemberHome",{id:member.id,firstname:member.firstname})}}>
+                                    onPress={() => {this.props.navigation.navigate("LocationView",{location:location})}}>
                                 <SimpleLineIcons  style={globalStyle.listRightOptionIcon}   name='arrow-right' />
                                 </TouchableOpacity>
                 </Right>

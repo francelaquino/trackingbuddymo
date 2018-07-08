@@ -111,7 +111,7 @@ class DisplayMember extends Component {
                 <Container style={globalStyle.containerWrapper}>
                     <Header style={globalStyle.header}>
                         <Left style={globalStyle.headerLeft} >
-                            <Button transparent onPress={()=> {this.props.navigation.navigate('HomePlaces')}} >
+                            <Button transparent onPress={()=> {this.props.navigation.goBack()}} >
                                 <Icon size={30} name='arrow-back' />
                             </Button> 
                         </Left>
