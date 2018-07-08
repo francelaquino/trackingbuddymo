@@ -105,7 +105,7 @@ class DisplayGroup extends Component {
                         </Body>
                         <Right  >
                             <Button transparent onPress={() =>navigate('CreateGroup')}>
-                                <Text style={globalStyle.headerRightText}>Create Group</Text>
+                                <Text style={globalStyle.headerRightText}>Add</Text>
                             </Button> 
                             
                         </Right>

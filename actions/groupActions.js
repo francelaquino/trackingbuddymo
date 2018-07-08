@@ -129,7 +129,6 @@ export const deleteGroup=(groupid)=> dispatch=> {
 export const updateGroup=(group)=> dispatch=> {
     let emptyPhoto='https://firebasestorage.googleapis.com/v0/b/trackingbuddy-3bebd.appspot.com/o/group_photos%2Fgroup.png?alt=media&token=d1bade4b-6fee-43f7-829a-0b6f76005b40';
     let avatar="";
-    console.log(group);
     return new Promise((resolve) => {
         firebase.database().ref().child("groups/"+userdetails.userid).orderByChild("groupname").equalTo(group.groupname).once("value",snapshot => {
             let key="";
@@ -137,7 +136,6 @@ export const updateGroup=(group)=> dispatch=> {
                 key =childSnapshot.key;
             });
             if(key==group.groupid || key==""){
-                console.log(group.isPhotoChange)
                 if(group.isPhotoChange==true){
                     let avatarlink=group.groupid+".jpg";
                     const ref = firebase.storage().ref("/group_photos/"+avatarlink);

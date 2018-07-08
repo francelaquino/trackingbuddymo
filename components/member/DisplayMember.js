@@ -120,9 +120,8 @@ class DisplayMember extends Component {
                         </Body>
                         <Right  >
                             <Button transparent onPress={() => this.props.navigation.navigate("NewInvite",{onReload : this.onReload})}>
-                                <Text style={globalStyle.headerRightText}>Invite Member</Text>
+                                <Text style={globalStyle.headerRightText}>Invite</Text>
                             </Button> 
-                            
                             
                         </Right>
                     </Header>

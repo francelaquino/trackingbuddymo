@@ -1,7 +1,7 @@
 
 import React, { Component } from 'react';
-import { NetInfo , TouchableOpacity,Platform,  StyleSheet,  Text,  View, ScrollView,TextInput, ToastAndroid, Image,Dimensions } from 'react-native';
-import { Drawer,Root, Container, Header, Body, Title, Item, Input, Label, Button, Icon, Content, List, ListItem,Left, Right,Switch, Thumbnail,Card,Form } from 'native-base';
+import {  TouchableOpacity,Platform,  StyleSheet,  Text,  View, ScrollView,TextInput, ToastAndroid, Image,Dimensions,Alert } from 'react-native';
+import { Root, Container, Header, Body, Title, Item, Input, Label, Button, Icon, Content, List, ListItem,Left, Right,Form } from 'native-base';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -10,7 +10,7 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Entypo from 'react-native-vector-icons/Entypo';
 import MapView, { ProviderPropType, Marker, AnimatedRegion,Animated,Polyline } from 'react-native-maps';
 import { connect } from 'react-redux';
-import { createPlace,displayPlaces  } from '../../actions/locationActions' ;
+import { updatePlace, displayPlaces,deletePlace  } from '../../actions/locationActions' ;
 import Loading  from '../shared/Loading';
 import Loader from '../shared/Loader';
 const LATITUDE_DELTA = 0.01;
@@ -18,18 +18,18 @@ const LONGITUDE_DELTA = 0.01;
 
 
 
-
 var globalStyle = require('../../assets/style/GlobalStyle');
 var userdetails = require('../../components/shared/userDetails');
 
 
-class CreatePlace extends Component {
+class EditPlace extends Component {
     constructor(props) {
         super(props)
         this.map = null;
 
         this.state = {
-            loading:false,
+            id:'',
+            loading:true,
             placename:'',
             region: {
                   latitude: -37.78825,
@@ -58,20 +58,59 @@ class CreatePlace extends Component {
 
     }
 
+    componentWillMount() {
+        this.initialize();
+    }
+            
+    initialize(){
+        this.setState({
+            id:this.props.navigation.state.params.place.id,
+            placename:this.props.navigation.state.params.place.placename,
+            loading:false,
+            region:{
+                latitude: this.props.navigation.state.params.place.latitude,
+                longitude: this.props.navigation.state.params.place.longitude,
+                latitudeDelta: this.props.navigation.state.params.place.latitudeDelta,
+                longitudeDelta: this.props.navigation.state.params.place.longitudeDelta,
+            }
+        })
+    }
     onRegionChangeComplete = region => {
         this.setState({ region });
         
       }
-   
-    componentDidMount(){
-        this.getCurrentPosition();
-
+      confirmDelete(){
+        Alert.alert(
+            'Comfirm Delete',
+            'Are you sure you want to delete the place?',
+            [
+              
+              {text: 'Yes', onPress: () => this.onDelete()},
+              {text: 'No', style: 'cancel'},
+            ],
+            { cancelable: true }
+          )
     }
+    onDelete(){
+        this.setState({loading:true})
+        this.props.deletePlace(this.state.id).then(res=>{
+        	if(res!==""){
+                this.setState({loading:false})
+                ToastAndroid.showWithGravityAndOffset(res,ToastAndroid.LONG,ToastAndroid.BOTTOM, 25, 50);
+                this.props.displayPlaces();
+                this.props.navigation.pop(2)
+            }
+        }).catch(function(err) {
+            this.setState({loading:false})
+        });
 
+
+        
+    }
     onSubmit(){
         this.setState({loading:true})
-        this.props.createPlace(this.state.placename,this.state.region).then(res=>{
-            this.setState({placename:'',loading:false})
+        this.props.updatePlace(this.state.id,this.state.placename,this.state.region).then(res=>{
+            this.setState({loading:false})
             if(res!==""){
                 this.props.displayPlaces();
                 ToastAndroid.showWithGravityAndOffset(res,ToastAndroid.LONG,ToastAndroid.BOTTOM, 25, 50);
@@ -83,30 +122,6 @@ class CreatePlace extends Component {
     }
 
 
-    getCurrentPosition() {
-        try {
-          navigator.geolocation.getCurrentPosition(
-            (position) => {
-              const region = {
-                latitude: position.coords.latitude,
-                longitude: position.coords.longitude,
-                latitudeDelta: LATITUDE_DELTA,
-                longitudeDelta: LONGITUDE_DELTA,
-              };
-              this.setState({region:{
-                    latitude: position.coords.latitude,
-                    longitude: position.coords.longitude,
-                    latitudeDelta: LATITUDE_DELTA,
-                    longitudeDelta: LONGITUDE_DELTA
-                }
-            })
-            },
-            (error) => {
-            }
-          );
-        } catch(e) {
-        }
-    }
 
    
     loading(){
@@ -136,7 +151,7 @@ class CreatePlace extends Component {
                                 </Button> 
                             </Left>
                             <Body>
-                                <Title>Add Place</Title>
+                                <Title>{this.state.placename}</Title>
                             </Body>
                         </Header>
                         <View style={styles.mainContainer}>
@@ -144,8 +159,8 @@ class CreatePlace extends Component {
                             
                                 <MapView ref={map => {this.map = map}}
                                     onLayout = {() => this.fitToMap()}
-                                    zoomEnabled = {true}
                                     onRegionChangeComplete={this.onRegionChangeComplete}
+                                    zoomEnabled = {true}
                                     style={StyleSheet.absoluteFill}
                                     textStyle={{ color: '#bc8b00' }}
                                     loadingEnabled={true}
@@ -159,6 +174,7 @@ class CreatePlace extends Component {
                                     
                             </View>
                             <View  style={styles.footerContainer}>
+                            
                             <Item stackedLabel>
                             <Label style={globalStyle.label} >Enter Place Name</Label>
                             <Input style={globalStyle.textinput} value={this.state.placename}  autoCorrect={false} onChangeText={placename=>this.setState({placename})} name="placename"/>
@@ -166,8 +182,14 @@ class CreatePlace extends Component {
                             <Button disabled={!this.state.placename} style={this.state.placename ? globalStyle.secondaryButton : globalStyle.secondaryButtonDisabled}
                                         onPress={()=>this.onSubmit()}
                                         bordered light full rounded >
-                                        <Text style={{color:'white'}}>Save</Text>
+                                        <Text style={{color:'white'}}>Update Place</Text>
                                     </Button>
+
+                                <Button 
+                                    onPress={()=>this.confirmDelete()}
+                                    bordered light full rounded style={globalStyle.deleteButton}>
+                                    <Text style={{color:'white'}}>Delete Place</Text>
+                                </Button>
                             
                             </View>
                         </View>
@@ -212,7 +234,7 @@ const styles = StyleSheet.create({
       
     },
     footerContainer: {
-        height:150,
+        height:250,
         padding:5,
         
       },
@@ -224,7 +246,7 @@ const styles = StyleSheet.create({
 const mapStateToProps = state => ({
   })
   
-CreatePlace=connect(mapStateToProps,{displayPlaces,createPlace})(CreatePlace);
+EditPlace=connect(mapStateToProps,{deletePlace,displayPlaces,updatePlace})(EditPlace);
   
-export default CreatePlace;
+export default EditPlace;
 

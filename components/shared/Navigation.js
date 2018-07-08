@@ -14,6 +14,10 @@ import ProfileHome from '../user/ProfileHome';
 import NewInvite from '../member/NewInvite';
 import Home from '../places/Home';
 import CreatePlace from '../places/CreatePlace';
+import PlaceList from '../places/PlaceList';
+import EditPlace from '../places/EditPlace';
+import PlaceView from '../places/PlaceView';
+import PlaceAlert from '../places/PlaceAlert';
 import GroupPlaces from '../places/GroupPlaces';
 import HomeSettings from '../settings/HomeSettings';
 
@@ -21,13 +25,6 @@ import  { createStackNavigator }  from 'react-navigation';
 
 
 export const Stack = createStackNavigator({
-    CreatePlace: { 
-        screen: CreatePlace,
-        headerMode: 'none',
-        navigationOptions: {
-            header: null
-        }
-    },
     Home: { 
         screen: Home,
         headerMode: 'none',
@@ -35,6 +32,48 @@ export const Stack = createStackNavigator({
             header: null
         }
     },
+    PlaceList: { 
+        screen: PlaceList,
+        headerMode: 'none',
+        navigationOptions: {
+            header: null
+        }
+    },
+
+    EditPlace: { 
+        screen: EditPlace,
+        headerMode: 'none',
+        navigationOptions: {
+            header: null
+        }
+    },
+
+
+    PlaceAlert: { 
+        screen: PlaceAlert,
+        headerMode: 'none',
+        navigationOptions: {
+            header: null
+        }
+    },
+
+
+    PlaceView: { 
+        screen: PlaceView,
+        headerMode: 'none',
+        navigationOptions: {
+            header: null
+        }
+    },
+
+    CreatePlace: { 
+        screen: CreatePlace,
+        headerMode: 'none',
+        navigationOptions: {
+            header: null
+        }
+    },
+   
     Login: { 
         screen: Login,
         headerMode: 'none',

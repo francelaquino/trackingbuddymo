@@ -25,6 +25,7 @@ module.exports = StyleSheet.create({
     },
     headerRightText:{
         color:'white',
+        fontSize:17,
     },
     headerLeftMenuIcon:{
         color:'white',
@@ -54,6 +55,7 @@ module.exports = StyleSheet.create({
     },
     secondaryButton:{
         backgroundColor:theme.primaryButtonColor,
+        marginTop:10,
         marginBottom:10,
         width:'90%',
         alignSelf: "center",
@@ -61,6 +63,7 @@ module.exports = StyleSheet.create({
     secondaryButtonDisabled:{
         backgroundColor:theme.primaryColorDisabled,
         marginBottom:10,
+        marginTop:10,
         width:'90%',
         alignSelf: "center",
     },
@@ -119,6 +122,7 @@ module.exports = StyleSheet.create({
         borderBottomWidth:.5,
         marginLeft:0,
         padding:5,
+        height:60,
 
        
     },
@@ -134,6 +138,10 @@ module.exports = StyleSheet.create({
         marginLeft:5
     },
     listHeading:{
+        color:'black',
+        fontSize:16,
+    },
+    listHeadingHome:{
         color:'black',
         fontSize:15,
     },

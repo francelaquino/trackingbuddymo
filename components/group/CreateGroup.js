@@ -17,7 +17,7 @@ class CreateGroup extends Component {
         this.state = {
                         loading:false,
 						emptyPhoto:'https://firebasestorage.googleapis.com/v0/b/trackingbuddy-3bebd.appspot.com/o/group_photos%2Fgroup.png?alt=media&token=d1bade4b-6fee-43f7-829a-0b6f76005b40',
-            groupname:'',
+                        groupname:'',
 						avatarsource:'',
 						avatar:'',
         };

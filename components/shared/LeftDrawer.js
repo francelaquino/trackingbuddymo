@@ -33,6 +33,10 @@ export default class LeftDrawer extends Component<Props> {
     this.props.navigation.navigate('HomePlaces');
     this.props.closeDrawer();
   }
+  displayPlaces(){
+    this.props.navigation.navigate('PlaceList');
+    this.props.closeDrawer();
+  }
   displayProfile(){
     this.props.navigation.navigate('ProfileHome',{id:userdetails.userid});
     this.props.closeDrawer();
@@ -105,8 +109,8 @@ export default class LeftDrawer extends Component<Props> {
                             <Entypo  style={{fontSize:19,width:25}} name="location"/>
                             </Left>
                             <Body style={{width:'100%',borderBottomWidth:0}} >
-                            <TouchableOpacity  onPress={() =>this.displayGroup()}>
-                                <Text style={{fontSize:16}}>Locations</Text>
+                            <TouchableOpacity  onPress={() =>this.displayPlaces()}>
+                                <Text style={{fontSize:16}}>Places</Text>
                                 </TouchableOpacity>
                             </Body>
                             </ListItem>

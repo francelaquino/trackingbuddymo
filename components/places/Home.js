@@ -41,7 +41,7 @@ BackgroundJob.register(trackPosition);
 var trackPositionSchedule = {
     jobKey: "trackPositionJob",
     //period: 200000,
-    period: 10000,
+    period: 60000,
     exact: true,
     allowExecutionInForeground: true
 }
@@ -92,7 +92,7 @@ class HomePlaces extends Component {
                             self.props.saveLocationOnline(coords);
 
                         }else{
-                            self.props.saveLocationOffline(coords);
+                            //self.props.saveLocationOffline(coords);
                         }
                     });
         
@@ -100,8 +100,9 @@ class HomePlaces extends Component {
                
                 },
                 (err) => {
+                    console.log(err)
                 },
-                { enableHighAccuracy: false, timeout: 20000, maximumAge: 1000 }
+                { enableHighAccuracy: true, timeout: 20000 }
               );
             }
 
@@ -236,7 +237,7 @@ class HomePlaces extends Component {
                 </View>
             </Left>
             <Body style={globalStyle.listBody} >
-                <Text numberOfLines={1} style={globalStyle.listHeading} onPress={()=>this.centerToMarker(member.coordinates.latitude,member.coordinates.longitude)}>{member.firstname}</Text>
+                <Text numberOfLines={1} style={globalStyle.listHeadingHome} onPress={()=>this.centerToMarker(member.coordinates.latitude,member.coordinates.longitude)}>{member.firstname}</Text>
                 <Text numberOfLines={1} note style={{fontSize:10}}>{member.address}</Text>
             </Body>
             <Right button style={globalStyle.listRight} >
