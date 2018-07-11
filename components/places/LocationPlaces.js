@@ -1,7 +1,7 @@
 
 import React, { Component } from 'react';
-import { TouchableOpacity,Modal, Platform,  StyleSheet,  Text,  View, ScrollView,TextInput, ToastAndroid, Image  } from 'react-native';
-import { Root, Container, Header, Body, Title, Item, Input, Label, Button, Icon, Content, List, ListItem,Left, Right,Switch,Thumbnail, Card,CardItem } from 'native-base';
+import { TouchableOpacity,Modal, Platform,  StyleSheet,  Text,  View, ScrollView,TextInput, ToastAndroid, Image, FlatList  } from 'react-native';
+import { Root, Container, Header, Body, Title, Item, Input, Label, Button, Icon, Content, List, Left, Right,ListItem} from 'native-base';
 import { connect } from 'react-redux';
 import Entypo from 'react-native-vector-icons/Entypo';
 import { displayLocations  } from '../../actions/locationActions' ;
@@ -47,26 +47,31 @@ class LocationPlaces extends Component {
           </Root>
         )
     }
+    
+    renderLocation(){
+        const data=this.props.locations;
+        return (
+            <FlatList
+            style={{flex:1}}
+                keyExtractor={item => item.id}
+                data={data}
+                renderItem={({ item }) => (
+                    <ListItem key={item.id}  avatar style={globalStyle.listItem} >
+                    <Body style={globalStyle.listBody} >
+                        <Text numberOfLines={1} style={globalStyle.listHeading}>{item.address}</Text>
+                        <Text note style={{fontSize:12}}>{item.dateadded}</Text>
+                    </Body>
+                    <Right style={globalStyle.listRight}>
+                        <TouchableOpacity  style={globalStyle.listRightTouchable}  
+                                            onPress={() => {this.props.navigation.navigate("LocationView",{location:item})}}>
+                            <SimpleLineIcons  style={globalStyle.listRightOptionIcon}   name='arrow-right' />
+                        </TouchableOpacity>
+                    </Right>
+                </ListItem>
+                ) }
+            />)
+    }
     ready(){
-        const { navigate } = this.props.navigation;
-        const locations =this.props.locations.reverse().map(location=>(
-            <ListItem key={location.id}  avatar style={globalStyle.listItem} >
-                <Body style={globalStyle.listBody} >
-                    <Text numberOfLines={1} style={globalStyle.listHeading}>{location.address}</Text>
-                    <Text note style={{fontSize:12}}>{location.dateadded}</Text>
-                </Body>
-               
-                <Right style={globalStyle.listRight}>
-                <TouchableOpacity  style={globalStyle.listRightTouchable}  
-                                    onPress={() => {this.props.navigation.navigate("LocationView",{location:location})}}>
-                                <SimpleLineIcons  style={globalStyle.listRightOptionIcon}   name='arrow-right' />
-                                </TouchableOpacity>
-                </Right>
-            </ListItem>
-
-           
-          ));
-
          
         return(
             <Root>
@@ -84,11 +89,9 @@ class LocationPlaces extends Component {
                     <Content padder>
                     <ScrollView  contentContainerStyle={{flexGrow: 1}} keyboardShouldPersistTaps={"always"}>
                     <View style={globalStyle.container}>
-                    
                         <List>
-                            {locations}
+                                {this.renderLocation()}
                         </List>
-
                          
                     </View>
                     </ScrollView>

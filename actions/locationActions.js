@@ -181,52 +181,56 @@ export const updatePlace=(id,placename,coordinate)=> dispatch=> {
 
 
 
-export const savePlaceAlert=(alert)=> dispatch=> {
-    return new Promise((resolve) => {
+export const savePlaceAlert=(alert)=> async dispatch=> {
+    try{
+        await firebase.database().ref().child("placealert/"+alert.userid+"/"+alert.placeid).set({ 
+            placeid: alert.placeid,
+            latitude: alert.latitude,
+            longitude: alert.longitude,
+            userid:alert.userid,
+            placeowner:userdetails.userid,
+            arrives:alert.arrives,
+            leaves:alert.leaves,
+            dateupdated: Date.now(),
+        });
+        return "Alert successfully saved";
+    }catch (e) {
+        return "";
+    }
+    
         
-            firebase.database().ref().child("placealert/"+alert.placeid+"/"+alert.userid).set({ 
-                            placeid: alert.placeid,
-                            latitude: alert.latitude,
-                            longitude: alert.longitude,
-                            userid:alert.userid,
-                            placeowner:userdetails.userid,
-                            arrives:alert.arrives,
-                            leaves:alert.leaves,
-                            dateupdated: Date.now(),
-            });
-            resolve("Place alert successfully saved");
-        }).catch(err => {
-            resolve("");
-        })
+         
 };
 
-export const getPlaceAlert=(placeid,userid)=> dispatch=> {
+export const getPlaceAlert=(placeid,userid)=> async dispatch=> {
     let alert={
         arrives:false,
         leaves:false
     }
-    return new Promise((resolve) => {
-            let done=false;
-            firebase.database().ref().child("placealert/"+placeid+"/"+userid).once("value",snapshot => {
-                    if(snapshot.val()!==null){
-                        alert={
-                            arrives:snapshot.val().arrives,
-                            leaves:snapshot.val().leaves
-                        }
+
+    try{
+        await firebase.database().ref().child("placealert/"+userid+"/"+placeid).once("value",snapshot => {
+                if(snapshot.val()!==null){
+                    alert={
+                        arrives:snapshot.val().arrives,
+                        leaves:snapshot.val().leaves
                     }
-                        dispatch({ 
-                            type: GET_PLACE_ALERT,
-                            payload: alert,
-                        });
-                        resolve();
-                });
-        }).catch(err => {
+                }
+                    
+            });
+
             dispatch({ 
                 type: GET_PLACE_ALERT,
                 payload: alert,
             });
-            resolve("");
-        })
+
+    }catch (e) {
+        dispatch({ 
+            type: GET_PLACE_ALERT,
+            payload: alert,
+        });
+    }
+
 };
 
 
@@ -248,9 +252,36 @@ export const deletePlace=(id)=> dispatch=> {
 };
 
 
-export const displayPlaces=()=> dispatch=> {
+export const displayPlaces=()=>async dispatch=> {
     let places=[];
-    let count=0;
+    try{
+        await firebase.database().ref().child('places/'+userdetails.userid).orderByKey().on("value",async function(snapshot){
+            await snapshot.forEach(childSnapshot => {
+                let dateadded= Moment(new Date(parseInt(childSnapshot.val().dateadded))).format("ddd DD-MMM-YYYY hh:mm A");
+                places.push({
+                    id:childSnapshot.key,
+                    address:childSnapshot.val().address,
+                    placename:childSnapshot.val().placename,
+                    dateadded: dateadded,
+                    longitude: Number(childSnapshot.val().longitude),
+                    latitude: Number(childSnapshot.val().latitude)
+                    
+                });
+            })
+            dispatch({ 
+                type: DISPLAY_PLACES,
+                payload: places,
+            });
+        });
+        
+    }catch (e) {
+        dispatch({ 
+            type: DISPLAY_PLACES,
+            payload: places,
+        });
+    }
+
+   /* let count=0;
     let cnt=0;
         return new Promise((resolve) => {
             firebase.database().ref().child('places/'+userdetails.userid).orderByKey().on("value",function(snapshot){
@@ -277,7 +308,7 @@ export const displayPlaces=()=> dispatch=> {
                 type: DISPLAY_PLACES,
                 payload: places,
                 });
-        })
+        })*/
     
 };
 

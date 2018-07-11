@@ -40,8 +40,8 @@ BackgroundJob.register(trackPosition);
 
 var trackPositionSchedule = {
     jobKey: "trackPositionJob",
-    //period: 200000,
-    period: 60000,
+    period: 10000,
+    //period: 60000,
     exact: true,
     allowExecutionInForeground: true
 }

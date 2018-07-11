@@ -38,7 +38,7 @@ let routeConfig={
     LocationPlaces:{
         screen:LocationPlaces,
         navigationOptions: ({ navigation }) => ({
-            title: "Location",
+            title: "Locations",
             tabBarIcon: ({ tintColor }) =>  <SimpleLineIcons  style={{color:'white',fontSize:21,margin:0, padding:0}} name="location-pin"/>
         })
     },

@@ -32,7 +32,7 @@ class PlaceAlert extends Component {
             loading:true,
             firstname:'',
             placename:'',
-            longtitude:'',
+            longitude:'',
             latitude:'',
             arrives:false,
             leaves:false,
@@ -52,47 +52,45 @@ class PlaceAlert extends Component {
         this.initialize();
     }
             
-    initialize(){
-        this.setState({
+    async initialize(){
+        await this.setState({
             placeid:this.props.navigation.state.params.placeid,
             userid:this.props.navigation.state.params.userid,
             firstname:this.props.navigation.state.params.firstname,
             placename:this.props.navigation.state.params.placename,
             latitude:this.props.navigation.state.params.region.latitude,
-            longtitude:this.props.navigation.state.params.region.longtitude
+            longitude:this.props.navigation.state.params.region.longitude
            
         })
-        
-        setTimeout(() => {
-            this.props.getPlaceAlert(this.state.placeid,this.state.userid).then(res=>{
-                this.setState({leaves:this.props.alerts.leaves,arrives:this.props.alerts.arrives})
-                this.setState({loading:false})
-            }).catch(function(err) {
-            });
 
-            
-        }, 1000);
+        await this.props.getPlaceAlert(this.state.placeid,this.state.userid);
+        this.setState({leaves:this.props.alerts.leaves,arrives:this.props.alerts.arrives})
+        this.setState({loading:false})
+        
+       
     }
     
-    onSubmit(){
+    async onSubmit(){
         this.setState({busy:true})
         let alert={
             placeid:this.state.placeid,
             userid:this.state.userid,
             latitude:this.state.latitude,
-            longtitude:this.state.longtitude,
+            longitude:this.state.longitude,
             arrives:this.state.arrives,
             leaves:this.state.leaves,
         }
-        this.props.savePlaceAlert(alert).then(res=>{
+        try{
+            let response= await this.props.savePlaceAlert(alert);
             this.setState({busy:false})
-            if(res!==""){
-                ToastAndroid.showWithGravityAndOffset(res,ToastAndroid.LONG,ToastAndroid.BOTTOM, 25, 50);
+            if(response!==""){
+                ToastAndroid.showWithGravityAndOffset(response,ToastAndroid.LONG,ToastAndroid.BOTTOM, 25, 50);
             }
-            
-        }).catch(function(err) {
+
+        }catch (e) {
             this.setState({busy:false})
-        });
+         }
+      
     }
    
     loading(){

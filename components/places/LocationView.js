@@ -61,6 +61,7 @@ class LocationView extends Component {
                 latitude:this.props.navigation.state.params.location.coordinates.latitude
             },
             placename: this.props.navigation.state.params.location.address,
+            dateadded: this.props.navigation.state.params.location.dateadded,
             loading:false
         })
     }
@@ -99,7 +100,7 @@ class LocationView extends Component {
                                 </Button> 
                             </Left>
                             <Body>
-                                <Title>{this.state.placename}</Title>
+                                <Title>Location Details</Title>
                             </Body>
                         </Header>
                         <View style={styles.mainContainer}>
@@ -120,6 +121,17 @@ class LocationView extends Component {
 
                                     </MapView>
                                     
+                            </View>
+
+                             <View  style={styles.footerContainer}>
+                             <Item stackedLabel>
+                                <Label style={globalStyle.label} >Date/Time</Label>
+                                <Input numberOfLines={1}  style={globalStyle.textinput} value={this.state.dateadded} editable={false}/>
+                            </Item>
+                            <Item stackedLabel>
+                                <Label style={globalStyle.label} >Address</Label>
+                                <Input numberOfLines={1} style={globalStyle.textinput} value={this.state.placename} editable={false}/>
+                            </Item>
                             </View>
                             
                         </View>

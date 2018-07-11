@@ -66,8 +66,8 @@ class PlaceView extends Component {
         this.setState({loading:false})
     }
             
-    initialize(){
-        this.setState({
+    async initialize(){
+        await this.setState({
             id:this.props.navigation.state.params.place.id,
             placename:this.props.navigation.state.params.place.placename,
             region:{
@@ -78,12 +78,10 @@ class PlaceView extends Component {
             },
            
         })
+
         this.props.displayMember();
     }
-    
-      
-   
-    
+
 
     takeSnapshot () {
         const snapshot = this.map.takeSnapshot({
@@ -174,7 +172,7 @@ class PlaceView extends Component {
                             </View>
                             <List>
                             <ListItem itemDivider>
-                            <Text>Alerts</Text>
+                            <Text>{this.state.placename} Alerts</Text>
                             </ListItem>  
                             </List>
                             <View  style={styles.footerContainer}>
