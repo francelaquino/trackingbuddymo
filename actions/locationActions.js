@@ -71,7 +71,12 @@ export const saveLocationOnline=(coordinate)=> dispatch=> {
         lng:  coordinate.lng,
     };
 
-    let dateadded=Date.now();
+    dispatch({ 
+        type: SAVE_LOCATION_ONLINE,
+        payload: [],
+    });
+
+    /*let dateadded=Date.now();
     Geocoder.geocodePosition(coords).then(res => {
             fetch("https://us-central1-trackingbuddy-3bebd.cloudfunctions.net/saveLocation?lat="+ coords.lat +"&lon="+ coords.lng +"&userid="+userdetails.userid+"&address="+res[1].formattedAddress+"&dateadded="+dateadded)
             .then((response) => response)
@@ -93,7 +98,7 @@ export const saveLocationOnline=(coordinate)=> dispatch=> {
             type: SAVE_LOCATION_ONLINE,
             payload: [],
         });
-    })
+    })*/
 
       
 

@@ -1,6 +1,6 @@
 
 import React, { Component } from 'react';
-import { Modal,TouchableOpacity, Platform,  StyleSheet,  Text,  View, ScrollView,TextInput, ToastAndroid, Image, Alert,RefreshControl } from 'react-native';
+import { Modal,TouchableOpacity, Platform,  StyleSheet,  Text,  View, ScrollView,TextInput, ToastAndroid, Image, Alert,RefreshControl, FlatList } from 'react-native';
 import { Root, Container, Header, Body, Title, Item, Input, Label, Button, Icon, Content, List, ListItem,Left, Right,Switch, Thumbnail, CardItem, Card } from 'native-base';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Entypo from 'react-native-vector-icons/Entypo';
@@ -38,9 +38,9 @@ class DisplayMember extends Component {
     componentWillMount() {
         this.initialize();
     }
-    onReload = () => {
+    /*onReload = () => {
         this.initialize();
-      }
+    }*/
    
     initialize(){
         this.props.displayMember();
@@ -71,6 +71,38 @@ class DisplayMember extends Component {
         }).catch(function(err) {
         });
     }
+
+    renderMember(){
+        const data=this.props.members;
+        return (
+            <FlatList
+                style={{flex:1}}
+                keyExtractor={item => item.id}
+                data={data}
+                renderItem={({ item }) => (
+                        <ListItem key={item.id}  avatar style={globalStyle.listItem}>
+                            <Left style={globalStyle.listLeft}>
+                               
+                                <View style={globalStyle.listAvatarContainer} >
+                                { item.avatar==='' ?  <Thumbnail  style={globalStyle.listAvatar} source={{uri: this.state.emptyPhoto}} /> :
+                                <Thumbnail  style={globalStyle.listAvatar} source={{uri: item.avatar}} />
+                                }
+                                </View>
+                            </Left>
+                            <Body style={globalStyle.listBody} >
+                                <Text  style={globalStyle.listHeading}>{item.firstname}</Text>
+                            </Body>
+                            <Right style={globalStyle.listRight} >
+                                <TouchableOpacity  style={globalStyle.listRightTouchable}  
+                                    onPress={() => {this.props.navigation.navigate("MemberHome",{id:item.id,firstname:item.firstname})}}>
+                                <SimpleLineIcons  style={globalStyle.listRightOptionIcon}   name='arrow-right' />
+                                </TouchableOpacity>
+                            </Right>
+                            </ListItem>
+                        ) }
+                />)
+    }
+
     loading(){
         return (
           <Root>
@@ -83,7 +115,7 @@ class DisplayMember extends Component {
    
     
     ready(){
-        const members =this.props.members.map(member=>(
+       /* const members =this.props.members.map(member=>(
                             <ListItem key={member.id}  avatar style={globalStyle.listItem}>
                             <Left style={globalStyle.listLeft}>
                                
@@ -103,7 +135,7 @@ class DisplayMember extends Component {
                                 </TouchableOpacity>
                             </Right>
                             </ListItem>
-          ));
+          ));*/
 
         return (
             
@@ -129,54 +161,13 @@ class DisplayMember extends Component {
                         <ScrollView  contentContainerStyle={{flexGrow: 1}} keyboardShouldPersistTaps={"always"}
                           >
                             <View style={globalStyle.container}>
-                            <List   >
-                                {members}
-                                </List  >
+                            <List>
+                                {this.renderMember()}
+                            </List>
+                            
                             </View>
                         </ScrollView>
                     </Content>
-                    <Modal 
-                        animationType="fade"
-                        transparent={true}
-                        visible={this.state.modalVisible}
-                        onRequestClose={() => {
-                            this.setModalVisible(!this.state.modalVisible);
-                        }}>
-                        <View style={globalStyle.modalWrapper} >
-                            <View style={[globalStyle.modalContainer,{height:170}]} >
-                                <List>
-                                    <ListItem avatar onPress={()=>this.openMembers()} 
-                                    style={globalStyle.modalAvatar}>
-                                    <Left style={globalStyle.modalLeft}>
-                                        <MaterialIcons style={[globalStyle.avatarIcon],{fontSize:35}} name="message"/>
-                                    </Left>
-                                    <Body style={{borderBottomWidth:0,marginLeft:0}}>
-                                        <Text style={{color:'#2b2a2a',fontSize:16}}>Message</Text>
-                                    </Body>
-                                    </ListItem>
-                                    <ListItem avatar onPress={()=>this.openLocations()} 
-                                    style={globalStyle.modalAvatar}>
-                                    <Left style={globalStyle.modalLeft}>
-                                        <Entypo  style={[globalStyle.avatarIcon],{fontSize:35}} name="location"/>
-                                    </Left>
-                                    <Body style={{borderBottomWidth:0,marginLeft:0}}>
-                                        <Text style={{color:'#2b2a2a',fontSize:16}}>Locations</Text>
-                                    </Body>
-                                    </ListItem>
-                                    
-                                </List>
-
-                                <TouchableOpacity 
-                                    onPress={() => {
-                                    this.setModalVisible(!this.state.modalVisible);
-                                    }}>
-                                    <View style={{alignItems:'center',flexDirection:'row'}}>
-                                    <Right><Text style={globalStyle.modalCancel} >CANCEL</Text></Right>
-                                    </View>
-                                </TouchableOpacity>
-                            </View>
-                        </View>
-                        </Modal>
                 </Container>
             </Root>
         )

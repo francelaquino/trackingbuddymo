@@ -89,7 +89,7 @@ class HomePlaces extends Component {
                     NetInfo.isConnected.fetch().done((isConnected) => {
                         if(isConnected){
 
-                            self.props.saveLocationOnline(coords);
+                            //self.props.saveLocationOnline(coords);
 
                         }else{
                             //self.props.saveLocationOffline(coords);

@@ -211,13 +211,39 @@ export const displayGroupMember=(groupid)=> dispatch=> {
 
 
 
-export const displayMember=()=> dispatch=> {
+export const displayMember=()=> async dispatch=> {
    
     let members=[]
-    let count=0;
-    let cnt=0;
-
-    return parentPromise= new Promise((resolve,reject)=>{
+   // let count=0;
+   // let cnt=0;
+   await firebase.database().ref().child('users/'+userdetails.userid+"/members").on('value',async function(snapshot){
+      
+       /* if(snapshot.val()===null){
+            dispatch({ 
+                type: DISPLAY_MEMBER,
+                payload: members
+            });
+        }else{*/
+            await snapshot.forEach(async childSnapshot => {
+                    let userid=childSnapshot.key;
+                    await firebase.database().ref().child('users/'+userid).once("value",async function(dataSnapshot){
+                        if(dataSnapshot.val() !== null){
+                            members.push({
+                                id:dataSnapshot.key,
+                                firstname:dataSnapshot.val().firstname,
+                                avatar: dataSnapshot.val().avatar,
+                            });
+                        }
+                    })
+                })
+           
+    })
+    console.log(members)
+    dispatch({ 
+        type: DISPLAY_MEMBER,
+        payload: members
+    });
+    /*return parentPromise= new Promise((resolve,reject)=>{
         let memberRef = firebase.database().ref().child('users/'+userdetails.userid+"/members").on('value',function(snapshot){
             resolve(snapshot)
         })
@@ -259,7 +285,7 @@ export const displayMember=()=> dispatch=> {
                 })
             }
         }).catch(function(err) {
-        });
+        });*/
 };
 
 export const getMember=(userid)=> dispatch=> {
