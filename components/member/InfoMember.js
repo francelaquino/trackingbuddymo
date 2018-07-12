@@ -16,8 +16,6 @@ class InfoMember extends Component {
         this.state = {
             id:this.props.navigation.state.params.id,
             firstname:this.props.navigation.state.params.firstname,
-            //id:'D0rZ9ZIjyif0qBlyTPUMJj9oZHf2',
-            //firstname:'Kathleen'
         };
       }
 

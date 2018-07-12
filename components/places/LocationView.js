@@ -128,7 +128,7 @@ class LocationView extends Component {
                                 <Label style={globalStyle.label} >Date/Time</Label>
                                 <Input numberOfLines={1}  style={globalStyle.textinput} value={this.state.dateadded} editable={false}/>
                             </Item>
-                            <Item stackedLabel>
+                            <Item stackedLabel style={{borderBottomWidth:0}}>
                                 <Label style={globalStyle.label} >Address</Label>
                                 <Input numberOfLines={1} style={globalStyle.textinput} value={this.state.placename} editable={false}/>
                             </Item>

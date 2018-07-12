@@ -23,18 +23,7 @@ class DisplayMember extends Component {
         }
       }
 
-    openMemberOption(memberid){
-        this.setState({memberid:memberid})
-        this.setModalVisible(true)
-    }
-    openLocations(){
-        this.props.navigation.navigate("LocationPlaces",{id:this.state.memberid})
-        this.setModalVisible(false);
-    }
    
-    setModalVisible(visible) {
-        this.setState({modalVisible: visible});
-    }
     componentWillMount() {
         this.initialize();
     }
@@ -45,32 +34,7 @@ class DisplayMember extends Component {
     initialize(){
         this.props.displayMember();
     }
-   
-    confirmDelete(){
-        Alert.alert(
-            'Comfirm Delete',
-            'Are you sure you want to delete the member?',
-            [
-              
-              {text: 'Yes', onPress: () => this.onDelete()},
-              {text: 'No', style: 'cancel'},
-            ],
-            { cancelable: true }
-          )
-    }
-    onDelete(){
-
-        this.props.deleteMember(this.state.memberid).then(res=>{
-        	if(res==true){
-                ToastAndroid.showWithGravityAndOffset("Member successfully deleted",ToastAndroid.LONG,ToastAndroid.BOTTOM, 25, 50);
-                this.props.isLoading=true;
-                this.props.displayMember();
-                this.props.displayHomeMember();
-                this.setModalVisible(false);
-            }
-        }).catch(function(err) {
-        });
-    }
+    
 
     renderMember(){
         const data=this.props.members;
@@ -115,28 +79,6 @@ class DisplayMember extends Component {
    
     
     ready(){
-       /* const members =this.props.members.map(member=>(
-                            <ListItem key={member.id}  avatar style={globalStyle.listItem}>
-                            <Left style={globalStyle.listLeft}>
-                               
-                                <View style={globalStyle.listAvatarContainer} >
-                                { member.avatar==='' ?  <Thumbnail  style={globalStyle.listAvatar} source={{uri: this.state.emptyPhoto}} /> :
-                                <Thumbnail  style={globalStyle.listAvatar} source={{uri: member.avatar}} />
-                                }
-                                </View>
-                            </Left>
-                            <Body style={globalStyle.listBody} >
-                                <Text  style={globalStyle.listHeading}>{member.firstname}</Text>
-                            </Body>
-                            <Right style={globalStyle.listRight} >
-                                <TouchableOpacity  style={globalStyle.listRightTouchable}  
-                                    onPress={() => {this.props.navigation.navigate("MemberHome",{id:member.id,firstname:member.firstname})}}>
-                                <SimpleLineIcons  style={globalStyle.listRightOptionIcon}   name='arrow-right' />
-                                </TouchableOpacity>
-                            </Right>
-                            </ListItem>
-          ));*/
-
         return (
             
             <Root>

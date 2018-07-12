@@ -10,6 +10,7 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Entypo from 'react-native-vector-icons/Entypo';
 import MapView, { ProviderPropType, Marker, AnimatedRegion,Animated,Polyline } from 'react-native-maps';
 import Loading  from '../shared/Loading';
+import Loader  from '../shared/Loader';
 import LeftDrawer from '../shared/LeftDrawer'
 import { connect } from 'react-redux';
 import { displayHomeMember  } from '../../actions/memberActions' ;
@@ -56,7 +57,6 @@ class HomePlaces extends Component {
         this.map = null;
 
         this.state = {
-            isMapReady:false,
             groupname:'',
             isLoading:true,
             region:{
@@ -95,9 +95,6 @@ class HomePlaces extends Component {
                             //self.props.saveLocationOffline(coords);
                         }
                     });
-        
-        
-               
                 },
                 (err) => {
                     console.log(err)
@@ -107,41 +104,38 @@ class HomePlaces extends Component {
             }
 
     
-        this.setState({ isLoading:false});
         BackgroundJob.schedule(trackPositionSchedule);
         
     }
   
 
-    plotMarker(){
-
+    async plotMarker(){
             this.setState({markers:[],centerMarker:[]})
             for (let i = 0; i < this.props.members.length; i++) {
-                const coord = {
-                    id:i,
-                    firstname:this.props.members[i].firstname,
-                    address:this.props.members[i].address,
-                    avatar:this.props.members[i].avatar,
-                    coordinates:{
-                      latitude: this.props.members[i].coordinates.latitude,
-                      longitude: this.props.members[i].coordinates.longitude,
-                      latitudeDelta: LATITUDE_DELTA ,
-                      longitudeDelta: LONGITUDE_DELTA,
-                    }
-                  };
-
-                 
-                
-                if(!isNaN(this.props.members[i].coordinates.longitude) && !isNaN(this.props.members[i].coordinates.latitude)){
-                    this.setState({ isLoading:false,markers: this.state.markers.concat(coord),centerMarker: this.state.centerMarker.concat(coord.coordinates) })
+                    const coord = {
+                        id:i,
+                        firstname:this.props.members[i].firstname,
+                        address:this.props.members[i].address,
+                        avatar:this.props.members[i].avatar,
+                        coordinates:{
+                        latitude: this.props.members[i].coordinates.latitude,
+                        longitude: this.props.members[i].coordinates.longitude,
+                        latitudeDelta: LATITUDE_DELTA ,
+                        longitudeDelta: LONGITUDE_DELTA,
+                        }
+                    };
                     
-                }
-                   
-            }
-            
+                    if(!isNaN(this.props.members[i].coordinates.longitude) && !isNaN(this.props.members[i].coordinates.latitude)){
+                        this.setState({ markers: this.state.markers.concat(coord),centerMarker: this.state.centerMarker.concat(coord.coordinates) })
+                        
+                    }
 
+                }
+            this.setState({isLoading:false})
+            
+            
     }
-    fitToMap(){
+    async fitToMap(){
         if(this.props.members.length==1){
             this.map.animateToRegion({
                 latitude: this.props.members[0].coordinates.latitude,
@@ -156,10 +150,10 @@ class HomePlaces extends Component {
     }
     
     componentWillMount() {
-        this.initialize();
+         this.initialize();
     }
 
-    centerToMarker(latitude,longitude){
+    async centerToMarker(latitude,longitude){
        
         let center=[{
             latitude: latitude,
@@ -178,27 +172,23 @@ class HomePlaces extends Component {
     }
     
     
-    changeGroup = (groupname) => {
-        this.reload();
+    async changeGroup (groupname) {
+        await this.reload();
         this.setState({groupname:groupname});
         
     }
-    reload(){
+    async reload(){
         let self=this;
         self.props.displayHomeMember().then(res=>{
-            setTimeout(() => {
+            setTimeout( () => {
                 self.plotMarker();
-            }, 1000);
+           }, 1000);
         });
     }
-    initialize(){
+    async initialize(){
         let self=this;
-        let memberRef = firebase.database().ref().child('users/'+userdetails.userid+"/members").on('value',function(snapshot){
-            self.props.displayHomeMember().then(res=>{
-                setTimeout(() => {
-                    self.plotMarker();
-                }, 1000);
-            });
+        firebase.database().ref().child('users/'+userdetails.userid+"/members").on('value',function(snapshot){
+            self.reload();
         })
        
 
@@ -282,7 +272,7 @@ class HomePlaces extends Component {
                 content={<LeftDrawer closeDrawer = {this.closeDrawer} navigation={this.props.navigation}/>}
                 onClose={() => this.closeDrawer()} >
                 <Root>
-                
+                <Loader loading={this.state.isLoading} />
                 <Container style={globalStyle.containerWrapper}>
                 
           
@@ -312,7 +302,7 @@ class HomePlaces extends Component {
                         loadingEnabled={true}
                             zoomEnabled = {true}
                             style={styles.map}
-                            loadingEnabled={true}
+                            loadingEnabled={false}
                             >
                             {markers}
 
@@ -363,11 +353,7 @@ class HomePlaces extends Component {
 
 
     render() {
-            if(this.state.isLoading){
-                return this.loading();
-            }else{
                 return this.ready();
-            }
         
 
   }
@@ -438,7 +424,7 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = state => ({
     members: state.fetchMember.home_members,
-    isLoading:state.fetchMember.isLoading,
+    //isLoading:state.fetchMember.isLoading,
     isConnected:state.fetchConnection.isConnected,
     coordinates:state.fetchLocation.coordinates,
     
