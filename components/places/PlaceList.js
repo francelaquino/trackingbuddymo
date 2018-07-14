@@ -1,6 +1,6 @@
 
 import React, { Component } from 'react';
-import { TouchableOpacity,Modal, Platform,  StyleSheet,  Text,  View, ScrollView,TextInput, ToastAndroid, Image  } from 'react-native';
+import { TouchableOpacity,Modal, Platform,  StyleSheet,  Text,  View, ScrollView,TextInput, ToastAndroid, Image, FlatList  } from 'react-native';
 import { Root, Container, Header, Body, Title, Item, Input, Label, Button, Icon, Content, List, ListItem,Left, Right,Switch,Thumbnail, Card,CardItem } from 'native-base';
 import { connect } from 'react-redux';
 import Entypo from 'react-native-vector-icons/Entypo';
@@ -42,30 +42,37 @@ class PlaceList extends Component {
           </Root>
         )
     }
+
+    renderPlaces(){
+        const data=this.props.places;
+        return (
+            <FlatList
+            style={{flex:1}}
+                keyExtractor={item => item.id}
+                data={data}
+                renderItem={({ item }) => (
+                    <ListItem icon key={item.id}  avatar style={globalStyle.listItem} >
+                    <Left >
+                    
+                    <Entypo  style={{fontSize:30,color:'#1eaec5'}} name="location"/>
+                </Left>
+                        <Body style={globalStyle.listBody} >
+                            <Text numberOfLines={1} style={globalStyle.listHeading}>{item.placename}</Text>
+                            <Text  numberOfLines={1} note style={{fontSize:12}}>{item.address}</Text>
+                        </Body>
+                    
+                        <Right style={globalStyle.listRight}>
+                        <TouchableOpacity  style={globalStyle.listRightTouchable}  
+                            onPress={() => {this.props.navigation.navigate("PlaceView",{place:item})}}>
+                            <SimpleLineIcons  style={globalStyle.listRightOptionIcon}   name='arrow-right' />
+                        </TouchableOpacity>
+                        </Right>
+                    </ListItem>
+                ) }
+            />)
+    }
     ready(){
-        const { navigate } = this.props.navigation;
-        const places =this.props.places.map(place=>(
-            <ListItem icon key={place.id}  avatar style={globalStyle.listItem} >
-            <Left >
-               
-            <Entypo  style={{fontSize:30,color:'#d1122e'}} name="location"/>
-           </Left>
-                <Body style={globalStyle.listBody} >
-                    <Text numberOfLines={1} style={globalStyle.listHeading}>{place.placename}</Text>
-                    <Text  numberOfLines={1} note style={{fontSize:12}}>{place.address}</Text>
-                </Body>
-               
-                <Right style={globalStyle.listRight}>
-                <TouchableOpacity  style={globalStyle.listRightTouchable}  
-                    onPress={() => {this.props.navigation.navigate("PlaceView",{place:place})}}>
-                    <SimpleLineIcons  style={globalStyle.listRightOptionIcon}   name='arrow-right' />
-                </TouchableOpacity>
-                </Right>
-            </ListItem>
-
-           
-          ));
-
+      
          
         return(
             <Root>
@@ -81,19 +88,18 @@ class PlaceList extends Component {
                         </Body>
                         <Right  >
                             <Button transparent onPress={() =>navigate('CreatePlace')}>
-                                <Text style={globalStyle.headerRightText}>Add</Text>
+                                <Text style={globalStyle.headerRightText}>Add Place</Text>
                             </Button> 
                             
                         </Right>
                     </Header>
-                    <Content padder>
-                    <ScrollView  contentContainerStyle={{flexGrow: 1}} keyboardShouldPersistTaps={"always"}>
+                    <Content >
+                    <ScrollView  contentContainerStyle={{flexGrow: 1}} keyboardShouldPersistTaps={"always"} showsVerticalScrollIndicator={false}>
                     <View style={globalStyle.container}>
                     
                         <List>
-                            {places}
+                            {this.renderPlaces()}
                         </List>
-
                          
                     </View>
                     </ScrollView>

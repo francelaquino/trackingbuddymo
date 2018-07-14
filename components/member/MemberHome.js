@@ -1,78 +1,65 @@
 
 import React, { Component } from 'react';
 import {  Platform,  StyleSheet,  Text,  View, ScrollView,TextInput, TouchableOpacity, ToastAndroid } from 'react-native';
-import { Content,Root, Container, Header, Body, Title, Item, Input, Label, Button, Icon, Left, Right } from 'native-base';
+import { Content,Root, Container, Header,Tabs, Tab, TabHeading, Body, Title, Item, Input, Label, Button, Icon, Left, Right } from 'native-base';
 import InfoMember from '../member/InfoMember';
 import LocationPlaces from '../places/LocationPlaces';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import { TabNavigator } from 'react-navigation';
+var globalStyle = require('../../assets/style/GlobalStyle');
 
 
-const styles = StyleSheet.create({
-	tab: {
-		padding: 0
-	},
-	indicator: {
-		width: 0,
-		height: 0
-	},
-	label: {
-        fontSize: 13,
-        marginTop:2,
-        marginBottom:2,
-	},
-	tabBar: {
-		backgroundColor: '#1eaec5',
-	}
-});
-
-let routeConfig={
-    InfoMember: { 
-        screen: InfoMember,
-        navigationOptions: ({ navigation }) => ({
-            title: "Profile",
-            tabBarIcon: ({ tintColor }) =>  <SimpleLineIcons style={{color:'white',fontSize:21,margin:0, padding:0}} name="user" />
-        })
-    },
-    LocationPlaces:{
-        screen:LocationPlaces,
-        navigationOptions: ({ navigation }) => ({
-            title: "Location",
-            tabBarIcon: ({ tintColor }) =>  <SimpleLineIcons  style={{color:'white',fontSize:21,margin:0, padding:0}} name="location-pin"/>
-        })
-    },
-    MemberMessage:{
-        screen:LocationPlaces,
-        navigationOptions: ({ navigation }) => ({
-            title: "Message",
-            tabBarIcon: ({ tintColor }) =>  <MaterialIcons  style={{color:'white',fontSize:21,margin:0, padding:0}} name="chat-bubble-outline"/>
-        })
+class MemberHome extends Component {
+    constructor(props) {
+        super(props)
+       
+      }
+    render() {
+        return (
+            <Root>
+                <Container style={globalStyle.containerWrapper}>
+                    <Header hasTabs style={globalStyle.header}>
+                        <Left style={globalStyle.headerLeft} >
+                            <Button transparent onPress={()=> {this.props.navigation.goBack()}} >
+                                <Icon size={30} name='arrow-back' />
+                            </Button> 
+                        </Left>
+                        <Body >
+                            <Title>{this.props.navigation.state.params.firstname}</Title>
+                        </Body>
+                       
+                    </Header>
+                            <Tabs tabBarPosition="top" tabBarUnderlineStyle={{borderBottomWidth:2,borderBottomColor:'#1eaec5'}} >
+                            <Tab  heading={<TabHeading style={{backgroundColor: 'white'}}>
+                                <Text style={{color: '#1eaec5',fontSize:16}}>Profile</Text>
+                                </TabHeading>}>
+                                <ScrollView showsVerticalScrollIndicator={false}>
+                                    <InfoMember navigate={this.props.navigation} memberid={this.props.navigation.state.params.id} memberfirstname={this.props.navigation.state.params.firstname}/>
+                                </ScrollView>
+                                
+                                
+                            </Tab>
+                            <Tab  heading={<TabHeading style={{backgroundColor: 'white'}}>
+                                <Text style={{color: '#1eaec5',fontSize:16}}>Locations</Text>
+                                </TabHeading>}>
+                                <ScrollView showsVerticalScrollIndicator={false}>
+                                <LocationPlaces memberid={this.props.navigation.state.params.id} navigate={this.props.navigation.navigate} />
+                                </ScrollView>
+                            </Tab>
+                            </Tabs>
+                            
+                </Container>
+            </Root>
+           
+        )
     }
-}
-
-let tabNavConfig={
-    tabBarPosition:'bottom',
-    animationEnabled: true,
-		swipeEnabled: true,
-		animationEnabled: true,
-		lazy: true,
-		backBehavior: "initialRoute",
-		tabBarOptions: {
-            activeTintColor: 'white',
-			showLabel: true,
-			showIcon: true,
-			upperCaseLabel: false,
-            scrollEnabled: false,
-            tabStyle: styles.tab,
-			indicatorStyle: styles.indicator,
-			labelStyle: styles.label,
-			iconStyle: styles.icon,
-			style: styles.tabBar
-		}
+    
 }
 
 
 
-export default TabNavigator(routeConfig,tabNavConfig);;
+
   
+  
+export default MemberHome;

@@ -73,7 +73,7 @@ class NewInvite extends Component {
                             </Button> 
                         </Left>
                         <Body>
-                            <Title>Invitation</Title>
+                            <Title>Add Member</Title>
                         </Body>
                     </Header>
                 
@@ -94,7 +94,7 @@ class NewInvite extends Component {
                                 <Button disabled={!this.state.invitationcode}
                                     onPress={()=>this.onSubmit()}
                                     bordered light full rounded style={this.state.invitationcode ? globalStyle.secondaryButton : globalStyle.secondaryButtonDisabled}>
-                                    <Text style={{color:'white'}}>Send Invitation</Text>
+                                    <Text style={{color:'white'}}>Submit</Text>
                                 </Button>
                             </View>
 

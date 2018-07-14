@@ -1,78 +1,77 @@
 
 import React, { Component } from 'react';
 import {  Platform,  StyleSheet,  Text,  View, ScrollView,TextInput, TouchableOpacity, ToastAndroid } from 'react-native';
-import { Content,Root, Container, Header, Body, Title, Item, Input, Label, Button, Icon, Left, Right } from 'native-base';
+import { Content,Root, Container, Header, Body, Title, Item, Input, Label, Button, Icon, Left, Right,Tabs, Tab, TabHeading } from 'native-base';
 import EditGroup from '../group/EditGroup';
 import AddMember from '../group/AddMember';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
-import { TabNavigator } from 'react-navigation';
+var globalStyle = require('../../assets/style/GlobalStyle');
 
-
-const styles = StyleSheet.create({
-	tab: {
-		padding: 0
-	},
-	indicator: {
-		width: 0,
-		height: 0
-	},
-	label: {
-        fontSize: 13,
-        marginTop:2,
-        marginBottom:2,
-	},
-	tabBar: {
-		backgroundColor: '#1eaec5',
-	}
-});
-
-let routeConfig={
-    EditGroup: { 
-        screen: EditGroup,
-        navigationOptions: ({ navigation }) => ({
-            title: "Edit Group",
-            tabBarIcon: ({ tintColor }) =>  <SimpleLineIcons style={{color:'white',fontSize:21,margin:0, padding:0}} name="user" />
-        })
-    },
-    AddMember:{
-        screen:AddMember,
-        navigationOptions: ({ navigation }) => ({
-            title: "Members",
-            tabBarIcon: ({ tintColor }) =>  <SimpleLineIcons  style={{color:'white',fontSize:21,margin:0, padding:0}} name="location-pin"/>
-        })
-    },
-    MemberMessage:{
-        screen:AddMember,
-        navigationOptions: ({ navigation }) => ({
-            title: "Message",
-            tabBarIcon: ({ tintColor }) =>  <MaterialIcons  style={{color:'white',fontSize:21,margin:0, padding:0}} name="chat-bubble-outline"/>
+class GroupHome extends Component {
+    constructor(props) {
+        super(props)
+        this.state = {
+            groupname:'',
+            avatarsource:'',
+            avatar:'',
+            groupid:''
+        };
+	  }
+    
+      componentWillMount() {
+        this.initialize();
+    }
+            
+    initialize(){
+        console.log(this.props.navigation.state.params)
+        this.setState({
+            avatarsource:this.props.navigation.state.params.avatar,
+            groupname:this.props.navigation.state.params.groupname,
+            groupid:this.props.navigation.state.params.id,
         })
     }
+    render() {
+        return (
+            <Root>
+                <Container style={globalStyle.containerWrapper}>
+                    <Header hasTabs style={globalStyle.header}>
+                        <Left style={globalStyle.headerLeft} >
+                            <Button transparent onPress={()=> {this.props.navigation.goBack()}} >
+                                <Icon size={30} name='arrow-back' />
+                            </Button> 
+                        </Left>
+                        <Body >
+                            <Title>{this.props.navigation.state.params.groupname}</Title>
+                        </Body>
+                       
+                    </Header>
+                            <Tabs tabBarPosition="top" tabBarUnderlineStyle={{borderBottomWidth:2,borderBottomColor:'#1eaec5'}} >
+                            <Tab  heading={<TabHeading style={{backgroundColor: 'white'}}>
+                                <Text style={{color: '#1eaec5',fontSize:16}}>Edit Group</Text>
+                                </TabHeading>}>
+                                <ScrollView showsVerticalScrollIndicator={false}>
+                                    <EditGroup avatarsource={this.state.avatarsource} groupname={this.state.groupname} groupid={this.state.groupid}/>
+                                </ScrollView>
+                                
+                                
+                            </Tab>
+                            <Tab  heading={<TabHeading style={{backgroundColor: 'white'}}>
+                                <Text style={{color: '#1eaec5',fontSize:16}}>Members</Text>
+                                </TabHeading>}>
+                                <ScrollView showsVerticalScrollIndicator={false}>
+                                    <AddMember  groupname={this.state.groupname} groupid={this.state.groupid}/>
+
+                                </ScrollView>
+                            </Tab>
+                            </Tabs>
+                            
+                </Container>
+            </Root>
+           
+        )
+    }
+    
 }
 
-let tabNavConfig={
-    tabBarPosition:'bottom',
-    animationEnabled: true,
-		swipeEnabled: true,
-		animationEnabled: true,
-		lazy: true,
-		backBehavior: "initialRoute",
-		tabBarOptions: {
-            activeTintColor: 'white',
-			showLabel: true,
-			showIcon: true,
-			upperCaseLabel: false,
-            scrollEnabled: false,
-            tabStyle: styles.tab,
-			indicatorStyle: styles.indicator,
-			labelStyle: styles.label,
-			iconStyle: styles.icon,
-			style: styles.tabBar
-		}
-}
-
-
-
-export default TabNavigator(routeConfig,tabNavConfig);;
-  
+export default GroupHome;

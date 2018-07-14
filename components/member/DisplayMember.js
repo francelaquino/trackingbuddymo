@@ -27,9 +27,9 @@ class DisplayMember extends Component {
     componentWillMount() {
         this.initialize();
     }
-    /*onReload = () => {
+    onReload = () => {
         this.initialize();
-    }*/
+    }
    
     initialize(){
         this.props.displayMember();
@@ -94,7 +94,7 @@ class DisplayMember extends Component {
                         </Body>
                         <Right  >
                             <Button transparent onPress={() => this.props.navigation.navigate("NewInvite",{onReload : this.onReload})}>
-                                <Text style={globalStyle.headerRightText}>Invite</Text>
+                                <Text style={globalStyle.headerRightText}>Add Member</Text>
                             </Button> 
                             
                         </Right>

@@ -2,12 +2,8 @@
 
 import React, { Component } from 'react';
 import { TouchableOpacity, Platform,  StyleSheet,  Text,  View,Image } from 'react-native';
-import { Root,Content,Drawer,Container ,List , ListItem, Right, Body,Left,Icon} from 'native-base';
+import { Root,Content,Drawer,Container ,List , ListItem, Right, Body,Left,Icon, Thumbnail} from 'native-base';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import Entypo from 'react-native-vector-icons/Entypo';
-
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
 var globalStyle = require('../../assets/style/GlobalStyle');
 var userdetails = require('../shared/userDetails');
 
@@ -53,85 +49,94 @@ export default class LeftDrawer extends Component<Props> {
     const navigation = this.props.navigation;    
     return (
                 <Container > 
-                    <Content style={{backgroundColor:'white',height:'100%'}}>
-                    <View style={{height:140,padding:15}} >
-                                <View style={globalStyle.avatarContainer}>
-                                <Image style={globalStyle.avatarBig} source={{uri : this.state.emptyPhoto}} />
-                                </View>
-                                <Text style={{width:'100%',fontSize:17,height:30,color:'white', textAlign: 'center',marginBottom:20 }}>{userdetails.firstname}</Text>
-                            </View>
+                    <Content style={{backgroundColor:'rgba(50, 50, 50, 0.9)',height:'100%'}}>
+                        <View style={{height:55,borderBottomWidth:1,borderBottomColor:'#b7b8b8',alignItems:'center',flex:1}} >
+                        <Text style={{width:'100%',fontSize:17,color:'white', textAlign:'center',marginTop:15}}>TRACKING BUDDY</Text>
+                        </View>
                     
                         <List>
-                            <ListItem icon>
+                        
+                            <ListItem icon style={{marginBottom:5}}>
                             <Left>
-                                <FontAwesome style={{fontSize:20,width:25}} name="home" />
+                                <SimpleLineIcons style={{fontSize:30,width:30,color:'#c8c8c8'}} name="home" />
                             </Left>
                             <Body style={{width:'100%',borderBottomWidth:0}} >
                                 
                                 <TouchableOpacity  onPress={() =>this.displayHome()}>
-                                <Text style={{fontSize:16}}>Home</Text>
+                                <Text style={{fontSize:16,color:'white'}}>HOME</Text>
                                 </TouchableOpacity>
                             </Body>
                             </ListItem>
-                            <ListItem icon>
+                            <ListItem icon style={{marginBottom:5}}>
                             <Left>
-                                <FontAwesome style={{fontSize:20,width:25}} name="user" />
+                                <SimpleLineIcons style={{fontSize:30,width:30,color:'#c8c8c8'}} name="user" />
                             </Left>
                             <Body style={{width:'100%',borderBottomWidth:0}} >
                             <TouchableOpacity  onPress={() =>this.displayProfile()}>
-                                <Text style={{fontSize:16}}>Profile</Text>
+                                <Text style={{fontSize:16,color:'white'}}>PROFILE</Text>
                                 </TouchableOpacity>
                             </Body>
                             </ListItem>
                            
-                            <ListItem icon>
+                            <ListItem icon style={{marginBottom:5}}>
                             <Left>
-                                <MaterialIcons style={{fontSize:25,width:25}} name="group" />
+                                <SimpleLineIcons style={{fontSize:30,width:30,color:'#c8c8c8'}} name="people" />
                             </Left>
                             <Body style={{width:'100%',borderBottomWidth:0}} >
                                 <TouchableOpacity  onPress={() =>this.displayMember()}>
-                                <Text style={{fontSize:16}}>Member</Text>
+                                <Text style={{fontSize:16,color:'white'}}>MEMBER</Text>
                                 </TouchableOpacity>
                             </Body>
                             </ListItem>
-                            <ListItem icon>
+                            <ListItem icon style={{marginBottom:5}}>
                             <Left>
-                                <FontAwesome style={{fontSize:19,width:25}} name="group" />
+                                <SimpleLineIcons style={{fontSize:30,width:30,color:'#c8c8c8'}} name="organization" />
                             </Left>
                             <Body style={{width:'100%',borderBottomWidth:0}} >
                             <TouchableOpacity  onPress={() =>this.displayGroup()}>
-                                <Text style={{fontSize:16}}>Group</Text>
+                                <Text style={{fontSize:16,color:'white'}}>GROUP</Text>
                                 </TouchableOpacity>
                             </Body>
                             </ListItem>
-                            <ListItem icon>
+                            <ListItem icon style={{borderBottomWidth:1,borderBottomColor:'rgba(200, 200, 200, 0.5)'}}>
                             <Left>
-                            <Entypo  style={{fontSize:19,width:25}} name="location"/>
+                            <SimpleLineIcons  style={{fontSize:30,width:30,color:'#c8c8c8'}} name="location-pin"/>
                             </Left>
                             <Body style={{width:'100%',borderBottomWidth:0}} >
                             <TouchableOpacity  onPress={() =>this.displayPlaces()}>
-                                <Text style={{fontSize:16}}>Places</Text>
+                                <Text style={{fontSize:16,color:'white'}}>PLACES</Text>
                                 </TouchableOpacity>
                             </Body>
                             </ListItem>
                             
-                            <ListItem icon>
+                            <ListItem icon style={{borderBottomWidth:1,borderBottomColor:'rgba(200, 200, 200, 0.5)'}}>
                             <Left>
-                                <MaterialIcons style={{fontSize:20,width:25}} name="settings" />
+                                <SimpleLineIcons style={{fontSize:30,width:30,color:'#c8c8c8'}} name="settings" />
                             </Left>
                             <Body style={{width:'100%',borderBottomWidth:0}} >
                                 <TouchableOpacity  onPress={() =>this.displaySettings()}>
-                                    <Text style={{fontSize:16}}>Settings</Text>
+                                    <Text style={{fontSize:16,color:'white'}}>SETTINGS</Text>
                                 </TouchableOpacity>
                             </Body>
                             </ListItem>
-                            <ListItem icon>
+                            <ListItem icon style={{borderBottomWidth:1,borderBottomColor:'rgba(200, 200, 200, 0.5)'}}>
                             <Left>
-                                <FontAwesome style={{fontSize:20,width:25}} name="sign-out" />
+                                <SimpleLineIcons style={{fontSize:30,width:30,color:'#c8c8c8'}} name="info" />
+                            </Left>
+                            <Body style={{width:'100%',borderBottomWidth:0}} >
+                                
+                                <TouchableOpacity  onPress={() =>this.displayHome()}>
+                                <Text style={{fontSize:16,color:'white'}}>ABOUT</Text>
+                                </TouchableOpacity>
+                            </Body>
+                            </ListItem>
+                            <ListItem icon style={{marginBottom:5}}>
+                            <Left>
+                                <SimpleLineIcons style={{fontSize:30,width:25,color:'#c8c8c8'}} name="logout" />
                             </Left>
                             <Body style={{width:'100%',borderBottomWidth:0}} >
                             <TouchableOpacity  onPress={() =>this.displayLogout()}>
-                                    <Text style={{fontSize:16}}>Logout</Text>
+                                    <Text style={{fontSize:16,color:'white'}}>LOGOUT</Text>
                                 </TouchableOpacity>
                             </Body>
                             </ListItem>

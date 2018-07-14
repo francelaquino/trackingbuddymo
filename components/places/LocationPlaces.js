@@ -15,7 +15,7 @@ var globalStyle = require('../../assets/style/GlobalStyle');
 
 
 
-class LocationPlaces extends Component {
+class LocationPlaces extends Component<Props> {
     constructor(props) {
         super(props)
         
@@ -29,22 +29,13 @@ class LocationPlaces extends Component {
     }
         
     initialize(){
-        let id=this.props.navigation.state.params.id;
-        this.props.displayLocations(id);
+        this.props.displayLocations(this.props.memberid);
     }
 
 
-
-
-    
-
     loading(){
         return (
-          <Root>
-          <Container style={globalStyle.containerWrapper}>
           <Loading/>
-          </Container>
-          </Root>
         )
     }
     
@@ -57,13 +48,16 @@ class LocationPlaces extends Component {
                 data={data}
                 renderItem={({ item }) => (
                     <ListItem key={item.id}  avatar style={globalStyle.listItem} >
+                    <Left style={globalStyle.listLeft}>
+                               <SimpleLineIcons size={30} style={{color:'#1eaec5'}}    name='location-pin' />
+                           </Left>
                     <Body style={globalStyle.listBody} >
                         <Text numberOfLines={1} style={globalStyle.listHeading}>{item.address}</Text>
                         <Text note style={{fontSize:12}}>{item.dateadded}</Text>
                     </Body>
                     <Right style={globalStyle.listRight}>
                         <TouchableOpacity  style={globalStyle.listRightTouchable}  
-                                            onPress={() => {this.props.navigation.navigate("LocationView",{location:item})}}>
+                                            onPress={() => {this.props.navigate("LocationView",{location:item})}}>
                             <SimpleLineIcons  style={globalStyle.listRightOptionIcon}   name='arrow-right' />
                         </TouchableOpacity>
                     </Right>
@@ -74,30 +68,9 @@ class LocationPlaces extends Component {
     ready(){
          
         return(
-            <Root>
-                <Container style={globalStyle.containerWrapper}>
-                    <Header style={globalStyle.header}>
-                    <Left style={globalStyle.headerLeft} >
-                            <Button transparent onPress={()=> {this.props.navigation.goBack()}} >
-                                <Icon size={30} name='arrow-back' />
-                            </Button> 
-                        </Left>
-                        <Body>
-                            <Title>Locations</Title>
-                        </Body>
-                    </Header>
-                    <Content padder>
-                    <ScrollView  contentContainerStyle={{flexGrow: 1}} keyboardShouldPersistTaps={"always"}>
-                    <View style={globalStyle.container}>
-                        <List>
-                                {this.renderLocation()}
-                        </List>
-                         
-                    </View>
-                    </ScrollView>
-                    </Content>
-                </Container>
-            </Root>
+            <List>
+            {this.renderLocation()}
+            </List>
         )
     }
 

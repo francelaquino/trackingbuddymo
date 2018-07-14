@@ -1,8 +1,8 @@
 
 var style = {
     primaryColor: "#1eaec5",
-    primaryButtonColor: "#0071bd",
-    primaryColorDisabled:'#57a6db',
+    primaryButtonColor: "#096473",
+    primaryColorDisabled:'#2b8c9b',
     lightColor: "#30d6f1",
     darkColor: "#174e54",
     deleteColor: "#f64949"

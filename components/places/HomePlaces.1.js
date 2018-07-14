@@ -65,7 +65,17 @@ class HomePlaces extends Component {
   }
 }
 
-
+/*<View style={styles.navBar} >
+                            <TouchableOpacity style={globalStyle.navBarButton} onPress={() =>this.props.navigation.navigate('SelectGroup',{changeGroup : this.changeGroup})}>
+                                <Ionicons style={globalStyle.navBarIcon} name="md-swap"/>
+                                <Text style={globalStyle.navBarLabel}>Switch Group</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity style={globalStyle.navBarButton} onPress={() =>this.fitToMap()}>
+                            <MaterialIcons style={globalStyle.navBarIcon} name="my-location"/>
+                                <Text style={globalStyle.navBarLabel}>Center Map</Text>
+                            </TouchableOpacity>
+                            
+                        </View>*/
 
 const styles = StyleSheet.create({
     mainContainer: {

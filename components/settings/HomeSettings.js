@@ -37,10 +37,11 @@ class HomeSettings extends Component {
                     
                         <List>
                         <ListItem   avatar style={globalStyle.listItem}>
-                            <Left style={globalStyle.listLeft}>
-                               
-                                <MaterialIcons style={{fontSize:30}}    name='confirmation-number' />
-                            </Left>
+                        <Left >
+                    
+                            <MaterialCommunityIcons  style={{fontSize:30,color:'#1eaec5'}} name="table-row"/>
+                        </Left>
+                            
                             <Body style={globalStyle.listBody} >
                                 <Text style={globalStyle.listHeading}>Invitation Code</Text>
                             </Body>

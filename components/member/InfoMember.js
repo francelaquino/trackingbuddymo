@@ -6,6 +6,8 @@ import { connect } from 'react-redux';
 import { NavigationActions } from 'react-navigation'
 import {  getMember, displayMember, deleteMember,displayHomeMember } from '../../actions/memberActions' ;
 import Loading  from '../shared/Loading';
+import Loader from '../shared/Loader';
+
 var globalStyle = require('../../assets/style/GlobalStyle');
 
 
@@ -14,27 +16,31 @@ class InfoMember extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            id:this.props.navigation.state.params.id,
-            firstname:this.props.navigation.state.params.firstname,
+            id:this.props.memberid,
+            firstname:this.props.memberfirstname,
         };
       }
 
       
     componentWillMount() {
-        this.props.getMember(this.state.id);
+        this.props.getMember(this.state.id).then(res=>{
+            this.setState({loading:false})
+        }).catch(function(err) {
+            this.setState({loading:false})
+        });
     }
 
     onDelete(){
-
+        let self=this;
+        this.setState({loading:true})
         this.props.deleteMember(this.state.id).then(res=>{
-        	if(res==true){
                 ToastAndroid.showWithGravityAndOffset("Member successfully deleted",ToastAndroid.LONG,ToastAndroid.BOTTOM, 25, 50);
-                this.props.isLoading=true;
-                this.props.displayMember();
-                this.props.displayHomeMember();
-                this.props.navigation.goBack();
-            }
+                self.setState({loading:false})
+                self.props.displayMember();
+                self.props.displayHomeMember();
+                self.props.navigate.goBack();
         }).catch(function(err) {
+            self.setState({loading:false})
         });
     }
 
@@ -54,68 +60,51 @@ class InfoMember extends Component {
 
     loading(){
         return (
-          <Root>
-          <Container style={globalStyle.containerWrapper}>
           <Loading/>
-          </Container>
-          </Root>
         )
     }
    
 
     ready(){
         return (
-            <Root>
-                <Container style={globalStyle.containerWrapper}>
-                    <Header style={globalStyle.header} >
-                        <Left style={globalStyle.headerLeft} >
-                        <Button transparent onPress={()=> {this.props.navigation.dispatch(NavigationActions.back())}} >
-                                <Icon size={30} name='arrow-back' />
-                            </Button> 
-                        </Left>
-                        <Body>
-                            <Title>{this.state.firstname}</Title>
-                        </Body>
-                        
-                    </Header>
-                    
-                    <ScrollView contentContainerStyle={{flexGrow: 1}}>
+            
                     <View style={globalStyle.container}>
+                    <Loader loading={this.state.loading} />
                         <View style={{marginTop:20}}>
                         <View style={globalStyle.avatarContainer}>
                             <Image style={globalStyle.avatarBig} source={{uri : this.props.member.avatar}} />
                         </View>
                         </View>
                         
-                            <View><List >
+                            <List >
                             <ListItem >
                                 <Body>
                                     <Text style={globalStyle.label}>First Name</Text>
-                                    <Text style={globalStyle.value} note>{this.props.member.firstname}</Text>
+                                    <Text style={{color:'#838484',fontSize:15}} note>{this.props.member.firstname}</Text>
                                 </Body>
                             </ListItem>
                             <ListItem >
                                 <Body>
                                     <Text style={globalStyle.label}>Middle Name</Text>
-                                    <Text style={globalStyle.value} note>{this.props.member.middlename}</Text>
+                                    <Text style={{color:'#838484',fontSize:15}} note>{this.props.member.middlename}</Text>
                                 </Body>
                             </ListItem>
                             <ListItem >
                             <Body>
                                 <Text style={globalStyle.label}>Last Name</Text>
-                                <Text style={globalStyle.value} note>{this.props.member.lastname}</Text>
+                                <Text style={{color:'#838484',fontSize:15}} note>{this.props.member.lastname}</Text>
                             </Body>
                             </ListItem>
                             <ListItem >
                             <Body>
                                 <Text style={globalStyle.label}>Mobile No.</Text>
-                                <Text style={globalStyle.value} note>{this.props.member.mobileno}</Text>
+                                <Text style={{color:'#838484',fontSize:15}} note>{this.props.member.mobileno}</Text>
                             </Body>
                             </ListItem>
                             <ListItem >
                             <Body>
                                 <Text style={globalStyle.label}>Email</Text>
-                                <Text style={globalStyle.value} note>{this.props.member.email}</Text>
+                                <Text style={{color:'#838484',fontSize:15}} note>{this.props.member.email}</Text>
                             </Body>
                             </ListItem>
                             
@@ -127,17 +116,14 @@ class InfoMember extends Component {
                                 <Text style={{color:'white'}}>Delete Member</Text>
                                 </Button>
                             </ListItem>
-                        </List></View>
+                        </List>
                         
                         
                         </View>
-                    </ScrollView>
 
                     
                             
                     
-                </Container>
-        </Root>
         );
     }
     render() {

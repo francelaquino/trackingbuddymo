@@ -164,7 +164,7 @@ module.exports = StyleSheet.create({
     },
     listAvatarContainer:{
         borderRadius: 50,
-        backgroundColor:'silver',
+        backgroundColor:'#1eaec5',
         padding:2,
         width:50,
         height:50,
@@ -187,7 +187,7 @@ module.exports = StyleSheet.create({
     },
     listAvatarContainerSmall:{
         borderRadius: 50,
-        backgroundColor:'silver',
+        backgroundColor:'#1eaec5',
         padding:2,
         width:40,
         height:40,

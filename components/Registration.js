@@ -7,6 +7,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Loading  from './shared/Loading';
 import Geocoder from 'react-native-geocoder';
 import ImagePicker from 'react-native-image-picker';
+import Loader from './shared/Loader';
 import firebase from 'react-native-firebase';
 var registrationStyle = require('../assets/style/Registration');
 
@@ -16,12 +17,13 @@ class Register extends Component {
   constructor(props) {
     super(props)
     this.state = {
+        loading:false,
         latitude:'',
         longitude:'',
         address:'',
         emptyPhoto:'https://firebasestorage.googleapis.com/v0/b/trackingbuddy-3bebd.appspot.com/o/member_photos%2Ficons8-person-80.png?alt=media&token=59864ce7-cf1c-4c5e-a07d-76c286a2171d',
         isLoading:true,
-        email:'aquinof@rchsp.med.sa',
+        email:'lian@rchsp.med.sa',
         password:'111111',
         retypepassword:'111111',
         mobileno:'0538191138',
@@ -82,20 +84,15 @@ class Register extends Component {
 
 
 
-  componentWillMount() {
-    this.initialize();
-
-    
-
-
+  async componentWillMount() {
+    await this.initialize();
   }
        
-  initialize(){
-    let countryRef = firebase.database().ref().child('countries').orderByChild("country");
-      countryRef.on('value', (dataSnapshot) => {
+  async initialize(){
+    await firebase.database().ref().child('countries').orderByChild("country").on('value', async (dataSnapshot)=> {
         let countries=[];
         if(dataSnapshot.exists){
-            dataSnapshot.forEach(function(child) {
+            await dataSnapshot.forEach(function(child) {
                 countries.push({
                   id: child.val().id,
                   countrycode: child.val().countrycode,
@@ -109,21 +106,21 @@ class Register extends Component {
     
     })
 
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
+    /*await navigator.geolocation.getCurrentPosition(
+      async (position) => {
           let coords = {
               lat: position.coords.latitude,
               lng:  position.coords.longitude
             };
       
-          Geocoder.geocodePosition(coords).then(res => {
+          await Geocoder.geocodePosition(coords).then(res => {
                   this.setState({latitude:position.coords.latitude,longitude:position.coords.longitude, address:res[1].formattedAddress})
           }).catch(err => console.log(err))
       },
       (err) => {
       },
       { enableHighAccuracy: false, timeout: 20000, maximumAge: 1000 }
-    );
+    );*/
   }
 
 
@@ -137,7 +134,7 @@ class Register extends Component {
   }
   
   
-  onSubmit(){
+  async onSubmit(){
 
     
     
@@ -179,7 +176,7 @@ class Register extends Component {
 
 
     if(isvalid){
-      
+        this.setState({loading:true})
         if(this.state.avatarsource!=""){
           let avatarlink=this.state.email+'.jpg';
 
@@ -201,19 +198,27 @@ class Register extends Component {
         }
       }
   }
-  sendSubmit(){
-    let code = "";
-    let possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-    for(let i = 0; i < 7; i++) {
+  async  generateCode(){
+    let code="";
+      let possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+      for(let i = 0; i < 7; i++) {
         code += possible.charAt(Math.floor(Math.random() * possible.length));
-    }
-    firebase.auth().createUserAndRetrieveDataWithEmailAndPassword(this.state.email,this.state.password).then((res)=>{
+        if(i>=7){
+          return code;
+        }
+      }
+      
+  }
+  async sendSubmit(){
+    let code = "";
+    await this.generateCode();
+    await firebase.auth().createUserAndRetrieveDataWithEmailAndPassword(this.state.email,this.state.password).then(async (res)=>{
       let uid=res.user.uid;
       let userRef = firebase.database().ref().child("users/"+uid);
                 if(this.state.avatar==""){
                   this.setState({avatar:this.state.emptyPhoto});
                 }
-                userRef.set({ 
+                await userRef.set({ 
                   email : this.state.email,
                   firstname : this.state.firstname,
                   middlename: this.state.middlename,
@@ -230,15 +235,9 @@ class Register extends Component {
                   address : this.state.address,
               });
 
-              fetch("https://us-central1-trackingbuddy-3bebd.cloudfunctions.net/saveLocation?lat="+ this.state.latitude +"&lon="+ this.state.longitude +"&userid="+uid+"&address="+this.state.address)
-              .then((response) => response)
-              .then((response) => {
-              })
-              .catch((error) => {
-              console.error(error);
-              });
+              
      
-	  this.resetState();
+	  await this.resetState();
 	  ToastAndroid.showWithGravityAndOffset("Registration successfully completed",ToastAndroid.LONG,ToastAndroid.BOTTOM, 25, 50);
 
     }).catch(function(e){
@@ -250,10 +249,10 @@ class Register extends Component {
     })
   }
   required(){
-	ToastAndroid.showWithGravityAndOffset("Please fill required field",ToastAndroid.LONG,ToastAndroid.BOTTOM, 25, 50);
+	  ToastAndroid.showWithGravityAndOffset("Please fill required field",ToastAndroid.LONG,ToastAndroid.BOTTOM, 25, 50);
   }
 
-  resetState(){
+  async resetState(){
 	  this.setState({
 		  email:'',
         password:'',
@@ -275,6 +274,8 @@ class Register extends Component {
         longitude:'',
         latitude:'',
         address:'',
+        isLoading : false,
+        loading : false,
 		  avatarsource: '',
     })
     this.initialize();
@@ -300,8 +301,12 @@ class Register extends Component {
 	  return (
 			<Root>
 			<Container style={registrationStyle.containerWrapper} >
+      <Loader loading={this.state.loading} />
 			<ScrollView  contentContainerStyle={{flexGrow: 1}} keyboardShouldPersistTaps={"always"}>
-					<View  style={registrationStyle.header}>
+				
+
+					<View style={registrationStyle.container}>
+          <View  style={{marginBottom:20}}>
 						<TouchableOpacity onPress={this.selectPhoto.bind(this)}>
 							<View style={registrationStyle.avatarContainer}>
 							{ this.state.avatarsource === '' ? <Text style={{fontSize:10,marginTop:32,color:'white'}}>Select a Photo</Text> :
@@ -310,8 +315,6 @@ class Register extends Component {
 							</View>
 						</TouchableOpacity>
 					</View>
-
-					<View style={registrationStyle.container}>
 					
 						<Item  stackedLabel  style={registrationStyle.item}  >
 							<Label style={registrationStyle.stackedlabel}>Email</Label>

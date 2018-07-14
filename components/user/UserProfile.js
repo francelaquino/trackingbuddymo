@@ -22,106 +22,66 @@ class UserProfile extends Component {
         this.props.getProfile();
     }
 
-   
-
-
-    confirmDelete(){
-        Alert.alert(
-            'Comfirm Delete',
-            'Are you sure you want to delete the member?',
-            [
-              
-              {text: 'Yes', onPress: () => this.onDelete()},
-              {text: 'No', style: 'cancel'},
-            ],
-            { cancelable: true }
-          )
-    }
-
+    
     loading(){
         return (
-          <Root>
-          <Container style={globalStyle.containerWrapper}>
+            
           <Loading/>
-          </Container>
-          </Root>
         )
     }
    
 
     ready(){
         return (
-            <Root>
-                <Container style={globalStyle.containerWrapper}>
-                    <Header style={globalStyle.header} >
-                        <Left style={globalStyle.headerLeft} >
-                        <Button transparent onPress={()=> {this.props.navigation.dispatch(NavigationActions.back())}} >
-                                <Icon size={30} name='arrow-back' />
-                            </Button> 
-                        </Left>
+            
+            <View style={globalStyle.container}>
+            <View style={{marginTop:20}}>
+                <View style={globalStyle.avatarContainer}>
+                    <Image style={globalStyle.avatarBig} source={{uri : this.props.profile.avatar}} />
+                </View>
+            </View>
+            
+                    <List>
+                        <ListItem >
                         <Body>
-                            <Title>Profile</Title>
+                        <Text style={globalStyle.label}>First Name</Text>
+                        <Text style={globalStyle.value} note>{this.props.profile.firstname}</Text>
                         </Body>
-                        
-                    </Header>
-                    
-                    <ScrollView contentContainerStyle={{flexGrow: 1}}>
-                    <View style={globalStyle.container}>
-                        <View style={{marginTop:20}}>
-                        <View style={globalStyle.avatarContainer}>
-                            <Image style={globalStyle.avatarBig} source={{uri : this.props.profile.avatar}} />
-                        </View>
-                        </View>
-
-                        <List >
-                        <View >
-                            <ListItem >
-                                <Body>
-                                    <Text style={globalStyle.label}>First Name</Text>
-                                    <Text style={globalStyle.value} note>{this.props.profile.firstname}</Text>
-                                </Body>
-                            </ListItem>
-                            <ListItem >
-                                <Body>
-                                    <Text style={globalStyle.label}>Middle Name</Text>
-                                    <Text style={globalStyle.value} note>{this.props.profile.middlename}</Text>
-                                </Body>
-                            </ListItem>
-                            <ListItem >
-                            <Body>
-                                <Text style={globalStyle.label}>Last Name</Text>
-                                <Text style={globalStyle.value} note>{this.props.profile.lastname}</Text>
-                            </Body>
-                            </ListItem>
-                            <ListItem >
-                            <Body>
-                                <Text style={globalStyle.label}>Mobile No.</Text>
-                                <Text style={globalStyle.value} note>{this.props.profile.mobileno}</Text>
-                            </Body>
-                            </ListItem>
-                            <ListItem >
-                            <Body>
-                                <Text style={globalStyle.label}>Email</Text>
-                                <Text style={globalStyle.value} note>{this.props.profile.email}</Text>
-                            </Body>
-                            </ListItem>
+                        </ListItem>
+                        <ListItem >
+                        <Body>
+                        <Text style={globalStyle.label}>Middle Name</Text>
+                        <Text style={globalStyle.value} note>{this.props.profile.middlename}</Text>
+                        </Body>
+                        </ListItem>
+                        <ListItem >
+                        <Body>
+                        <Text style={globalStyle.label}>Last Name</Text>
+                        <Text style={globalStyle.value} note>{this.props.profile.lastname}</Text>
+                        </Body>
+                        </ListItem>
+                        <ListItem >
+                        <Body>
+                        <Text style={globalStyle.label}>Mobile No.</Text>
+                        <Text style={globalStyle.value} note>{this.props.profile.mobileno}</Text>
+                        </Body>
+                        </ListItem>
+                        <ListItem >
+                        <Body>
+                        <Text style={globalStyle.label}>Email</Text>
+                        <Text style={globalStyle.value} note>{this.props.profile.email}</Text>
+                        </Body>
+                        </ListItem>
                             
-                           
-                            <ListItem last>
-                                <Button 
-                                bordered light full rounded style={globalStyle.secondaryButton}>
-                                <Text style={{color:'white'}}>Update Profile</Text>
-                                </Button>
-                            </ListItem>
-                            </View>
+                        <ListItem last>
+                        <Button 
+                        bordered light full rounded style={globalStyle.secondaryButton}>
+                        <Text style={{color:'white'}}>Update Profile</Text>
+                        </Button>
+                        </ListItem>
                         </List>
-                        </View>
-                    </ScrollView>
-                            
-                    
-                </Container>
-        </Root>
-        );
+                </View>
+        )
     }
     render() {
         if(this.props.isLoading){

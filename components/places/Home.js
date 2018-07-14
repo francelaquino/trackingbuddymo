@@ -1,6 +1,6 @@
 
 import React, { Component } from 'react';
-import { NetInfo , TouchableOpacity,Platform,  StyleSheet,  Text,  View, ScrollView,TextInput, ToastAndroid, Image,Dimensions } from 'react-native';
+import { NetInfo , TouchableOpacity,Platform,  StyleSheet,  Text,  View, ScrollView,TextInput, ToastAndroid, Image,Dimensions, FlatList } from 'react-native';
 import { Drawer,Root, Container, Header, Body, Title, Item, Input, Label, Button, Icon, Content, List, ListItem,Left, Right,Switch, Thumbnail,Card,CardItem } from 'native-base';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
@@ -41,8 +41,8 @@ BackgroundJob.register(trackPosition);
 
 var trackPositionSchedule = {
     jobKey: "trackPositionJob",
-    period: 10000,
-    //period: 60000,
+    //period: 10000,
+    period: 60000,
     exact: true,
     allowExecutionInForeground: true
 }
@@ -89,7 +89,7 @@ class HomePlaces extends Component {
                     NetInfo.isConnected.fetch().done((isConnected) => {
                         if(isConnected){
 
-                            //self.props.saveLocationOnline(coords);
+                            self.props.saveLocationOnline(coords);
 
                         }else{
                             //self.props.saveLocationOffline(coords);
@@ -144,7 +144,7 @@ class HomePlaces extends Component {
                 longitudeDelta: 0.005
               })
         }else{
-            this.map.fitToCoordinates(this.state.centerMarker, { edgePadding: { top: 10, right: 10, bottom: 10, left: 10 }, animated: false })  
+            this.map.fitToCoordinates(this.state.centerMarker, { edgePadding: { top: 20, right: 20, bottom: 20, left: 20 }, animated: false })  
         }
 
     }
@@ -170,21 +170,22 @@ class HomePlaces extends Component {
           })
 
     }
-    
-    
-    async changeGroup (groupname) {
-        await this.reload();
+    changeGroup = (groupname) => {
+        this.setState({isLoading:true})
+        this.reload();
         this.setState({groupname:groupname});
         
     }
-    async reload(){
+    reload(){
         let self=this;
         self.props.displayHomeMember().then(res=>{
-            setTimeout( () => {
+            setTimeout(() => {
                 self.plotMarker();
-           }, 1000);
+            }, 1000);
         });
     }
+    
+   
     async initialize(){
         let self=this;
         firebase.database().ref().child('users/'+userdetails.userid+"/members").on('value',function(snapshot){
@@ -213,32 +214,32 @@ class HomePlaces extends Component {
       openDrawer = () => {
         this.drawer._root.open()
     };
+
+    renderMember(){
+            const data=this.props.members;
+            return (
+                <FlatList
+                    keyExtractor={item => item.id}
+                    horizontal={true}
+                    data={data}
+                    renderItem={({ item }) => (
+                        <TouchableOpacity onPress={()=>this.centerToMarker(item.coordinates.latitude,item.coordinates.longitude)}>
+                        <View  style={{flex:1,flexDirection:'column',alignItems:'center',width:80,height:60,margin:2}}>
+                            <View style={globalStyle.listAvatarContainerSmall} >
+                            { item.avatar==='' ?  <Thumbnail  onPress={()=>this.centerToMarker(item.coordinates.latitude,item.coordinates.longitude)} style={globalStyle.listAvatar} source={{uri: this.state.emptyPhoto}} /> :
+                            <Thumbnail onPress={()=>this.centerToMarker(item.coordinates.latitude,item.coordinates.longitude)}  style={globalStyle.listAvatarSmall} source={{uri: item.avatar}} />
+                            }
+                            </View>
+                            <Text numberOfLines={1} style={{color:'#605f5f',fontSize:13}}>{item.firstname}</Text>
+                        </View>
+                        </TouchableOpacity>
+                    ) }
+                />)
+    }
     ready(){
 
 
-        const members =this.props.members.map(member=>(
-            <ListItem key={member.id}  avatar style={globalStyle.listItemSmall} >
-            <Left style={globalStyle.listLeft}>
-               
-                <View style={globalStyle.listAvatarContainerSmall} >
-                { member.avatar==='' ?  <Thumbnail  onPress={()=>this.centerToMarker(member.coordinates.latitude,member.coordinates.longitude)} style={globalStyle.listAvatar} source={{uri: this.state.emptyPhoto}} /> :
-                <Thumbnail onPress={()=>this.centerToMarker(member.coordinates.latitude,member.coordinates.longitude)}  style={globalStyle.listAvatarSmall} source={{uri: member.avatar}} />
-                }
-                </View>
-            </Left>
-            <Body style={globalStyle.listBody} >
-                <Text numberOfLines={1} style={globalStyle.listHeadingHome} onPress={()=>this.centerToMarker(member.coordinates.latitude,member.coordinates.longitude)}>{member.firstname}</Text>
-                <Text numberOfLines={1} note style={{fontSize:10}}>{member.address}</Text>
-            </Body>
-            <Right button style={globalStyle.listRight} >
-                <TouchableOpacity  onPress={() =>this.props.navigation.navigate('LocationPlaces',{id:member.id})} >
-                <View style={{width:50,height:50,justifyContent: 'center',alignItems: 'center'}}>
-                <Entypo  style={{marginTop:28,fontSize:20,color:'#fbbc05'}} name="location"/>
-                </View>
-                </TouchableOpacity>
-              </Right>
-            </ListItem>
-        ));
+     
 
         const markers =this.state.markers.map(marker=>(
                 <MapView.Marker key={marker.id}
@@ -285,12 +286,17 @@ class HomePlaces extends Component {
                         <Body>
                             <Title style={globalStyle.headerTitle}>Home</Title>
                         </Body>
-                        
-                       
-
-
-                           
+                        <Right style={globalStyle.headerRight} >
+                            <TouchableOpacity style={{marginRight:15}} onPress={() =>this.fitToMap()}>
+                            <MaterialIcons size={25} style={{color:'white'}} name="my-location"/>
+                            </TouchableOpacity>
+                            <TouchableOpacity  onPress={() =>this.props.navigation.navigate('SelectGroup',{changeGroup : this.changeGroup})}>
+                            <Ionicons  size={25} style={{color:'white'}} name="md-swap"/>
+                            </TouchableOpacity>
                             
+
+                            
+                        </Right>
                         
                     </Header>
                     
@@ -317,25 +323,11 @@ class HomePlaces extends Component {
                         
                         
                         
-                        <ScrollView  contentContainerStyle={{flexGrow: 1}} contentContainerStyle={{flex: 0}} keyboardShouldPersistTaps={"always"}>
+                        
+                        
+                        
                         <View style={styles.memberContainer} >
-                       
-                            {members}
-                            
-                        
-                        </View>
-                        </ScrollView>
-                        
-                        <View style={styles.navBar} >
-                            <TouchableOpacity style={globalStyle.navBarButton} onPress={() =>this.props.navigation.navigate('SelectGroup',{changeGroup : this.changeGroup})}>
-                                <Ionicons style={globalStyle.navBarIcon} name="md-swap"/>
-                                <Text style={globalStyle.navBarLabel}>Switch Group</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity style={globalStyle.navBarButton} onPress={() =>this.fitToMap()}>
-                            <MaterialIcons style={globalStyle.navBarIcon} name="my-location"/>
-                                <Text style={globalStyle.navBarLabel}>Center Map</Text>
-                            </TouchableOpacity>
-                            
+                            {this.renderMember()}
                         </View>
                     </View>
 
@@ -368,6 +360,7 @@ const styles = StyleSheet.create({
       flexDirection: 'column',
     },
     navBar: {
+        flex: 1,
         flexDirection: 'row',
         height: 50,
         padding:2,
@@ -377,18 +370,16 @@ const styles = StyleSheet.create({
     },
     
     mapContainer: {
-      flex: 3,
+      flex: 1,
       display: 'flex',
       borderBottomColor:'silver',
       borderBottomWidth:.5,
       
     },
     memberContainer: {
-        flex: 1,
-        height: 195,
-        display: 'flex',
-       
-        
+        height: 63,
+        paddingTop:2,
+        alignItems:'center',
       },
       map: {
         ...StyleSheet.absoluteFillObject,

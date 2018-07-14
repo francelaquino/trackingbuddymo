@@ -65,7 +65,7 @@ export const saveLocationOffline=(coordinate)=> dispatch=> {
     
 };
 
-export const saveLocationOnline=(coordinate)=> dispatch=> {
+export const saveLocationOnline=(coordinate)=> async dispatch=> {
     let coords = {
         lat: coordinate.lat,
         lng:  coordinate.lng,
@@ -76,9 +76,10 @@ export const saveLocationOnline=(coordinate)=> dispatch=> {
         payload: [],
     });
 
-    /*let dateadded=Date.now();
+    let dateadded=Date.now();
     Geocoder.geocodePosition(coords).then(res => {
-            fetch("https://us-central1-trackingbuddy-3bebd.cloudfunctions.net/saveLocation?lat="+ coords.lat +"&lon="+ coords.lng +"&userid="+userdetails.userid+"&address="+res[1].formattedAddress+"&dateadded="+dateadded)
+        
+            fetch("https://us-central1-trackingbuddy-3bebd.cloudfunctions.net/api/appendLocation?lat="+ coords.lat +"&lon="+ coords.lng +"&userid="+userdetails.userid+"&address="+res[1].formattedAddress+"&dateadded="+dateadded+"&firstname="+userdetails.firstname)
             .then((response) => response)
             .then((response) => {
                 dispatch({ 
@@ -87,6 +88,7 @@ export const saveLocationOnline=(coordinate)=> dispatch=> {
                 });
             })
             .catch((error) => {
+                
                 dispatch({ 
                     type: SAVE_LOCATION_ONLINE,
                     payload: [],
@@ -98,7 +100,7 @@ export const saveLocationOnline=(coordinate)=> dispatch=> {
             type: SAVE_LOCATION_ONLINE,
             payload: [],
         });
-    })*/
+    })
 
       
 

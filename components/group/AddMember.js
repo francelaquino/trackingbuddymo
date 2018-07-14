@@ -1,6 +1,6 @@
 
 import React, { Component } from 'react';
-import {  Platform,  StyleSheet,  Text,  View, ScrollView,TextInput, TouchableOpacity, ToastAndroid, Image, Alert,RefreshControl } from 'react-native';
+import {  Platform,  StyleSheet,  Text,  View, ScrollView,TextInput, TouchableOpacity, ToastAndroid, Image, Alert,RefreshControl, FlatList } from 'react-native';
 import { Root, Container, Header, Body, Title, Item, Input, Label, Button, Icon, Content, List, ListItem,Left, Right,CheckBox, Thumbnail, CardItem, Card } from 'native-base';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
@@ -28,7 +28,7 @@ class AddMember extends Component {
             },
             groupname:'',
             groupid:'',
-            membercount:''
+            membercount:'0 member'
         }
       }
 
@@ -86,8 +86,8 @@ class AddMember extends Component {
     initialize(){
        
         this.setState({
-            groupname:this.props.navigation.state.params.groupname,
-            groupid:this.props.navigation.state.params.id,
+            groupname:this.props.groupname,
+            groupid:this.props.groupid,
         })
             setTimeout(() => {
                 this.props.displayGroupMember(this.state.groupid).then(res=>{
@@ -105,64 +105,52 @@ class AddMember extends Component {
    
     loading(){
         return (
-          <Root>
-          <Container style={globalStyle.containerWrapper}>
           <Loading/>
-          </Container>
-          </Root>
         )
     }
     
+    renderMember(){
+        const data=this.props.members;
+        return (
+            <FlatList
+                style={{flex:1}}
+                keyExtractor={item => item.id}
+                data={data}
+                renderItem={({ item,index }) => (
+                    <ListItem  key={item.id} avatar button onPress={()=>this.addSelectedMember(index)} style={globalStyle.listItem}>
+                    <Left >
+                        <View style={globalStyle.listAvatarContainer}> 
+                            { item.avatar==='' ?  <Thumbnail  style={globalStyle.avatar} source={{uri: this.state.emptyPhoto}} /> :
+                            <Thumbnail  style={globalStyle.listAvatar} source={{uri: item.avatar}} />
+                            }
+                            </View>
+                    </Left>
+                    <Body style={globalStyle.listBody} >
+                            <Text style={globalStyle.heading1}>{item.firstname}</Text>
+                        </Body>
+                    <Right style={globalStyle.listRight}>
+                        { item.selected ===true &&
+                        <Icon  style={{color:'#009da3'}} size={30} name="md-checkmark-circle" />
+                        }
+                    </Right>
+                  </ListItem>
+                        ) }
+                />)
+    }
     
     ready(){
-        const members =this.props.members.map((member,index)=>
-            
-            <ListItem  key={member.id} avatar button onPress={()=>this.addSelectedMember(index)} style={globalStyle.listItem}>
-            <Left >
-                <View style={globalStyle.listAvatarContainer}> 
-                    { member.avatar==='' ?  <Thumbnail  style={globalStyle.avatar} source={{uri: this.state.emptyPhoto}} /> :
-                    <Thumbnail  style={globalStyle.listAvatar} source={{uri: member.avatar}} />
-                    }
-                    </View>
-            </Left>
-            <Body style={globalStyle.listBody} >
-                    <Text style={globalStyle.heading1}>{member.firstname}</Text>
-                </Body>
-            <Right style={globalStyle.listRight}>
-                { member.selected ===true &&
-                <Icon  style={{color:'#009da3'}} size={30} name="md-checkmark-circle" />
-                }
-            </Right>
-          </ListItem>
-          );
+       
 
         return (
-            <Root>
-                <Container style={globalStyle.containerWrapper}>
-                    <Header style={globalStyle.header}>
-                        <Left style={globalStyle.headerLeft} >
-                            <Button transparent onPress={()=> {this.props.navigation.goBack()}} >
-                                <Icon size={30} name='arrow-back' />
-                            </Button> 
-                        </Left>
-                        <Body>
-                            <Title>{this.state.groupname}</Title>
-                        </Body>
-                        <Right>
-                            <Text style={{color:'white'}}>{this.state.membercount}</Text>
-                        </Right>
-                    </Header>
-                    <Content padder>
-                        <ScrollView  contentContainerStyle={{flexGrow: 1}} keyboardShouldPersistTaps={"always"}
-                          >
-                            <View style={globalStyle.container}>
-                                {members}
+                            <View  style={globalStyle.container}>
+                             <List>
+                            <ListItem itemDivider>
+                            <Text>{this.state.membercount}</Text>
+                            </ListItem>  
+                            </List>
+                                {this.renderMember()}
                             </View>
                             
-                        </ScrollView>
-                    </Content>
-                </Container>
-            </Root>
         )
     }
 

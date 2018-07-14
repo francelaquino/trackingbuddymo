@@ -50,6 +50,7 @@ export const displayHomeMember=()=> async dispatch=> {
                                         latitude: Number(dataSnapshot.val().latitude)
                                     }
                                 });
+                                
                             }
                             cnt++;
                             if(cnt>=count){
@@ -335,28 +336,25 @@ export const getMember=(userid)=> async dispatch=> {
 };
 
 
-export const deleteMember=(memberid)=> dispatch=> {
-    return new Promise((resolve) => {
+export const deleteMember=(memberid)=> async dispatch=> {
         
-        firebase.database().ref().child("users/"+userdetails.userid+"/members/"+memberid).remove()
+        await firebase.database().ref().child("users/"+userdetails.userid+"/members/"+memberid).remove()
         .catch(function(err) {
             resolve(false)
         });
 
-        firebase.database().ref().child("memberof/"+memberid+"/"+userdetails.userid).remove()
+        await firebase.database().ref().child("memberof/"+memberid+"/"+userdetails.userid).remove()
         .catch(function(err) {
             resolve(false)
         });
 
-        firebase.database().ref().child("groupmembers").orderByKey().equalTo(memberid).remove()
+        await firebase.database().ref().child("groupmembers").orderByKey().equalTo(memberid).remove()
         .catch(function(err) {
             resolve(false)
         });
 
 
         
-        resolve(true)
-    });
 };
 
 

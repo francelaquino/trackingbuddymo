@@ -17,7 +17,7 @@ class Login extends Component {
         super(props)
         this.state = {
             loading:false,
-            email: 'francel_aquino@yahoo.com',
+            email: 'lian@rchsp.med.sa',
             password:'111111',
             
         };
@@ -25,17 +25,17 @@ class Login extends Component {
 
       }
       
-    trackLocation(){
+    async trackLocation(){
     let self=this;
     navigator.geolocation.getCurrentPosition(
-      (position) => {
+      async (position) => {
       
             let coords = {
                 lat: position.coords.latitude,
                 lng:  position.coords.longitude,
                 dateadded : Date.now()
               };
-              self.props.saveLocationOnline(coords);
+              await self.props.saveLocationOnline(coords);
               this.setState({loading:false})
               this.props.navigation.navigate('Home');
 
@@ -57,20 +57,19 @@ class Login extends Component {
             return false;
         }
         this.setState({loading:true});
-        firebase.auth().signInAndRetrieveDataWithEmailAndPassword(this.state.email,this.state.password).then((res)=>{
-          let memberRef = firebase.database().ref().child('users/'+res.user.uid).on('value',function(snapshot){
-            
+        firebase.auth().signInAndRetrieveDataWithEmailAndPassword(this.state.email,this.state.password).then( async (res)=>{
+          await firebase.database().ref().child('users/'+res.user.uid).on('value',function(snapshot){
               userDetails.userid=res.user.uid;
               userDetails.email=snapshot.val().email;
               userDetails.firstname=snapshot.val().firstname;
               userDetails.lastname=snapshot.val().lastname;
-              self.setState({loading:false})
-              self.props.navigation.navigate('HomePlaces');
-              //self.trackLocation();
+              //self.props.navigation.navigate('HomePlaces');
+              self.trackLocation();
 
             });
          
         }).catch(function(e){
+           
             
             self.setState({
                 loading:false,
@@ -96,6 +95,8 @@ class Login extends Component {
                     <View style={registrationStyle.container}>
                         <View style={registrationStyle.logoContainer}>
                         <Image  style={registrationStyle.logo} resizeMode='contain'  source={require('../images/logo.png')} />
+                        <Text style={{fontSize:22,color:'#303131'}}>Tracking Buddy</Text>
+                        
                         </View>
                         <Item  stackedLabel style={registrationStyle.item}>
                             <Label style={registrationStyle.stackedlabel}>Email</Label>

@@ -32,10 +32,10 @@ class EditGroup extends Component {
             
     initialize(){
         this.setState({
-            avatarsource:{uri :this.props.navigation.state.params.avatar},
-            groupNameOld:this.props.navigation.state.params.groupname,
-            groupname:this.props.navigation.state.params.groupname,
-            groupid:this.props.navigation.state.params.id,
+            avatarsource:{uri :this.props.avatarsource},
+            groupNameOld:this.props.groupname,
+            groupname:this.props.groupname,
+            groupid:this.props.groupid,
             isLoading:false,
         })
     }
@@ -137,13 +137,7 @@ class EditGroup extends Component {
 
     loading(){
         return (
-          <Root>
-          <Container style={globalStyle.containerWrapper}>
-          <View>
-              <Text>Loading</Text>
-          </View>
-          </Container>
-          </Root>
+          <Loading/>
         )
     }
     ready(){
@@ -151,19 +145,9 @@ class EditGroup extends Component {
         return(
             <Root>
                 <Loader loading={this.state.loading} />
-                <Container style={globalStyle.containerWrapper}>
-                    <Header style={globalStyle.header}>
-                        <Left style={globalStyle.headerLeft} >
-                            <Button transparent onPress={()=> {this.props.navigation.dispatch(NavigationActions.back())}} >
-                                <Icon size={30} name='arrow-back' />
-                            </Button> 
-                        </Left>
-                        <Body>
-                            <Title>{this.state.groupNameOld}</Title>
-                        </Body>
-                    </Header>
+                    
                 
-                    <ScrollView contentContainerStyle={{flexGrow: 1}} keyboardShouldPersistTaps={"always"}>
+                    <ScrollView contentContainerStyle={{flexGrow: 1}} keyboardShouldPersistTaps={"always"} showsVerticalScrollIndicator={false}>
                         <View style={globalStyle.container}>
                         <TouchableOpacity style={{marginTop:20}} onPress={this.selectPhoto.bind(this)}>
                             <View style={globalStyle.avatarContainer}>
@@ -205,7 +189,6 @@ class EditGroup extends Component {
 
                         </View>
                     </ScrollView>
-                </Container>
              </Root>
         )
     }
