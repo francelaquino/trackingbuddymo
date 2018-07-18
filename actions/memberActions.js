@@ -9,6 +9,7 @@ var userdetails = require('../components/shared/userDetails');
 
 export const displayHomeMember=()=> async dispatch=> {
     let members=[];
+    let home_markers=[];
     let count=0;
     let cnt=0;
 
@@ -25,6 +26,13 @@ export const displayHomeMember=()=> async dispatch=> {
                         latitude: Number(snapshot.val().latitude)
                     }
                 });
+                /*const coord = {
+                    coordinates:{
+                        longitude: Number(snapshot.val().longitude),
+                        latitude: Number(snapshot.val().latitude)
+                    }
+                };
+                home_markers.push(coord);*/
             }
         })
 
@@ -34,6 +42,11 @@ export const displayHomeMember=()=> async dispatch=> {
                     type: DISPLAY_HOME_MEMBER,
                     payload: members,
                 });
+
+               /* dispatch({ 
+                    type: DISPLAY_HOME_MARKER,
+                    payload: home_markers,
+                });*/
             }else{
                 count=snapshot.numChildren();
                 await snapshot.forEach(async childSnapshot  => {
@@ -50,6 +63,13 @@ export const displayHomeMember=()=> async dispatch=> {
                                         latitude: Number(dataSnapshot.val().latitude)
                                     }
                                 });
+                               /* const coord = {
+                                    coordinates:{
+                                        longitude: Number(dataSnapshot.val().longitude),
+                                        latitude: Number(dataSnapshot.val().latitude)
+                                    }
+                                };
+                                home_markers.push(coord);*/
                                 
                             }
                             cnt++;
@@ -58,6 +78,10 @@ export const displayHomeMember=()=> async dispatch=> {
                                     type: DISPLAY_HOME_MEMBER,
                                     payload: members,
                                 });
+                               /* dispatch({ 
+                                    type: DISPLAY_HOME_MARKER,
+                                    payload: home_markers,
+                                });*/
                             }
                         })
                 })
@@ -416,20 +440,20 @@ export const generateInvitationCode=()=> dispatch=> {
 };
 
 
-export const sendInvite=(invitationcode)=> dispatch=> {
+export const sendInvite=(invitationcode)=> async dispatch=> {
     return new Promise((resolve) => {
-        firebase.database().ref().child("users").orderByChild("invitationcode").equalTo(invitationcode).once("value",snapshot => {
+        firebase.database().ref().child("users").orderByChild("invitationcode").equalTo(invitationcode).once("value",async snapshot => {
             let id="";
             let parent=this;
-            snapshot.forEach(function(childSnapshot) {
+            snapshot.forEach(async function(childSnapshot) {
                 let expiration= childSnapshot.val().invitationcodeexpiration;
                 
                 let today = Date.now();
                 if(Number(today)>Number(expiration)){
                     resolve(false);
                 }else{
-                id = childSnapshot.key;
-                    firebase.database().ref().child("users/"+userdetails.userid+"/members/"+id).set({ 
+                    id = childSnapshot.key;
+                    await firebase.database().ref().child("users/"+userdetails.userid+"/members/"+id).set({ 
                         userid : id,
                         dateadded: Date.now(),
                         lastmovement: Date.now(),
@@ -437,7 +461,7 @@ export const sendInvite=(invitationcode)=> dispatch=> {
                         resolve(false)
                     });
 
-                    firebase.database().ref().child("users/"+id+"/members/"+userdetails.userid).set({ 
+                    await firebase.database().ref().child("users/"+id+"/members/"+userdetails.userid).set({ 
                         userid : id,
                         dateadded: Date.now(),
                         lastmovement: Date.now(),
@@ -445,14 +469,14 @@ export const sendInvite=(invitationcode)=> dispatch=> {
                         resolve(false)
                     });
 
-                    firebase.database().ref().child("memberof/"+id+"/"+userdetails.userid).update({ 
+                    await firebase.database().ref().child("memberof/"+id+"/"+userdetails.userid).update({ 
                         userid : userdetails.userid,
                         dateadded: Date.now(),
                     }).catch(function(err) {
                         resolve(false)
                     });
 
-                    firebase.database().ref().child("memberof/"+userdetails.userid+"/"+id).update({ 
+                    await firebase.database().ref().child("memberof/"+userdetails.userid+"/"+id).update({ 
                         userid : userdetails.userid,
                         dateadded: Date.now(),
                     }).catch(function(err) {
@@ -463,7 +487,6 @@ export const sendInvite=(invitationcode)=> dispatch=> {
 
                
             });
-            resolve(false)
         }).catch(function(err) {
             console.log(err)
             resolve(false)

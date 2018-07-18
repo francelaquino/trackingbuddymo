@@ -58,7 +58,7 @@ class HomePlaces extends Component {
 
         this.state = {
             groupname:'',
-            isLoading:true,
+            isLoading:false,
             region:{
                 latitude: LATITUDE,
                 longitude: LONGITUDE,
@@ -110,6 +110,7 @@ class HomePlaces extends Component {
   
 
     async plotMarker(){
+        //this.setState({isLoading:true})
             this.setState({markers:[],centerMarker:[]})
             for (let i = 0; i < this.props.members.length; i++) {
                     const coord = {
@@ -125,10 +126,10 @@ class HomePlaces extends Component {
                         }
                     };
                     
-                    if(!isNaN(this.props.members[i].coordinates.longitude) && !isNaN(this.props.members[i].coordinates.latitude)){
+                    /*if(!isNaN(this.props.members[i].coordinates.longitude) && !isNaN(this.props.members[i].coordinates.latitude)){
                         this.setState({ markers: this.state.markers.concat(coord),centerMarker: this.state.centerMarker.concat(coord.coordinates) })
                         
-                    }
+                    }*/
 
                 }
             this.setState({isLoading:false})
@@ -148,6 +149,7 @@ class HomePlaces extends Component {
         }
 
     }
+    
     
     componentWillMount() {
          this.initialize();
@@ -189,7 +191,11 @@ class HomePlaces extends Component {
     async initialize(){
         let self=this;
         firebase.database().ref().child('users/'+userdetails.userid+"/members").on('value',function(snapshot){
-            self.reload();
+            self.props.displayHomeMember().then(res=>{
+                setTimeout(() => {
+                    self.plotMarker();
+                }, 1000);
+            });
         })
        
 
@@ -236,12 +242,44 @@ class HomePlaces extends Component {
                     ) }
                 />)
     }
+
+    renderMarker(){
+        const data=this.props.members;
+        return (
+            <FlatList
+                    keyExtractor={item => item.id}
+                    horizontal={true}
+                    data={data}
+                    renderItem={({ item }) => (
+                        <MapView.Marker key={item.id}
+                onLayout = {() => this.fitToMap()}
+                coordinate={item.coordinates}
+                title={item.firstname}>
+                <Image style={styles.marker} 
+                    source={require('../../images/marker.png')} />
+                        <Text   style={styles.markerText}>{item.firstname}</Text>
+                   
+                <MapView.Callout >
+               
+                    <View style={styles.callOut}>
+                    <View style={globalStyle.listAvatarContainerSmall} >
+                    { item.avatar==='' ?  <Thumbnail  style={globalStyle.listAvatar} source={{uri: this.state.emptyPhoto}} /> :
+                    <Thumbnail  style={globalStyle.listAvatarSmall} source={{uri: item.avatar}} />
+                    }
+                    </View>
+                    <Text  style={styles.callOutText}>{item.address}</Text></View>
+                </MapView.Callout>
+                </MapView.Marker>
+                    ) }
+                />)
+
+    }
     ready(){
 
 
      
 
-        const markers =this.state.markers.map(marker=>(
+        /*const markers =this.state.markers.map(marker=>(
                 <MapView.Marker key={marker.id}
                 onLayout = {() => this.fitToMap()}
                 coordinate={marker.coordinates}
@@ -262,7 +300,7 @@ class HomePlaces extends Component {
                 </MapView.Callout>
                 </MapView.Marker>
                
-        ));
+        ));*/
         
         
 
@@ -310,7 +348,7 @@ class HomePlaces extends Component {
                             style={styles.map}
                             loadingEnabled={false}
                             >
-                            {markers}
+                            {this.renderMarker()}
 
 
                             </MapView>
@@ -415,6 +453,7 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = state => ({
     members: state.fetchMember.home_members,
+    home_markers: state.fetchMember.home_markers,
     //isLoading:state.fetchMember.isLoading,
     isConnected:state.fetchConnection.isConnected,
     coordinates:state.fetchLocation.coordinates,

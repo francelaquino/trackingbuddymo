@@ -87,7 +87,7 @@ class PlaceList extends Component {
                             <Title>Places</Title>
                         </Body>
                         <Right  >
-                            <Button transparent onPress={() =>navigate('CreatePlace')}>
+                            <Button transparent onPress={() =>this.props.navigation.navigate('CreatePlace')}>
                                 <Text style={globalStyle.headerRightText}>Add Place</Text>
                             </Button> 
                             

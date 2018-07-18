@@ -37,7 +37,7 @@ class InfoMember extends Component {
                 ToastAndroid.showWithGravityAndOffset("Member successfully deleted",ToastAndroid.LONG,ToastAndroid.BOTTOM, 25, 50);
                 self.setState({loading:false})
                 self.props.displayMember();
-                self.props.displayHomeMember();
+                //self.props.displayHomeMember();
                 self.props.navigate.goBack();
         }).catch(function(err) {
             self.setState({loading:false})
