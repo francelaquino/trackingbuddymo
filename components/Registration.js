@@ -106,21 +106,6 @@ class Register extends Component {
     
     })
 
-    /*await navigator.geolocation.getCurrentPosition(
-      async (position) => {
-          let coords = {
-              lat: position.coords.latitude,
-              lng:  position.coords.longitude
-            };
-      
-          await Geocoder.geocodePosition(coords).then(res => {
-                  this.setState({latitude:position.coords.latitude,longitude:position.coords.longitude, address:res[1].formattedAddress})
-          }).catch(err => console.log(err))
-      },
-      (err) => {
-      },
-      { enableHighAccuracy: false, timeout: 20000, maximumAge: 1000 }
-    );*/
   }
 
 
@@ -254,7 +239,7 @@ class Register extends Component {
 
   async resetState(){
 	  this.setState({
-		  email:'',
+		    email:'',
         password:'',
         retypepassword:'',
         mobileno:'',

@@ -1,4 +1,4 @@
-import { DISPLAY_MEMBER, INVITE_MEMBER, GET_INVITATIONCODE, GENERATE_INVITATIONCODE, GET_MEMBER, DELETE_MEMBER, DISPLAY_HOME_MEMBER, DISPLAY_GROUP_MEMBER } from './types';
+import { DISPLAY_MEMBER, INVITE_MEMBER, GET_INVITATIONCODE, GET_COUNTRIES, GENERATE_INVITATIONCODE, GET_MEMBER, DELETE_MEMBER, DISPLAY_HOME_MEMBER, DISPLAY_GROUP_MEMBER } from './types';
 import firebase from 'react-native-firebase';
 import Moment from 'moment';
 
@@ -26,13 +26,7 @@ export const displayHomeMember=()=> async dispatch=> {
                         latitude: Number(snapshot.val().latitude)
                     }
                 });
-                /*const coord = {
-                    coordinates:{
-                        longitude: Number(snapshot.val().longitude),
-                        latitude: Number(snapshot.val().latitude)
-                    }
-                };
-                home_markers.push(coord);*/
+               
             }
         })
 
@@ -43,10 +37,6 @@ export const displayHomeMember=()=> async dispatch=> {
                     payload: members,
                 });
 
-               /* dispatch({ 
-                    type: DISPLAY_HOME_MARKER,
-                    payload: home_markers,
-                });*/
             }else{
                 count=snapshot.numChildren();
                 await snapshot.forEach(async childSnapshot  => {
@@ -60,16 +50,10 @@ export const displayHomeMember=()=> async dispatch=> {
                                     address : dataSnapshot.val().address,
                                     coordinates:{
                                         longitude: Number(dataSnapshot.val().longitude),
-                                        latitude: Number(dataSnapshot.val().latitude)
+                                        latitude: Number(dataSnapshot.val().latitude),
                                     }
                                 });
-                               /* const coord = {
-                                    coordinates:{
-                                        longitude: Number(dataSnapshot.val().longitude),
-                                        latitude: Number(dataSnapshot.val().latitude)
-                                    }
-                                };
-                                home_markers.push(coord);*/
+                             
                                 
                             }
                             cnt++;
@@ -78,10 +62,7 @@ export const displayHomeMember=()=> async dispatch=> {
                                     type: DISPLAY_HOME_MEMBER,
                                     payload: members,
                                 });
-                               /* dispatch({ 
-                                    type: DISPLAY_HOME_MARKER,
-                                    payload: home_markers,
-                                });*/
+                              
                             }
                         })
                 })
@@ -90,70 +71,6 @@ export const displayHomeMember=()=> async dispatch=> {
         })
 
        
-        /*return new Promise((resolve) => {
-            firebase.database().ref().child('users/'+userdetails.userid).once("value",function(snapshot){
-                               
-                if(snapshot.val() !== null){
-                    members.push({
-                        id:snapshot.key,
-                        firstname:snapshot.val().firstname,
-                        avatar: snapshot.val().avatar,
-                        address : snapshot.val().address,
-                        coordinates:{
-                            longitude: Number(snapshot.val().longitude),
-                            latitude: Number(snapshot.val().latitude)
-                        }
-                    });
-                }
-            })
-
-            let memberRef = firebase.database().ref().child('users/'+userdetails.userid+"/members").on('value',function(snapshot){
-                resolve(snapshot)
-            })
-            
-            }).then(function(snapshot){
-                if(snapshot.val()===null){
-                    dispatch({ 
-                        type: DISPLAY_HOME_MEMBER,
-                        payload: members,
-                    });
-                }else{
-                    count=snapshot.numChildren();
-                    snapshot.forEach(childSnapshot => {
-                        let userid=childSnapshot.key;
-                        return childPromise= new Promise((resolve,reject)=>{
-                            let childRef= firebase.database().ref().child('users/'+userid).once("value",function(snapshot){
-                               
-                                if(snapshot.val() !== null){
-                                    members.push({
-                                        id:snapshot.key,
-                                        firstname:snapshot.val().firstname,
-                                        avatar: snapshot.val().avatar,
-                                        address : snapshot.val().address,
-                                        coordinates:{
-                                            longitude: Number(snapshot.val().longitude),
-                                            latitude: Number(snapshot.val().latitude)
-                                        }
-                                    });
-                                }
-                                cnt++;
-                                if(cnt>=count){
-                                    resolve();
-                                }
-                            })
-
-                        }).then(function(){
-                            dispatch({ 
-                                type: DISPLAY_HOME_MEMBER,
-                                payload: members,
-                            });
-
-
-                        })
-                    })
-                }
-        })*/
-            
            
     }else{
 
@@ -493,4 +410,53 @@ export const sendInvite=(invitationcode)=> async dispatch=> {
         });
 
     });
+};
+
+
+
+export const getCountrries=()=> dispatch=> {
+    let countries:{
+        id: '',
+        countrycode: '',
+        country: ''
+      }
+
+      let count=0;
+      let cnt=0;
+    return new Promise((resolve) => {
+        firebase.database().ref().child('countries').orderByChild("country").on('value', async (dataSnapshot)=> {
+            let countries=[];
+            if(dataSnapshot.exists){
+                count=dataSnapshot.numChildren();
+                await dataSnapshot.forEach(function(child) {
+                    countries.push({
+                      id: child.val().id,
+                      countrycode: child.val().countrycode,
+                      country: child.val().countrycode+" "+ child.val().country
+                    })
+                    cnt++;
+                            if(cnt>=count){
+                                dispatch({ 
+                                    type: GET_COUNTRIES,
+                                    payload: countries
+                                });
+                                resolve()
+                            }
+                          
+                    
+                });
+               
+    
+            }
+        
+        })
+    }).catch(function(err) {
+        dispatch({ 
+            type: GET_COUNTRIES,
+            payload: []
+        });
+        resolve()
+    });
+
+   
 };

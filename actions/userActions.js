@@ -38,20 +38,33 @@ export const userSignIn=(username,password)=> dispatch=> {
 
 
 
-export const getProfile=()=> dispatch=> {
-  firebase.database().ref().child("users/"+userdetails.userid).once("value",function(snapshot){
-    let profile={
-        firstname:snapshot.val().firstname,
-        lastname:snapshot.val().lastname,
-        middlename:snapshot.val().middlename,
-        email:snapshot.val().email,
-        avatar:snapshot.val().avatar,
-        mobileno:snapshot.val().mobileno,
-    }
-    dispatch({ 
-        type: GET_PROFILE,
-        payload: profile
+export const getProfile=()=>  dispatch=> {
+  try{
+    return new Promise((resolve) => {
+      firebase.database().ref().child("users/"+userdetails.userid).once("value",function(snapshot){
+        let profile={
+            firstname:snapshot.val().firstname,
+            lastname:snapshot.val().lastname,
+            middlename:snapshot.val().middlename,
+            email:snapshot.val().email,
+            avatar:snapshot.val().avatar,
+            mobileno:snapshot.val().mobileno,
+        }
+        dispatch({ 
+          type: GET_PROFILE,
+          payload: profile
+        });
+          resolve();
+      });
+    }).then(function(){
+        
     });
-  });
+
+    }catch (e) {
+      dispatch({ 
+          type: GET_PROFILE,
+          payload: []
+      });
+  }
 };
 

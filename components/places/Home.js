@@ -109,33 +109,6 @@ class HomePlaces extends Component {
     }
   
 
-    async plotMarker(){
-        //this.setState({isLoading:true})
-            this.setState({markers:[],centerMarker:[]})
-            for (let i = 0; i < this.props.members.length; i++) {
-                    const coord = {
-                        id:i,
-                        firstname:this.props.members[i].firstname,
-                        address:this.props.members[i].address,
-                        avatar:this.props.members[i].avatar,
-                        coordinates:{
-                        latitude: this.props.members[i].coordinates.latitude,
-                        longitude: this.props.members[i].coordinates.longitude,
-                        latitudeDelta: LATITUDE_DELTA ,
-                        longitudeDelta: LONGITUDE_DELTA,
-                        }
-                    };
-                    
-                    /*if(!isNaN(this.props.members[i].coordinates.longitude) && !isNaN(this.props.members[i].coordinates.latitude)){
-                        this.setState({ markers: this.state.markers.concat(coord),centerMarker: this.state.centerMarker.concat(coord.coordinates) })
-                        
-                    }*/
-
-                }
-            this.setState({isLoading:false})
-            
-            
-    }
     async fitToMap(){
         if(this.props.members.length==1){
             this.map.animateToRegion({
@@ -144,8 +117,23 @@ class HomePlaces extends Component {
                 latitudeDelta: 0.005,
                 longitudeDelta: 0.005
               })
-        }else{
-            this.map.fitToCoordinates(this.state.centerMarker, { edgePadding: { top: 20, right: 20, bottom: 20, left: 20 }, animated: false })  
+        }else if(this.props.members.length>1){
+            const coordinates=[];
+            for (let i = 0; i < this.props.members.length; i++) {
+                const coord = {
+                    coordinates:{
+                        latitude: this.props.members[i].coordinates.latitude,
+                        longitude: this.props.members[i].coordinates.longitude,
+                        latitudeDelta: LATITUDE_DELTA ,
+                        longitudeDelta: LONGITUDE_DELTA,
+                    }
+                }
+                    coordinates=coordinates.concat(coord.coordinates);
+                };
+
+            
+        
+            this.map.fitToCoordinates(coordinates, { edgePadding: { top: 20, right: 20, bottom: 20, left: 20 }, animated: false })  
         }
 
     }
@@ -175,14 +163,14 @@ class HomePlaces extends Component {
     changeGroup = (groupname) => {
         this.setState({isLoading:true})
         this.reload();
-        this.setState({groupname:groupname});
+        this.setState({groupname:groupname,isLoading:false});
         
     }
     reload(){
         let self=this;
         self.props.displayHomeMember().then(res=>{
             setTimeout(() => {
-                self.plotMarker();
+                self.fitToMap();
             }, 1000);
         });
     }
@@ -193,7 +181,7 @@ class HomePlaces extends Component {
         firebase.database().ref().child('users/'+userdetails.userid+"/members").on('value',function(snapshot){
             self.props.displayHomeMember().then(res=>{
                 setTimeout(() => {
-                    self.plotMarker();
+                    self.fitToMap();
                 }, 1000);
             });
         })
@@ -243,43 +231,12 @@ class HomePlaces extends Component {
                 />)
     }
 
-    renderMarker(){
-        const data=this.props.members;
-        return (
-            <FlatList
-                    keyExtractor={item => item.id}
-                    horizontal={true}
-                    data={data}
-                    renderItem={({ item }) => (
-                        <MapView.Marker key={item.id}
-                onLayout = {() => this.fitToMap()}
-                coordinate={item.coordinates}
-                title={item.firstname}>
-                <Image style={styles.marker} 
-                    source={require('../../images/marker.png')} />
-                        <Text   style={styles.markerText}>{item.firstname}</Text>
-                   
-                <MapView.Callout >
-               
-                    <View style={styles.callOut}>
-                    <View style={globalStyle.listAvatarContainerSmall} >
-                    { item.avatar==='' ?  <Thumbnail  style={globalStyle.listAvatar} source={{uri: this.state.emptyPhoto}} /> :
-                    <Thumbnail  style={globalStyle.listAvatarSmall} source={{uri: item.avatar}} />
-                    }
-                    </View>
-                    <Text  style={styles.callOutText}>{item.address}</Text></View>
-                </MapView.Callout>
-                </MapView.Marker>
-                    ) }
-                />)
-
-    }
     ready(){
 
 
      
 
-        /*const markers =this.state.markers.map(marker=>(
+        const markers =this.props.members.map(marker=>(
                 <MapView.Marker key={marker.id}
                 onLayout = {() => this.fitToMap()}
                 coordinate={marker.coordinates}
@@ -300,7 +257,7 @@ class HomePlaces extends Component {
                 </MapView.Callout>
                 </MapView.Marker>
                
-        ));*/
+        ));
         
         
 
@@ -348,8 +305,7 @@ class HomePlaces extends Component {
                             style={styles.map}
                             loadingEnabled={false}
                             >
-                            {this.renderMarker()}
-
+                            {markers}
 
                             </MapView>
                             { this.state.groupname!=='' &&
