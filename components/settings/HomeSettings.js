@@ -39,6 +39,25 @@ class HomeSettings extends Component {
                         <ListItem   avatar style={globalStyle.listItem}>
                         <Left >
                     
+                            <MaterialCommunityIcons  style={{fontSize:30,color:'#1eaec5'}} name="textbox-password"/>
+                        </Left>
+                            
+                            <Body style={globalStyle.listBody} >
+                                <Text style={globalStyle.listHeading}>Change Password</Text>
+                            </Body>
+                            <Right style={globalStyle.listRight} >
+                                <TouchableOpacity  style={globalStyle.listRightTouchable}  
+                                    onPress={() => {
+                                        this.props.navigation.navigate("ChangePassword");
+                                    }}>
+                                <SimpleLineIcons  style={globalStyle.listRightOptionIcon}   name='arrow-right' />
+                                </TouchableOpacity>
+                            </Right>
+                            </ListItem>
+
+                        <ListItem   avatar style={globalStyle.listItem}>
+                        <Left >
+                    
                             <MaterialCommunityIcons  style={{fontSize:30,color:'#1eaec5'}} name="table-row"/>
                         </Left>
                             

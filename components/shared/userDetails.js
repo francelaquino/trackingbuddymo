@@ -7,8 +7,8 @@
     avatar:''  
 };*/
   module.exports = {
-    userid:'icV5UWeW7xgBGSFplqIOEaVVddm1',
-    email :'',
+    userid:'D0rZ9ZIjyif0qBlyTPUMJj9oZHf2',
+    email :'lazarak@rchsp.med.sa',
     firstname :'User',
     lastname : '',
     group :'',

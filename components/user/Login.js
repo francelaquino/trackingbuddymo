@@ -5,11 +5,10 @@ import { Root, Container, Header, Body, Title, Item, Input, Label, Button, Icon 
 import firebase from 'react-native-firebase';
 import Geocoder from 'react-native-geocoder';
 import { connect } from 'react-redux';
-import { saveLocationOffline, saveLocationOnline  } from '../actions/locationActions' ;
-import Home from './places/Home';
-import Loader from './shared/Loader';
-var userDetails = require('./shared/userDetails');
-var registrationStyle = require('../assets/style/Registration');
+import { saveLocationOffline, saveLocationOnline  } from '../../actions/locationActions' ;
+import {  userLogin } from '../../actions/userActions' ;
+import Loader from '../shared/Loader';
+var registrationStyle = require('../../assets/style/Registration');
 
 
 class Login extends Component {
@@ -17,7 +16,7 @@ class Login extends Component {
         super(props)
         this.state = {
             loading:false,
-            email: 'lian@rchsp.med.sa',
+            email: 'francel_aquino@yahoo.com',
             password:'111111',
             
         };
@@ -35,7 +34,7 @@ class Login extends Component {
                 lng:  position.coords.longitude,
                 dateadded : Date.now()
               };
-              await self.props.saveLocationOnline(coords);
+              //await self.props.saveLocationOnline(coords);
               this.setState({loading:false})
               this.props.navigation.navigate('Home');
 
@@ -57,28 +56,27 @@ class Login extends Component {
             return false;
         }
         this.setState({loading:true});
-        firebase.auth().signInAndRetrieveDataWithEmailAndPassword(this.state.email,this.state.password).then( async (res)=>{
-          await firebase.database().ref().child('users/'+res.user.uid).on('value',function(snapshot){
-              userDetails.userid=res.user.uid;
-              userDetails.email=snapshot.val().email;
-              userDetails.firstname=snapshot.val().firstname;
-              userDetails.lastname=snapshot.val().lastname;
-              //self.props.navigation.navigate('HomePlaces');
-              self.trackLocation();
+        this.props.userLogin(this.state.email,this.state.password).then((res)=>{
+            //self.trackLocation();
+            if(res==""){
+                this.setState({loading:false})
+                this.setState({loading:false})
+                this.props.navigation.navigate('Home');
+            }else{
+                this.setState({loading:false})
+                ToastAndroid.showWithGravityAndOffset("Invalid username or bad password", ToastAndroid.LONG, ToastAndroid.BOTTOM, 25, 50 );
+            }
 
-            });
-         
-        }).catch(function(e){
-           
-            
+        }).catch(function(err) {
             self.setState({
                 loading:false,
                 email:'',
                 password:'',
               });
-            ToastAndroid.showWithGravityAndOffset("Invalid username or bad password", ToastAndroid.LONG, ToastAndroid.BOTTOM, 25, 50 );
-       
-      })
+              ToastAndroid.showWithGravityAndOffset("Invalid username or bad password", ToastAndroid.LONG, ToastAndroid.BOTTOM, 25, 50 );
+        });
+
+        
 
       
     }
@@ -94,7 +92,7 @@ class Login extends Component {
             <ScrollView  contentContainerStyle={{flexGrow: 1}} keyboardShouldPersistTaps={"always"}>
                     <View style={registrationStyle.container}>
                         <View style={registrationStyle.logoContainer}>
-                        <Image  style={registrationStyle.logo} resizeMode='contain'  source={require('../images/logo.png')} />
+                        <Image  style={registrationStyle.logo} resizeMode='contain'  source={require('../../images/logo.png')} />
                         <Text style={{fontSize:22,color:'#303131'}}>Tracking Buddy</Text>
                         
                         </View>
@@ -147,6 +145,6 @@ const mapStateToProps = state => ({
   
   
   
-  Login=connect(mapStateToProps,{saveLocationOffline,saveLocationOnline})(Login);
+  Login=connect(mapStateToProps,{saveLocationOffline,saveLocationOnline,userLogin})(Login);
   
 export default Login;

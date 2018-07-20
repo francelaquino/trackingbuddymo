@@ -3,12 +3,13 @@ import React, { Component } from 'react';
 import {  Platform,  StyleSheet,  Text,  View, ScrollView,TextInput, TouchableOpacity, ToastAndroid, Alert, Image, Picker } from 'react-native';
 import { Root, Container, Header, Body, Title, Item, Input, Label, Button, Icon, Left, Right, List, ListItem } from 'native-base';
 import { connect } from 'react-redux';
-import {  getProfile } from '../../actions/userActions' ;
-import {  getCountrries } from '../../actions/memberActions' ;
+import {  getProfile, updateProfile } from '../../actions/userActions' ;
+import { displayHomeMember  } from '../../actions/memberActions' ;
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { NavigationActions } from 'react-navigation'
 import Loading  from '../shared/Loading';
 import ImagePicker from 'react-native-image-picker';
+import Loader from '../shared/Loader';
 var globalStyle = require('../../assets/style/GlobalStyle');
 var registrationStyle = require('../../assets/style/Registration');
 
@@ -17,32 +18,23 @@ class UserProfile extends Component {
     constructor(props) {
         super(props)
         this.state = {
+            loading: false,
             firstname:'',
             email:'',
             mobileno:'',
             middlename:'',
             lastname:'',
-            mobilecountrycode:'',
-            mobilecountry:'Country Code',
-            emailError:false,
-            passwordError:false,
-            retypepasswordError:false,
-            mobilenoError:false,
-            firstnameError:false,
-            middlenameError:false,
-            lastnameError:false,
-            countries:{
-                id: '',
-                countrycode: '',
-                country: ''
-              }
+            avatarsource:{
+                uri:''
+            },
+            isPhotoChange: false,
+            emptyPhoto:'https://firebasestorage.googleapis.com/v0/b/trackingbuddy-3bebd.appspot.com/o/member_photos%2Ficons8-person-80.png?alt=media&token=59864ce7-cf1c-4c5e-a07d-76c286a2171d',
     
         };
       }
 
       
     async componentWillMount() {
-        this.props.getCountrries();
         this.props.getProfile().then(()=>{
             this.setState({
                 firstname:this.props.profile.firstname,
@@ -50,7 +42,7 @@ class UserProfile extends Component {
                 mobileno:this.props.profile.mobileno,
                 middlename:this.props.profile.middlename,
                 lastname:this.props.profile.lastname,
-                mobilecountrycode:this.props.profile.mobilecountrycode,
+                avatarsource:{uri :this.props.profile.avatar},
             })
         }).catch(function(err) {
         });
@@ -59,7 +51,53 @@ class UserProfile extends Component {
     }
 
      
-  
+    onSubmit(){
+    if(this.state.firstname.trim()===""){
+        ToastAndroid.showWithGravityAndOffset("Please enter first name",ToastAndroid.LONG,ToastAndroid.BOTTOM, 25, 50);
+        return false;
+    }
+    
+    if(this.state.middlename.trim()==""){
+        ToastAndroid.showWithGravityAndOffset("Please enter middle name",ToastAndroid.LONG,ToastAndroid.BOTTOM, 25, 50);
+        return false;
+    }
+
+    if(this.state.lastname.trim()==""){
+        ToastAndroid.showWithGravityAndOffset("Please enter last name",ToastAndroid.LONG,ToastAndroid.BOTTOM, 25, 50);
+        return false;
+    }
+    
+    if(this.state.mobileno.trim()==""){
+        ToastAndroid.showWithGravityAndOffset("Please enter mobile no.",ToastAndroid.LONG,ToastAndroid.BOTTOM, 25, 50);
+    	return false;
+    }
+
+	
+
+
+        this.setState({loading:true})
+
+        let info={
+            email: this.state.email,
+            firstname: this.state.firstname,
+            mobileno: this.state.mobileno,
+            middlename: this.state.middlename,
+            lastname: this.state.lastname,
+            avatarsource: this.state.avatarsource,
+            isPhotoChange: this.state.isPhotoChange
+        }
+
+        this.props.updateProfile(info).then(res=>{
+            this.setState({loading:false})
+            if(res!==""){
+                this.props.displayHomeMember();
+                ToastAndroid.showWithGravityAndOffset(res,ToastAndroid.LONG,ToastAndroid.BOTTOM, 25, 50);
+            }
+            
+        }).catch(function(err) {
+            this.setState({loading:false})
+        });
+    }
 
     
     loading(){
@@ -67,13 +105,13 @@ class UserProfile extends Component {
           <Loading/>
         )
     }
-    setCountry(index){
-        this.setState({
-          mobilecountrycode:this.state.countries[index].id,
-          mobilecountry:this.state.countries[index].country
-        })
-        
-      }
+    removePhoto(){
+		this.setState({
+            avatarsource:{uri:''},
+            isPhotoChange:false,
+        });
+    }
+
   selectPhoto() {
     const options = {
       quality: 1.0,
@@ -95,7 +133,8 @@ class UserProfile extends Component {
         let source = { uri: response.uri };
                 
         this.setState({
-          avatarsource: source
+          avatarsource: source,
+          isPhotoChange : true
         });
       }
     });
@@ -109,20 +148,31 @@ class UserProfile extends Component {
         return (
             
             <View style={globalStyle.container}>
-           
+           <Loader loading={this.state.loading} />
             <ScrollView  contentContainerStyle={{flexGrow: 1}} keyboardShouldPersistTaps={"always"}>
 				
 
-					<View style={registrationStyle.container}>
-                        <View  style={{marginBottom:20}}>
+                        <View  style={{marginTop:20,marginBottom:20}}>
 						<TouchableOpacity onPress={this.selectPhoto.bind(this)}>
-							<View style={registrationStyle.avatarContainer}>
-							{ this.state.avatarsource === '' ? <Text style={{fontSize:10,marginTop:32,color:'white'}}>Select a Photo</Text> :
-							<Image style={registrationStyle.avatar} source={this.state.avatarsource} />
-							}
-							</View>
+                        <View style={globalStyle.avatarContainer}>
+                            { this.state.avatarsource.uri === '' ? <Image style={globalStyle.avatarBig} source={{uri : this.state.emptyPhoto}} />  :
+                                <Image style={globalStyle.avatarBig} source={this.state.avatarsource} />
+                                }
+                            </View>
+
+                             
+
+                             
+
 						</TouchableOpacity>
+                        { (this.state.avatarsource.uri != '' && this.state.avatarsource.uri!=this.state.emptyPhoto) &&
+														<TouchableOpacity   onPress={this.removePhoto.bind(this)}>
+														<Text style={globalStyle.deleteButtonSmall} >Remove Photo</Text>
+														</TouchableOpacity>
+														}
 					</View>
+
+                    
 					
 						<Item  stackedLabel  style={registrationStyle.item}  >
 							<Label style={registrationStyle.stackedlabel}>Email</Label>
@@ -130,7 +180,7 @@ class UserProfile extends Component {
 								<TextInput  style={registrationStyle.textinput} 
 								name="email" autoCorrect={false}
 								value={this.state.email}
-								onChangeText={email=>this.setState({email})}/>
+								editable={false}/>
 								<MaterialIcons onPress={()=>this.required()}  name='error-outline' color="red"  size={22} style={[registrationStyle.iconError,(this.state.emailError && this.state.email=='' ) && registrationStyle.show]} />
 							</View>
 						</Item>
@@ -178,66 +228,15 @@ class UserProfile extends Component {
 								<MaterialIcons onPress={()=>this.required()}  name='error-outline' color="red"  size={20} style={[registrationStyle.iconError,(this.state.mobilenoError && this.state.mobileno=='' ) && registrationStyle.show]} />
 							</View>
 						</Item>
-					<Item    style={registrationStyle.subitem}  >
-					<View >
-						<Label style={registrationStyle.countrycode}>{this.state.mobilecountry}
-						
-						</Label>
-						<Picker
-							style={{position:'absolute',top:-10, width: 400,height:40,opacity:100,color:'transparent',zIndex: 1 }}
-							onValueChange={(itemValue, itemIndex) => this.setCountry(itemIndex)}>
-							
-                                {countries}
-						</Picker>
-						</View>
-						<MaterialIcons   name='arrow-drop-down' color="gray"  size={20} />
-					</Item>
-
-						
 					
-					</View>
+                        <Button  onPress={()=>this.onSubmit()}
+                        bordered light full rounded style={globalStyle.secondaryButton}>
+                        <Text style={{color:'white'}}>Update</Text>
+                        </Button>
+					
 				</ScrollView>
             
-                    <List>
-                    
-                        <ListItem >
-                        <Body>
-                        <Text style={globalStyle.label}>First Name</Text>
-                        <Input style={globalStyle.textinput} value={this.state.firstname}  autoCorrect={false} onChangeText={firstname=>this.setState({firstname})} name="firstname"/>
-                        </Body>
-                        </ListItem>
-                        <ListItem >
-                        <Body>
-                        <Text style={globalStyle.label}>Middle Name</Text>
-                        <Text style={globalStyle.value} note>{this.props.profile.middlename}</Text>
-                        </Body>
-                        </ListItem>
-                        <ListItem >
-                        <Body>
-                        <Text style={globalStyle.label}>Last Name</Text>
-                        <Text style={globalStyle.value} note>{this.props.profile.lastname}</Text>
-                        </Body>
-                        </ListItem>
-                        <ListItem >
-                        <Body>
-                        <Text style={globalStyle.label}>Mobile No.</Text>
-                        <Text style={globalStyle.value} note>{this.props.profile.mobileno}</Text>
-                        </Body>
-                        </ListItem>
-                        <ListItem >
-                        <Body>
-                        <Text style={globalStyle.label}>Email</Text>
-                        <Text style={globalStyle.value} note>{this.props.profile.email}</Text>
-                        </Body>
-                        </ListItem>
-                            
-                        <ListItem last>
-                        <Button 
-                        bordered light full rounded style={globalStyle.secondaryButton}>
-                        <Text style={{color:'white'}}>Update Profile</Text>
-                        </Button>
-                        </ListItem>
-                        </List>
+                   
                 </View>
         )
     }
@@ -259,7 +258,7 @@ const mapStateToProps = state => ({
   })
   
   
-  UserProfile=connect(mapStateToProps,{getProfile,getCountrries})(UserProfile);
+  UserProfile=connect(mapStateToProps,{getProfile,updateProfile,displayHomeMember})(UserProfile);
   
 export default UserProfile;
   

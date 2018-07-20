@@ -57,7 +57,7 @@ module.exports = StyleSheet.create({
         alignSelf: "center",
     },
     registrationbutton:{
-        backgroundColor:theme.primaryColor,
+        backgroundColor:theme.primaryButtonColor,
     },
     haveaccount:{
         fontSize:16,
@@ -66,7 +66,7 @@ module.exports = StyleSheet.create({
         marginBottom: 20
     },
     loginButton:{
-        color:theme.primaryColor,
+        color:theme.primaryButtonColor,
         fontSize:16,
         marginTop: 20
     },

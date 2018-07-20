@@ -22,19 +22,6 @@ export const submitSignUp=(user)=> dispatch=> {
 
 
 
-export const userSignIn=(username,password)=> dispatch=> {
-  return new Promise((resolve) => {
-    axios.get(BASE_URL+'user/signin/'+username+'/'+password)
-    .then(function (res) {
-        dispatch({ 
-            type: SIGNIN_USER,
-            payload: res.data.result
-        });
-        resolve(res.data);
-    });
-  });
-};
-
 
 
 
@@ -68,3 +55,97 @@ export const getProfile=()=>  dispatch=> {
   }
 };
 
+
+
+export const updateProfile=(info)=> async dispatch=> {
+  let emptyPhoto='https://firebasestorage.googleapis.com/v0/b/trackingbuddy-3bebd.appspot.com/o/member_photos%2Ficons8-person-80.png?alt=media&token=59864ce7-cf1c-4c5e-a07d-76c286a2171d';
+  let avatar="";
+  return new Promise(async (resolve) => {
+    if(info.isPhotoChange==true){
+      
+      let  avatarlink=info.email+'.jpg';
+
+      const ref = firebase.storage().ref("/member_photos/"+avatarlink);
+      const unsubscribe = ref.putFile(info.avatarsource.uri.replace("file:/", "")).on(
+      firebase.storage.TaskEvent.STATE_CHANGED,
+      (snapshot) => {
+          
+      },
+      (error) => {
+      unsubscribe();
+      },
+      async (res) => {
+        avatar=res.downloadURL;
+        firebase.database().ref().child("users/"+userdetails.userid).update({ 
+          firstname : info.firstname,
+          middlename: info.middlename,
+          lastname: info.lastname,
+          mobileno: info.mobileno,
+          avatar: avatar,
+          dateupdated: Date.now(),
+        });
+      resolve("Profile successfully updated");
+      });
+    }else{
+      if(info.avatarsource.uri=="" || info.avatarsource.uri==undefined){
+        firebase.database().ref().child("users/"+userdetails.userid).update({ 
+          firstname : info.firstname,
+          middlename: info.middlename,
+          lastname: info.lastname,
+          mobileno: info.mobileno,
+          avatar: emptyPhoto,
+          dateupdated: Date.now(),
+        });
+      }else{
+        firebase.database().ref().child("users/"+userdetails.userid).update({ 
+          firstname : info.firstname,
+          middlename: info.middlename,
+          lastname: info.lastname,
+          mobileno: info.mobileno,
+          dateupdated: Date.now(),
+        });
+      }
+      
+      resolve("Profile successfully updated");
+    }
+
+
+
+    
+  })
+  .catch(function(err) {
+      resolve("")
+});
+
+};
+
+
+
+
+export const userLogin=(email,password)=> async dispatch=> {
+  return new Promise(async (resolve) => {
+    firebase.auth().signInAndRetrieveDataWithEmailAndPassword(email,password).then( async (res)=>{
+      if(res.user.emailVerified){
+        await firebase.database().ref().child('users/'+res.user.uid).on('value',function(snapshot){
+          userdetails.userid=res.user.uid;
+          userdetails.email=snapshot.val().email;
+          userdetails.firstname=snapshot.val().firstname;
+          userdetails.lastname=snapshot.val().lastname;
+        });
+
+        resolve("");
+      }else{
+        resolve("Invalid username or bad password")
+      }
+     
+    }).catch(function(e){
+      resolve("Invalid username or bad password")
+   
+    })
+    
+  })
+  .catch(function(err) {
+      resolve("Invalid username or bad password")
+  });
+
+};

@@ -4,12 +4,12 @@ import { connect } from 'react-redux';
 import { Platform,  StyleSheet,  View, TextInput, TouchableOpacity,ScrollView,Picker, Alert, ToastAndroid, Form ,Image } from 'react-native';
 import { Root, Container, Header, Body, Title, Item, Input, Label, Button,Text, Icon } from 'native-base';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import Loading  from './shared/Loading';
+import Loading  from '../shared/Loading';
 import Geocoder from 'react-native-geocoder';
 import ImagePicker from 'react-native-image-picker';
-import Loader from './shared/Loader';
+import Loader from '../shared/Loader';
 import firebase from 'react-native-firebase';
-var registrationStyle = require('../assets/style/Registration');
+var registrationStyle = require('../../assets/style/Registration');
 
 
 
@@ -23,32 +23,15 @@ class Register extends Component {
         address:'',
         emptyPhoto:'https://firebasestorage.googleapis.com/v0/b/trackingbuddy-3bebd.appspot.com/o/member_photos%2Ficons8-person-80.png?alt=media&token=59864ce7-cf1c-4c5e-a07d-76c286a2171d',
         isLoading:true,
-        email:'lian@rchsp.med.sa',
+        email:'francel_aquino@yahoo.com',
         password:'111111',
         retypepassword:'111111',
         mobileno:'0538191138',
-        firstname:'Yasmine',
-        middlename:'Lazara',
+        firstname:'Francel',
+        middlename:'Dizon',
         lastname:'Aquino',
-        mobilecountrycode:'',
-        mobilecountry:'Country Code',
-        emailError:false,
-        passwordError:false,
-        retypepasswordError:false,
-        mobilenoError:false,
-        firstnameError:false,
-        middlenameError:false,
-        lastnameError:false,
         avatar:'',
         avatarsource: '',
-
-        countries:{
-          id: '',
-          countrycode: '',
-          country: ''
-        }
-
-        
         
     };
     
@@ -85,29 +68,9 @@ class Register extends Component {
 
 
   async componentWillMount() {
-    await this.initialize();
   }
        
-  async initialize(){
-    await firebase.database().ref().child('countries').orderByChild("country").on('value', async (dataSnapshot)=> {
-        let countries=[];
-        if(dataSnapshot.exists){
-            await dataSnapshot.forEach(function(child) {
-                countries.push({
-                  id: child.val().id,
-                  countrycode: child.val().countrycode,
-                  country: child.val().countrycode+" "+ child.val().country
-                })
-                
-            });
-            this.setState({countries: countries,isLoading:false});
-
-        }
-    
-    })
-
-  }
-
+  
 
 
 
@@ -127,40 +90,39 @@ class Register extends Component {
     var isvalid=true;
 
     if(this.state.email==""){
-    	this.setState({emailError:true});
-      	isvalid=false;
+      ToastAndroid.showWithGravityAndOffset("Please enter email address",ToastAndroid.LONG,ToastAndroid.BOTTOM, 25, 50);
+      	return false;
     }
     
     if(this.state.password==""){
-    	this.setState({passwordError:true});
-    	isvalid=false;
+      ToastAndroid.showWithGravityAndOffset("Please enter password",ToastAndroid.LONG,ToastAndroid.BOTTOM, 25, 50);
+      return false;
     }
 
     
     if(this.state.mobileno==""){
-    	this.setState({mobilenoError:true});
-    	isvalid=false;
+      ToastAndroid.showWithGravityAndOffset("Please enter mobile no",ToastAndroid.LONG,ToastAndroid.BOTTOM, 25, 50);
+      return false;
     }
     
     if(this.state.firstname==""){
-         this.setState({firstnameError:true});
-         isvalid=false;
+      ToastAndroid.showWithGravityAndOffset("Please enter first name",ToastAndroid.LONG,ToastAndroid.BOTTOM, 25, 50);
+      return false;
     }
     
     if(this.state.lastname==""){
-          this.setState({lastnameError:true});
-          isvalid=false;
+      ToastAndroid.showWithGravityAndOffset("Please enter last name",ToastAndroid.LONG,ToastAndroid.BOTTOM, 25, 50);
+      return false;
     }
     
 
     if(this.state.password!=this.state.retypepassword){
-          Alert.alert('','Password mismatch');
-          isvalid=false;
+      ToastAndroid.showWithGravityAndOffset("Password mismatch",ToastAndroid.LONG,ToastAndroid.BOTTOM, 25, 50);
+      return false;
 	}
 	
 
 
-    if(isvalid){
         this.setState({loading:true})
         if(this.state.avatarsource!=""){
           let avatarlink=this.state.email+'.jpg';
@@ -181,7 +143,6 @@ class Register extends Component {
         }else{
           this.sendSubmit();
         }
-      }
   }
   async  generateCode(){
     let code="";
@@ -198,7 +159,9 @@ class Register extends Component {
     let code = "";
     await this.generateCode();
     await firebase.auth().createUserAndRetrieveDataWithEmailAndPassword(this.state.email,this.state.password).then(async (res)=>{
+
       let uid=res.user.uid;
+      res.user.sendEmailVerification();
       let userRef = firebase.database().ref().child("users/"+uid);
                 if(this.state.avatar==""){
                   this.setState({avatar:this.state.emptyPhoto});
@@ -209,7 +172,6 @@ class Register extends Component {
                   middlename: this.state.middlename,
                   lastname: this.state.lastname,
                   mobileno: this.state.mobileno,
-                  mobilecountrycode: this.state.mobilecountrycode,
                   avatar: this.state.avatar,
                   datecreated: Date.now(),
                   dateupdated: Date.now(),
@@ -221,20 +183,17 @@ class Register extends Component {
               });
 
               
-     
 	  await this.resetState();
-	  ToastAndroid.showWithGravityAndOffset("Registration successfully completed",ToastAndroid.LONG,ToastAndroid.BOTTOM, 25, 50);
+	  ToastAndroid.showWithGravityAndOffset("Registration successfully completed. A message has been sent to your email with instructions to complete your registration",ToastAndroid.LONG,ToastAndroid.BOTTOM, 25, 50);
 
     }).catch(function(e){
+      console.log(e)
         if(e.code==='auth/email-already-in-use'){
           ToastAndroid.showWithGravityAndOffset("Email aready used",ToastAndroid.LONG,ToastAndroid.BOTTOM, 25, 50);
         }else{
            ToastAndroid.showWithGravityAndOffset("Something went wrong...",ToastAndroid.LONG,ToastAndroid.BOTTOM, 25, 50);
         }
     })
-  }
-  required(){
-	  ToastAndroid.showWithGravityAndOffset("Please fill required field",ToastAndroid.LONG,ToastAndroid.BOTTOM, 25, 50);
   }
 
   async resetState(){
@@ -246,15 +205,6 @@ class Register extends Component {
         firstname:'',
         middlename:'',
         lastname:'',
-        mobilecountrycode:'',
-        mobilecountry:'Country Code',
-        emailError:false,
-        passwordError:false,
-        retypepasswordError:false,
-        mobilenoError:false,
-        firstnameError:false,
-        middlenameError:false,
-        lastnameError:false,
         avatar:'',
         longitude:'',
         latitude:'',
@@ -263,16 +213,8 @@ class Register extends Component {
         loading : false,
 		  avatarsource: '',
     })
-    this.initialize();
   }
 
-  setCountry(index){
-    this.setState({
-      mobilecountrycode:this.state.countries[index].id,
-      mobilecountry:this.state.countries[index].country
-    })
-    
-  }
   loading(){
 	  return (
 		<Loading/>
@@ -280,9 +222,6 @@ class Register extends Component {
   }
   ready(){
 		const { navigate } = this.props.navigation;
-		const countries =this.state.countries.map(country=>(
-		<Picker.Item key={country.id} label={country.country} value={country.id} />
-	  	));
 	  return (
 			<Root>
 			<Container style={registrationStyle.containerWrapper} >
@@ -308,7 +247,6 @@ class Register extends Component {
 								name="email" autoCorrect={false}
 								value={this.state.email}
 								onChangeText={email=>this.setState({email})}/>
-								<MaterialIcons onPress={()=>this.required()}  name='error-outline' color="red"  size={22} style={[registrationStyle.iconError,(this.state.emailError && this.state.email=='' ) && registrationStyle.show]} />
 							</View>
 						</Item>
 					
@@ -319,7 +257,6 @@ class Register extends Component {
 								name="password" autoCorrect={false}
 								value={this.state.password} secureTextEntry
 								onChangeText={password=>this.setState({password})}/>
-								<MaterialIcons onPress={()=>this.required()}  name='error-outline' color="red"  size={20} style={[registrationStyle.iconError,(this.state.passwordError && this.state.password=='' ) && registrationStyle.show]} />
 							</View>
 						</Item>
 
@@ -331,7 +268,6 @@ class Register extends Component {
 								name="retypepassword" autoCorrect={false}
 								value={this.state.retypepassword} secureTextEntry
 								onChangeText={retypepassword=>this.setState({retypepassword})}/>
-								<MaterialIcons onPress={()=>this.required()}  name='error-outline' color="red"  size={20} style={[registrationStyle.iconError,(this.state.retypepasswordError && this.state.retypepassword=='' ) && registrationStyle.show]} />
 							</View>
 						
 						</Item>
@@ -342,7 +278,6 @@ class Register extends Component {
 								name="firstname" autoCorrect={false}
 								value={this.state.firstname}
 								onChangeText={firstname=>this.setState({firstname})}/>
-								<MaterialIcons onPress={()=>this.required()}  name='error-outline' color="red"  size={20} style={[registrationStyle.iconError,(this.state.firstnameError && this.state.firstname=='' ) && registrationStyle.show]} />
 							</View>
 						</Item>
 					
@@ -363,7 +298,6 @@ class Register extends Component {
 								name="lastname" autoCorrect={false}
 								value={this.state.lastname}
 								onChangeText={lastname=>this.setState({lastname})}/>
-								<MaterialIcons onPress={()=>this.required()}  name='error-outline' color="red"  size={20} style={[registrationStyle.iconError,(this.state.lastnameError && this.state.lastname=='' ) && registrationStyle.show]} />
 							</View>
 					</Item>
 						<Item  stackedLabel style={registrationStyle.item}>
@@ -373,24 +307,9 @@ class Register extends Component {
 								name="mobileno" autoCorrect={false}
 								value={this.state.mobileno}
 								onChangeText={mobileno=>this.setState({mobileno})}/>
-								<MaterialIcons onPress={()=>this.required()}  name='error-outline' color="red"  size={20} style={[registrationStyle.iconError,(this.state.mobilenoError && this.state.mobileno=='' ) && registrationStyle.show]} />
 							</View>
 						</Item>
-					<Item    style={registrationStyle.subitem}  >
-					<View >
-						<Label style={registrationStyle.countrycode}>{this.state.mobilecountry}
-						
-						</Label>
-						<Picker
-							style={{position:'absolute',top:-10, width: 400,height:40,opacity:100,color:'transparent',zIndex: 1 }}
-							onValueChange={(itemValue, itemIndex) => this.setCountry(itemIndex)}>
-							{countries}
-
-						</Picker>
-						</View>
-						<MaterialIcons   name='arrow-drop-down' color="gray"  size={20} />
-					</Item>
-
+					
 						
 					<View style={{justifyContent: 'center',alignItems: 'center',marginTop:30}}>
 						<Button 
@@ -410,11 +329,7 @@ class Register extends Component {
 	  )
   }
   render() {
-	  if(this.state.isLoading){
-		  return this.loading();
-	  }else{
 		  return this.ready();
-	  }
   }
 }
 

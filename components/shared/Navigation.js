@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import Register from '../Registration';
-import Login from '../Login';
+import Register from '../user/Registration';
+import Login from '../user/Login';
+import ForgotPassword from '../user/ForgotPassword';
 import CreateGroup from '../group/CreateGroup';
 import DisplayGroup from '../group/DisplayGroup';
 import SelectGroup from '../group/SelectGroup';
@@ -21,18 +22,13 @@ import LocationView from '../places/LocationView';
 import PlaceAlert from '../places/PlaceAlert';
 import GroupPlaces from '../places/GroupPlaces';
 import HomeSettings from '../settings/HomeSettings';
+import ChangePassword from '../user/ChangePassword';
 
 import  { createStackNavigator }  from 'react-navigation';
 
 
 export const Stack = createStackNavigator({
-    Home: { 
-        screen: Home,
-        headerMode: 'none',
-        navigationOptions: {
-            header: null
-        }
-    },
+
     Login: { 
         screen: Login,
         headerMode: 'none',
@@ -41,6 +37,31 @@ export const Stack = createStackNavigator({
         },
         
     },
+    ForgotPassword: { 
+        screen: ForgotPassword,
+        headerMode: 'none',
+        navigationOptions: {
+            header: null
+        },
+        
+    },
+   
+    
+    ChangePassword: { 
+        screen: ChangePassword,
+        headerMode: 'none',
+        navigationOptions: {
+            header: null
+        }
+    },
+    Home: { 
+        screen: Home,
+        headerMode: 'none',
+        navigationOptions: {
+            header: null
+        }
+    },
+   
    
     PlaceList: { 
         screen: PlaceList,

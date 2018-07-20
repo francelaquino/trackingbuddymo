@@ -4,6 +4,7 @@ import React, { Component } from 'react';
 import { TouchableOpacity, Platform,  StyleSheet,  Text,  View,Image } from 'react-native';
 import { Root,Content,Drawer,Container ,List , ListItem, Right, Body,Left,Icon, Thumbnail} from 'native-base';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
+import firebase from 'react-native-firebase';
 var globalStyle = require('../../assets/style/GlobalStyle');
 var userdetails = require('../shared/userDetails');
 
@@ -42,6 +43,7 @@ export default class LeftDrawer extends Component<Props> {
     this.props.closeDrawer();
   }
   displayLogout(){
+    firebase.auth().signOut();
     this.props.navigation.navigate('Login');
     this.props.closeDrawer();
   }

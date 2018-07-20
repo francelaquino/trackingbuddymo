@@ -199,7 +199,7 @@ module.exports = StyleSheet.create({
     /* List Design End */
 
     avatarContainer:{
-        backgroundColor:'silver',
+        backgroundColor:'#2db1b6',
         alignItems: 'center',
         marginBottom:10,
         borderRadius: 40,
