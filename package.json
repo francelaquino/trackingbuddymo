@@ -20,6 +20,7 @@
     "react-native-maps": "^0.21.0",
     "react-native-modal": "^6.1.0",
     "react-native-phone-input": "^0.2.1",
+    "react-native-push-notification": "^3.0.2",
     "react-navigation": "^2.0.1",
     "react-redux": "^5.0.7",
     "redux": "^4.0.0",

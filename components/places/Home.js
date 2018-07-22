@@ -17,6 +17,9 @@ import { displayHomeMember  } from '../../actions/memberActions' ;
 import { setConnection  } from '../../actions/connectionActions' ;
 import { saveLocationOffline, saveLocationOnline  } from '../../actions/locationActions' ;
 import firebase from 'react-native-firebase';
+import type { Notification  } from 'react-native-firebase';
+var PushNotification = require('react-native-push-notification');
+
 var screenHeight = Dimensions.get('window').height; 
 
 import BackgroundJob from 'react-native-background-job';
@@ -77,6 +80,34 @@ class HomePlaces extends Component {
     
    
     componentDidMount(){
+
+      
+            this.notificationListener = firebase.notifications().onNotification((notification: Notification) => {
+                console.log(notification)
+                
+                PushNotification.localNotification({
+                    id: "1",
+                    autoCancel: true, 
+                    largeIcon: "ic_launcher",
+                    smallIcon: "ic_notification", 
+                    color: "#1eaec5", 
+                    /* iOS only properties */
+                    //alertAction: // (optional) default: view
+                    //category: // (optional) default: null
+                    //userInfo: // (optional) default: null (object containing additional notification data)
+
+                    title: "Tracking Buddy", 
+                    message: notification._body,
+                    playSound: true, 
+                    soundName: 'default', 
+                    number: '10', 
+                });
+
+             
+            });
+
+
+            
         let self=this;
         trackLocation =function() {
             navigator.geolocation.getCurrentPosition(

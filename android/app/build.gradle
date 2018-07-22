@@ -137,9 +137,11 @@ android {
 }
 
 dependencies {
-    /*compile(project(':react-native-firebase')) {
-        transitive = false
-    }*/
+
+    implementation (project(':react-native-push-notification')) {
+  exclude group: "com.google.android.gms"
+}
+
     compile project(':react-native-geocoder')
     compile project(':react-native-background-job')
     implementation(project(':react-native-firebase')) {
@@ -160,6 +162,9 @@ dependencies {
     implementation "com.google.firebase:firebase-storage:11.8.0"
     implementation "com.google.firebase:firebase-database:11.8.0"
     implementation "com.google.firebase:firebase-auth:11.8.0"
+    implementation "com.google.firebase:firebase-messaging:11.8.0"
+     implementation 'me.leolin:ShortcutBadger:1.1.21@aar'
+
 }
 
 // Run this once to be able to run the application with BUCK

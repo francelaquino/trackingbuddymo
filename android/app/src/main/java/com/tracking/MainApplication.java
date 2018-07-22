@@ -3,8 +3,11 @@ package com.tracking;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.dieam.reactnativepushnotification.ReactNativePushNotificationPackage;
 import io.invertase.firebase.RNFirebasePackage;
 import com.pilloxa.backgroundjob.BackgroundJobPackage;
+import io.invertase.firebase.messaging.RNFirebaseMessagingPackage;
+import io.invertase.firebase.notifications.RNFirebaseNotificationsPackage;
 import com.imagepicker.ImagePickerPackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
@@ -30,6 +33,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new ReactNativePushNotificationPackage(),
             new RNFirebasePackage(),
             new BackgroundJobPackage(),
             new ImagePickerPackage(),
@@ -37,7 +41,9 @@ public class MainApplication extends Application implements ReactApplication {
             new MapsPackage(),
             new RNFirebaseDatabasePackage(),
             new RNFirebaseAuthPackage(),
-            new RNGeocoderPackage()
+            new RNGeocoderPackage(),
+            new RNFirebaseMessagingPackage(),
+            new RNFirebaseNotificationsPackage() 
       );
     }
 
