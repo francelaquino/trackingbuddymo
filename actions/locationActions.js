@@ -42,7 +42,7 @@ export const displayLocations=(userid)=> dispatch=> {
             }).then(function(snapshot){
                     dispatch({ 
                         type: DISPLAY_LOCATION,
-                        payload: locations,
+                        payload: locations.reverse(),
                     });
                 
             })

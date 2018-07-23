@@ -156,6 +156,7 @@ class Register extends Component {
       
   }
   async sendSubmit(){
+    let self=this;
     let code = "";
     await this.generateCode();
     await firebase.auth().createUserAndRetrieveDataWithEmailAndPassword(this.state.email,this.state.password).then(async (res)=>{
@@ -187,7 +188,7 @@ class Register extends Component {
 	  ToastAndroid.showWithGravityAndOffset("Registration successfully completed. A message has been sent to your email with instructions to complete your registration",ToastAndroid.LONG,ToastAndroid.BOTTOM, 25, 50);
 
     }).catch(function(e){
-      console.log(e)
+      self.setState({loading:false})
         if(e.code==='auth/email-already-in-use'){
           ToastAndroid.showWithGravityAndOffset("Email aready used",ToastAndroid.LONG,ToastAndroid.BOTTOM, 25, 50);
         }else{
