@@ -65,21 +65,18 @@ export const saveLocationOffline=(coordinate)=> dispatch=> {
     
 };
 
-export const saveLocationOnline=(coordinate)=> async dispatch=> {
-    let coords = {
-        lat: coordinate.lat,
-        lng:  coordinate.lng,
-    };
-
+export const saveLocationOnline=()=> async dispatch=> {
     dispatch({ 
         type: SAVE_LOCATION_ONLINE,
         payload: [],
     });
 
     let dateadded=Date.now();
-    Geocoder.geocodePosition(coords).then(res => {
-        
-            fetch("https://us-central1-trackingbuddy-3bebd.cloudfunctions.net/api/appendLocation?lat="+ coords.lat +"&lon="+ coords.lng +"&userid="+userdetails.userid+"&address="+res[1].formattedAddress+"&dateadded="+dateadded+"&firstname="+userdetails.firstname)
+
+    navigator.geolocation.getCurrentPosition(
+        (position) => {
+
+            fetch("https://us-central1-trackingbuddy-3bebd.cloudfunctions.net/api/appendLocation?lat="+ position.coords.latitude +"&lon="+ position.coords.longitude +"&userid="+userdetails.userid+"&dateadded="+dateadded+"&firstname="+userdetails.firstname)
             .then((response) => response)
             .then((response) => {
                 dispatch({ 
@@ -94,16 +91,12 @@ export const saveLocationOnline=(coordinate)=> async dispatch=> {
                     payload: [],
                 });
             });
-            
-    }).catch(err => {
-        dispatch({ 
-            type: SAVE_LOCATION_ONLINE,
-            payload: [],
-        });
-    })
-
-      
-
+           
+        },
+        (err) => {
+        },
+        { enableHighAccuracy: true, timeout: 20000 }
+      );
 };
 
 

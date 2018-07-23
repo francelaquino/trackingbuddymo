@@ -39,13 +39,24 @@ const trackPosition = {
     jobKey: "trackPositionJob",
     job: () =>trackLocation(),
 };
+const updateToken={
+    jobKey: "refreshTokenJob",
+    job: () =>refreshToken(),
+}
     
 BackgroundJob.register(trackPosition);
+BackgroundJob.register(updateToken);
 
 var trackPositionSchedule = {
     jobKey: "trackPositionJob",
-    //period: 10000,
-    period: 60000,
+    period: 90000,
+    exact: true,
+    allowExecutionInForeground: true
+}
+
+var refreshTokenSchedule = {
+    jobKey: "refreshTokenJob",
+    period: 90000,
     exact: true,
     allowExecutionInForeground: true
 }
@@ -53,6 +64,19 @@ var trackPositionSchedule = {
   
 let trackLocation;
 
+
+refreshToken=function(){
+    firebase.messaging().getToken()
+    .then(fcmToken => {
+        if (fcmToken) {
+            console.log(fcmToken)
+            let userRef=firebase.database().ref().child("users/"+userdetails.userid);
+            userRef.update({ 
+                fcmtoken : fcmToken,
+            })
+        }
+    });
+}
 
 class HomePlaces extends Component {
     constructor(props) {
@@ -80,10 +104,9 @@ class HomePlaces extends Component {
     
    
     componentDidMount(){
-
+        
       
             this.notificationListener = firebase.notifications().onNotification((notification: Notification) => {
-                console.log(notification)
                 
                 PushNotification.localNotification({
                     id: "1",
@@ -110,32 +133,20 @@ class HomePlaces extends Component {
             
         let self=this;
         trackLocation =function() {
-            navigator.geolocation.getCurrentPosition(
-                (position) => {
-                    let coords = {
-                        lat: position.coords.latitude,
-                        lng:  position.coords.longitude,
-                        dateadded : Date.now()
-                      };
-                    NetInfo.isConnected.fetch().done((isConnected) => {
-                        if(isConnected){
+            NetInfo.isConnected.fetch().done((isConnected) => {
+                if(isConnected){
 
-                            self.props.saveLocationOnline(coords);
+                    self.props.saveLocationOnline();
 
-                        }else{
-                            //self.props.saveLocationOffline(coords);
-                        }
-                    });
-                },
-                (err) => {
-                    console.log(err)
-                },
-                { enableHighAccuracy: true, timeout: 20000 }
-              );
-            }
+                }else{
+                    //self.props.saveLocationOffline(coords);
+                }
+            });
+        }
 
     
         BackgroundJob.schedule(trackPositionSchedule);
+        BackgroundJob.schedule(refreshTokenSchedule);
         
     }
   

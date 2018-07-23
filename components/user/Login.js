@@ -24,28 +24,7 @@ class Login extends Component {
 
       }
       
-    async trackLocation(){
-    let self=this;
-    navigator.geolocation.getCurrentPosition(
-      async (position) => {
-      
-            let coords = {
-                lat: position.coords.latitude,
-                lng:  position.coords.longitude,
-                dateadded : Date.now()
-              };
-              //await self.props.saveLocationOnline(coords);
-              this.setState({loading:false})
-              this.props.navigation.navigate('Home');
-
-         
-      },
-      (err) => {
-        this.setState({loading:false})
-      },
-      { enableHighAccuracy: false, timeout: 20000, maximumAge: 1000 }
-    );
-  }
+  
  
 
     onLogin (){
@@ -56,10 +35,9 @@ class Login extends Component {
             return false;
         }
         this.setState({loading:true});
-        this.props.userLogin(this.state.email,this.state.password).then((res)=>{
-            //self.trackLocation();
+        this.props.userLogin(this.state.email,this.state.password).then(async (res)=>{
+            await this.props.saveLocationOnline();
             if(res==""){
-                this.setState({loading:false})
                 this.setState({loading:false})
                 this.props.navigation.navigate('Home');
             }else{
@@ -121,7 +99,7 @@ class Login extends Component {
                                 full rounded style={registrationStyle.registrationbutton}>
                                 <Text style={{color:'white'}}>Login</Text>
                             </Button>
-                            <TouchableOpacity underlayColor={'transparent'}>
+                            <TouchableOpacity underlayColor={'transparent'}  onPress={() =>navigate('ForgotPassword')}>
                             <Text style={registrationStyle.haveaccount}>Forgot Password?</Text>
                             </TouchableOpacity>
                             <TouchableOpacity  underlayColor={'transparent'}  onPress={() =>navigate('Register')}>

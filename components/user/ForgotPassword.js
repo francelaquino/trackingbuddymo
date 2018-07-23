@@ -12,7 +12,7 @@ class ForgotPassword extends Component {
         super(props)
         this.state = {
             loading:false,
-            email: 'aquinof@rchsp.med.sa',
+            email: 'francel_aquino@yahoo.com',
             
         };
        
