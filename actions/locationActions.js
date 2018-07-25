@@ -13,7 +13,7 @@ export const displayLocations=(userid)=> dispatch=> {
     let cnt=0;
 
         return new Promise((resolve) => {
-            firebase.database().ref().child('locations/'+userid).orderByChild("dateadded").limitToFirst(100).on("value",function(snapshot){
+            firebase.database().ref().child('locations/'+userid).orderByChild("dateadded").limitToFirst(100).once("value",function(snapshot){
                 if(snapshot.val()===null){
                     resolve();
                 }else{
@@ -66,38 +66,79 @@ export const saveLocationOffline=(coordinate)=> dispatch=> {
 };
 
 export const saveLocationOnline=()=> async dispatch=> {
-    dispatch({ 
-        type: SAVE_LOCATION_ONLINE,
-        payload: [],
-    });
+    if(userdetails.userid==""){
+        dispatch({ 
+            type: SAVE_LOCATION_ONLINE,
+            payload: [],
+        });
+    }else{
+        let dateadded=Date.now();
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
 
-    let dateadded=Date.now();
-
-    navigator.geolocation.getCurrentPosition(
-        (position) => {
-
-            fetch("https://us-central1-trackingbuddy-3bebd.cloudfunctions.net/api/appendLocation?lat="+ position.coords.latitude +"&lon="+ position.coords.longitude +"&userid="+userdetails.userid+"&dateadded="+dateadded+"&firstname="+userdetails.firstname)
-            .then((response) => response)
-            .then((response) => {
-                dispatch({ 
-                    type: SAVE_LOCATION_ONLINE,
-                    payload: [],
+                fetch("https://us-central1-trackingbuddy-3bebd.cloudfunctions.net/api/appendLocation?lat="+ position.coords.latitude +"&lon="+ position.coords.longitude +"&userid="+userdetails.userid+"&dateadded="+dateadded+"&firstname="+userdetails.firstname)
+                .then((response) => response)
+                .then((response) => {
+                    dispatch({ 
+                        type: SAVE_LOCATION_ONLINE,
+                        payload: [],
+                    });
+                })
+                .catch((error) => {
+                    
+                    dispatch({ 
+                        type: SAVE_LOCATION_ONLINE,
+                        payload: [],
+                    });
                 });
-            })
-            .catch((error) => {
-                
-                dispatch({ 
-                    type: SAVE_LOCATION_ONLINE,
-                    payload: [],
-                });
-            });
-           
-        },
-        (err) => {
-        },
-        { enableHighAccuracy: true, timeout: 20000 }
-      );
+            
+            },
+            (err) => {
+            },
+            { enableHighAccuracy: true, timeout: 20000 }
+        );
+    }
 };
+
+export const saveLocationOnLogin=()=> async dispatch=> {
+    return new Promise((resolve) => {
+       
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+
+                console.log(userdetails);
+                resolve(position)
+            },
+            (err) => {
+            },
+            { enableHighAccuracy: true, timeout: 20000 }
+        );
+
+    }).then(function(position){
+        let dateadded=Date.now();
+        fetch("https://us-central1-trackingbuddy-3bebd.cloudfunctions.net/api/appendLocation?lat="+ position.coords.latitude +"&lon="+ position.coords.longitude +"&userid="+userdetails.userid+"&dateadded="+dateadded+"&firstname="+userdetails.firstname)
+        .then((response) => response)
+        .then((response) => {
+            dispatch({ 
+                type: SAVE_LOCATION_ONLINE,
+                payload: [],
+            });
+        })
+        .catch((error) => {
+            
+            dispatch({ 
+                type: SAVE_LOCATION_ONLINE,
+                payload: [],
+            });
+        });
+        
+    });
+};
+
+
+
+
+
 
 
 export const createPlace=(place,coordinate)=> dispatch=> {
@@ -255,7 +296,7 @@ export const deletePlace=(id)=> dispatch=> {
 export const displayPlaces=()=>async dispatch=> {
     let places=[];
     try{
-        await firebase.database().ref().child('places/'+userdetails.userid).orderByKey().on("value",async function(snapshot){
+        await firebase.database().ref().child('places/'+userdetails.userid).orderByKey().once("value",async function(snapshot){
             await snapshot.forEach(childSnapshot => {
                 let dateadded= Moment(new Date(parseInt(childSnapshot.val().dateadded))).format("ddd DD-MMM-YYYY hh:mm A");
                 places.push({

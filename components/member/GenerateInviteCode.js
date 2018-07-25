@@ -21,20 +21,14 @@ class GenerateInviteCode extends Component {
       }
 
     componentWillMount() {
-        this.initialize();
+        this.onGenerate();
     }
             
-    initialize(){
-        
-        this.props.getInvitationCode();
-       
-
-        
-    }
+    
     onGenerate(){
         this.setState({loading:true})
         this.props.generateInvitationCode().then(res=>{
-            this.initialize();
+            this.props.getInvitationCode();
             this.setState({loading:false})
             
         }).catch(function(err) {

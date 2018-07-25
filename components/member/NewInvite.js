@@ -39,6 +39,7 @@ class NewInvite extends Component {
         	if(res==true){
                 ToastAndroid.showWithGravityAndOffset("Member successfully added",ToastAndroid.LONG,ToastAndroid.BOTTOM, 25, 50);
                 this.props.displayMember();
+                this.props.displayHomeMember();
                 this.setState({invitationcode:'',loading:false})
             }else{
                 ToastAndroid.showWithGravityAndOffset("Invalid invitation code",ToastAndroid.LONG,ToastAndroid.BOTTOM, 25, 50);

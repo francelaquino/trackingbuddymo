@@ -44,8 +44,16 @@ export default class LeftDrawer extends Component<Props> {
   }
   displayLogout(){
     firebase.auth().signOut();
+    userdetails.userid="";
+    userdetails.email="";
+    userdetails.firstname="";
+    userdetails.lastname="";
+    userdetails.group="";
+    userdetails.avatar="";
+    userdetails.userid="";
+    //this.props.closeDrawer();
     this.props.navigation.navigate('Login');
-    this.props.closeDrawer();
+    
   }
   render() {
     const navigation = this.props.navigation;    

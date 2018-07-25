@@ -70,7 +70,6 @@ refreshToken=function(){
     firebase.messaging().getToken()
     .then(fcmToken => {
         if (fcmToken) {
-            console.log(fcmToken)
             let userRef=firebase.database().ref().child("users/"+userdetails.userid);
             userRef.update({ 
                 fcmtoken : fcmToken,
@@ -103,9 +102,10 @@ class HomePlaces extends Component {
     
 
     
-   
+    componentWillUnmount(){
+        BackgroundJob.cancelAll();
+    }
     componentDidMount(){
-        
       
             this.notificationListener = firebase.notifications().onNotification((notification: Notification) => {
                 
@@ -136,7 +136,6 @@ class HomePlaces extends Component {
         trackLocation =function() {
             NetInfo.isConnected.fetch().done((isConnected) => {
                 if(isConnected){
-
                     self.props.saveLocationOnline();
 
                 }else{
@@ -153,6 +152,7 @@ class HomePlaces extends Component {
   
 
     async fitToMap(){
+        let coordinates=[];
         if(this.props.members.length==1){
             this.map.animateToRegion({
                 latitude: this.props.members[0].coordinates.latitude,
@@ -161,7 +161,7 @@ class HomePlaces extends Component {
                 longitudeDelta: 0.005
               })
         }else if(this.props.members.length>1){
-            const coordinates=[];
+            
             for (let i = 0; i < this.props.members.length; i++) {
                 const coord = {
                     coordinates:{
@@ -172,11 +172,12 @@ class HomePlaces extends Component {
                     }
                 }
                     coordinates=coordinates.concat(coord.coordinates);
-                };
-
+                    
+                }
+                    this.map.fitToCoordinates(coordinates, { edgePadding: { top: 20, right: 20, bottom: 20, left: 20 }, animated: false })  
             
         
-            this.map.fitToCoordinates(coordinates, { edgePadding: { top: 20, right: 20, bottom: 20, left: 20 }, animated: false })  
+            
         }
 
     }
@@ -219,18 +220,17 @@ class HomePlaces extends Component {
     }
     
    
-    async initialize(){
+     initialize(){
         let self=this;
-        firebase.database().ref().child('users/'+userdetails.userid+"/members").on('value',function(snapshot){
-            self.props.displayHomeMember().then(res=>{
-                setTimeout(() => {
-                    self.fitToMap();
-                }, 1000);
-            });
-        })
-       
-
-
+        setTimeout(() => {
+            firebase.database().ref('users/'+userdetails.userid+'/members').on("value",(snapshot)=>{
+                self.props.displayHomeMember().then(res=>{
+                    setTimeout(() => {
+                        self.fitToMap();
+                    }, 1000);
+                });
+            })
+        }, 1000);
     }
     loading(){
         return (

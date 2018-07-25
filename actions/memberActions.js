@@ -9,12 +9,11 @@ var userdetails = require('../components/shared/userDetails');
 
 export const displayHomeMember=()=> async dispatch=> {
     let members=[];
-    let home_markers=[];
     let count=0;
     let cnt=0;
 
     if(userdetails.group==""){
-        await firebase.database().ref().child('users/'+userdetails.userid).once("value",function(snapshot){
+       /* await firebase.database().ref().child('users/'+userdetails.userid).once("value",function(snapshot){
             if(snapshot.val() !== null){
                 members.push({
                     id:snapshot.key,
@@ -28,9 +27,9 @@ export const displayHomeMember=()=> async dispatch=> {
                 });
                
             }
-        })
+        })*/
 
-        await firebase.database().ref().child('users/'+userdetails.userid+"/members").on('value',async function(snapshot){
+        await firebase.database().ref().child('users/'+userdetails.userid+"/members").once('value',async function(snapshot){
             if(snapshot.val()===null){
                 dispatch({ 
                     type: DISPLAY_HOME_MEMBER,
@@ -75,7 +74,7 @@ export const displayHomeMember=()=> async dispatch=> {
     }else{
 
         return parentPromise= new Promise((resolve,reject)=>{
-            let memberRef = firebase.database().ref().child("groupmembers/"+userdetails.group).on('value',function(snapshot){
+            let memberRef = firebase.database().ref().child("groupmembers/"+userdetails.group).once('value',function(snapshot){
                 resolve(snapshot)
             })
             }).then(function(snapshot){
@@ -210,7 +209,7 @@ export const displayMember=()=> async dispatch=> {
         let members=[]
         let count=0;
         let cnt=0;
-        await firebase.database().ref().child('users/'+userdetails.userid+"/members").on('value',async function(snapshot){
+        await firebase.database().ref().child('users/'+userdetails.userid+"/members").once('value',async function(snapshot){
         
             if(snapshot.val()===null){
                 dispatch({ 
@@ -362,6 +361,9 @@ export const sendInvite=(invitationcode)=> async dispatch=> {
         firebase.database().ref().child("users").orderByChild("invitationcode").equalTo(invitationcode).once("value",async snapshot => {
             let id="";
             let parent=this;
+            if(snapshot.val()===null){
+                resolve(false)
+            }
             snapshot.forEach(async function(childSnapshot) {
                 let expiration= childSnapshot.val().invitationcodeexpiration;
                 
@@ -424,7 +426,7 @@ export const getCountrries=()=> dispatch=> {
       let count=0;
       let cnt=0;
     return new Promise((resolve) => {
-        firebase.database().ref().child('countries').orderByChild("country").on('value', async (dataSnapshot)=> {
+        firebase.database().ref().child('countries').orderByChild("country").once('value', async (dataSnapshot)=> {
             let countries=[];
             if(dataSnapshot.exists){
                 count=dataSnapshot.numChildren();

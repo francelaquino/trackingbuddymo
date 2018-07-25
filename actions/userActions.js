@@ -125,18 +125,19 @@ export const updateProfile=(info)=> async dispatch=> {
 export const userLogin=(email,password)=> async dispatch=> {
   return new Promise(async (resolve) => {
     firebase.auth().signInAndRetrieveDataWithEmailAndPassword(email,password).then( async (res)=>{
-      if(res.user.emailVerified){
+      //if(res.user.emailVerified){
         await firebase.database().ref().child('users/'+res.user.uid).on('value',function(snapshot){
           userdetails.userid=res.user.uid;
           userdetails.email=snapshot.val().email;
           userdetails.firstname=snapshot.val().firstname;
           userdetails.lastname=snapshot.val().lastname;
+         
         });
-
         resolve("");
-      }else{
+       
+      /*}else{
         resolve("Invalid username or bad password")
-      }
+      }*/
      
     }).catch(function(e){
       resolve("Invalid username or bad password")

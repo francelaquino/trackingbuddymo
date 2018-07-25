@@ -16,7 +16,7 @@ class Login extends Component {
         super(props)
         this.state = {
             loading:false,
-            email: 'aquinof@rchsp.med.sa',
+            email: 'francel_aquino@yahoo.com',
             password:'111111',
             
         };
@@ -27,7 +27,7 @@ class Login extends Component {
   
  
 
-    onLogin (){
+    onLogin(){
         
         let self=this;
         if(this.state.email=="" || this.state.password==""){
@@ -36,14 +36,21 @@ class Login extends Component {
         }
         this.setState({loading:true});
         this.props.userLogin(this.state.email,this.state.password).then(async (res)=>{
-            await this.props.saveLocationOnline();
-            if(res==""){
-                this.setState({loading:false})
-                this.props.navigation.navigate('Home');
-            }else{
-                this.setState({loading:false})
-                ToastAndroid.showWithGravityAndOffset("Invalid username or bad password", ToastAndroid.LONG, ToastAndroid.BOTTOM, 25, 50 );
-            }
+            setTimeout(() => {
+                 this.props.saveLocationOnline();
+                setTimeout(() => {
+                
+                    if(res==""){
+                        this.setState({loading:false})
+                        this.props.navigation.navigate('Home');
+                    }else{
+                        this.setState({loading:false})
+                        ToastAndroid.showWithGravityAndOffset("Invalid username or bad password", ToastAndroid.LONG, ToastAndroid.BOTTOM, 25, 50 );
+                    }
+                }, 1000);
+            }, 1000);
+
+           
 
         }).catch(function(err) {
             self.setState({
@@ -59,7 +66,6 @@ class Login extends Component {
       
     }
     render() {
-
         
     const { navigate } = this.props.navigation;
     return (
