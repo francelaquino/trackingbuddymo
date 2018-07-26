@@ -5,6 +5,7 @@ import { Root, Container, Header, Body, Title, Item, Input, Label, Button, Icon,
 import Entypo from 'react-native-vector-icons/Entypo';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import OfflineNotice  from '../shared/OfflineNotice';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 var globalStyle = require('../../assets/style/GlobalStyle');
@@ -21,6 +22,7 @@ class HomeSettings extends Component {
         return(
             <Root>
                 <Container style={globalStyle.containerWrapper}>
+                <OfflineNotice/>
                     <Header style={globalStyle.header}>
                     <Left style={globalStyle.headerLeft} >
                             <Button transparent onPress={()=> {this.props.navigation.goBack()}} >

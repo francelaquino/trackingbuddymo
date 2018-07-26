@@ -4,6 +4,7 @@ import {  NetInfo, Platform,  StyleSheet,  Text,  View, ScrollView,TextInput, To
 import { Root, Container, Header, Body, Title, Item, Input, Label, Button, Icon } from 'native-base';
 import firebase from 'react-native-firebase';
 import Loader from '../shared/Loader';
+import OfflineNotice  from '../shared/OfflineNotice';
 var registrationStyle = require('../../assets/style/Registration');
 
 
@@ -31,10 +32,16 @@ class ForgotPassword extends Component {
 
         this.setState({loading:true});
         firebase.auth().sendPasswordResetEmail(this.state.email).then((res)=>{
-            this.setState({loading:false});
+            self.setState({loading:false});
             ToastAndroid.showWithGravityAndOffset("A message has been sent to your email with instructions to reset your password", ToastAndroid.LONG, ToastAndroid.BOTTOM, 25, 50 );
         }).catch(function(err) {
-            this.setState({loading:false});
+            self.setState({loading:false});
+            if(err.code==='auth/user-not-found'){
+                ToastAndroid.showWithGravityAndOffset("Unrecognized email address",ToastAndroid.LONG,ToastAndroid.BOTTOM, 25, 50);
+              }else{
+                 
+              }
+            
         });
 
         
@@ -50,6 +57,7 @@ class ForgotPassword extends Component {
             <Container style={registrationStyle.containerWrapper}>
         	   
           	<Loader loading={this.state.loading} />
+            <OfflineNotice/>
             <ScrollView  contentContainerStyle={{flexGrow: 1}} keyboardShouldPersistTaps={"always"}>
                     <View style={registrationStyle.container}>
                         <View style={registrationStyle.logoContainer}>

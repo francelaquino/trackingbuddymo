@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import {  Platform,  StyleSheet,  Text,  View, ScrollView,TextInput, TouchableOpacity, ToastAndroid } from 'react-native';
 import { Root, Container, Header, Body, Title, Item, Input, Label, Button, Icon, Content, List, ListItem,Left, Right,Switch } from 'native-base';
 import { connect } from 'react-redux';
+import OfflineNotice  from '../shared/OfflineNotice';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { displayGroup  } from '../../actions/groupActions' ;
 
@@ -45,6 +46,7 @@ class DisplayHomeGroup extends Component {
         return (
             <Root>
                 <Container style={globalStyle.containerWrapper}>
+                <OfflineNotice/>
                     <Header style={globalStyle.header}>
                     <Left style={globalStyle.headerLeft} >
                             <Button transparent onPress={()=> {this.props.navigation.goBack()}} >

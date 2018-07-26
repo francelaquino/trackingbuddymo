@@ -10,6 +10,7 @@ import { NavigationActions } from 'react-navigation'
 import Loading  from '../shared/Loading';
 import ImagePicker from 'react-native-image-picker';
 import Loader from '../shared/Loader';
+
 var globalStyle = require('../../assets/style/GlobalStyle');
 var registrationStyle = require('../../assets/style/Registration');
 
@@ -149,6 +150,7 @@ class UserProfile extends Component {
             
             <View style={globalStyle.container}>
            <Loader loading={this.state.loading} />
+          
             <ScrollView  contentContainerStyle={{flexGrow: 1}} keyboardShouldPersistTaps={"always"}>
 				
 

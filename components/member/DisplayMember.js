@@ -9,6 +9,7 @@ import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import { connect } from 'react-redux';
 import { displayMember  } from '../../actions/memberActions' ;
 import Loading  from '../shared/Loading';
+import OfflineNotice  from '../shared/OfflineNotice';
 var globalStyle = require('../../assets/style/GlobalStyle');
 
 
@@ -83,6 +84,7 @@ class DisplayMember extends Component {
             
             <Root>
                 <Container style={globalStyle.containerWrapper}>
+                <OfflineNotice/>
                     <Header style={globalStyle.header}>
                         <Left style={globalStyle.headerLeft} >
                             <Button transparent onPress={()=> {this.props.navigation.goBack()}} >

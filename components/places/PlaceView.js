@@ -14,6 +14,7 @@ import { updatePlace, displayPlaces  } from '../../actions/locationActions' ;
 import { displayMember  } from '../../actions/memberActions' ;
 import Loading  from '../shared/Loading';
 import Loader from '../shared/Loader';
+import OfflineNotice  from '../shared/OfflineNotice';
 const LATITUDE_DELTA = 0.01;
 const LONGITUDE_DELTA = 0.01;
 
@@ -85,9 +86,8 @@ class PlaceView extends Component {
 
     takeSnapshot () {
         const snapshot = this.map.takeSnapshot({
-          //region: {..},    // iOS only, optional region to render
-          format: 'png',   // image formats: 'png', 'jpg' (default: 'png')
-          result: 'base64'   // result types: 'file', 'base64' (default: 'file')
+          format: 'png',  
+          result: 'base64'  
         });
         snapshot.then((uri) => {
           this.setState({ mapSnapshot:{uri:'data:image/png;base64,'+uri}});
@@ -135,6 +135,7 @@ class PlaceView extends Component {
         return (
             <Root>
                 <Container style={globalStyle.containerWrapper}>
+                <OfflineNotice/>
                 <ScrollView  contentContainerStyle={{flexGrow: 1}} keyboardShouldPersistTaps={"always"}>
                     <Loader loading={this.state.loading} />
                         <Header style={globalStyle.header}>

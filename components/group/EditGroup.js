@@ -6,6 +6,7 @@ import ImagePicker from 'react-native-image-picker';
 import { connect } from 'react-redux';
 import { displayGroup,updateGroup, deleteGroup  } from '../../actions/groupActions' ;
 import Loader  from '../shared/Loader';
+import OfflineNotice  from '../shared/OfflineNotice';
 import { NavigationActions } from 'react-navigation'
 var globalStyle = require('../../assets/style/GlobalStyle');
 var registrationStyle = require('../../assets/style/Registration');
@@ -146,7 +147,7 @@ class EditGroup extends Component {
             <Root>
                 <Loader loading={this.state.loading} />
                     
-                
+                <OfflineNotice/>
                     <ScrollView contentContainerStyle={{flexGrow: 1}} keyboardShouldPersistTaps={"always"} showsVerticalScrollIndicator={false}>
                         <View style={globalStyle.container}>
                         <TouchableOpacity style={{marginTop:20}} onPress={this.selectPhoto.bind(this)}>

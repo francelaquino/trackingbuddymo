@@ -4,6 +4,7 @@ import {  Platform,  StyleSheet,  Text,  View, ScrollView,TextInput, TouchableOp
 import { Root, Container, Header, Body, Title, Item, Input, Label, Button, Icon, Left } from 'native-base';
 import ImagePicker from 'react-native-image-picker';
 import Loader  from '../shared/Loader';
+import OfflineNotice  from '../shared/OfflineNotice';
 import { connect } from 'react-redux';
 import { createGroup,displayGroup  } from '../../actions/groupActions' ;
 var globalStyle = require('../../assets/style/GlobalStyle');
@@ -100,6 +101,7 @@ class CreateGroup extends Component {
 		return (
 			<Root>
                   <Loader loading={this.state.loading} />
+                  <OfflineNotice/>
                 <Container style={globalStyle.containerWrapper}>
                     <Header style={globalStyle.header}>
                         <Left style={globalStyle.headerLeft} >

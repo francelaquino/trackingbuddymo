@@ -10,6 +10,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Loading  from '../shared/Loading';
+import OfflineNotice  from '../shared/OfflineNotice';
 var userdetails = require('../shared/userDetails');
 var globalStyle = require('../../assets/style/GlobalStyle');
 

@@ -8,6 +8,7 @@ import firebase from 'react-native-firebase';
 import { connect } from 'react-redux';
 import { displayGroupMember,displayHomeMember  } from '../../actions/memberActions' ;
 import { LeftHome } from '../shared/LeftHome';
+import OfflineNotice  from '../shared/OfflineNotice';
 import Loading  from '../shared/Loading';
 var userdetails = require('../shared/userDetails');
 var globalStyle = require('../../assets/style/GlobalStyle');

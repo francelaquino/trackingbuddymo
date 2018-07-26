@@ -9,7 +9,7 @@ export const setConnection=(connection)=> dispatch=> {
     });
 };
 
-export const getConnection=()=> dispatch=> {
+export const getConnection=(connection)=> dispatch=> {
     dispatch({ 
         type: GET_CONNECTION,
     });

@@ -9,6 +9,7 @@ import { Stack }  from './components/shared/Navigation';
 
 const tracking =()=>(
     <Provider store={store}>
+        
         <Stack/>
     </Provider>
 )

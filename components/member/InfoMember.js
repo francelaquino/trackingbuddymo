@@ -7,6 +7,7 @@ import { NavigationActions } from 'react-navigation'
 import {  getMember, displayMember, deleteMember,displayHomeMember } from '../../actions/memberActions' ;
 import Loading  from '../shared/Loading';
 import Loader from '../shared/Loader';
+import OfflineNotice  from '../shared/OfflineNotice';
 
 var globalStyle = require('../../assets/style/GlobalStyle');
 
@@ -70,6 +71,7 @@ class InfoMember extends Component {
             
                     <View style={globalStyle.container}>
                     <Loader loading={this.state.loading} />
+                    <OfflineNotice/>
                         <View style={{marginTop:20}}>
                         <View style={globalStyle.avatarContainer}>
                             <Image style={globalStyle.avatarBig} source={{uri : this.props.member.avatar}} />

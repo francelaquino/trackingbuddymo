@@ -9,6 +9,7 @@ import Geocoder from 'react-native-geocoder';
 import ImagePicker from 'react-native-image-picker';
 import Loader from '../shared/Loader';
 import firebase from 'react-native-firebase';
+import OfflineNotice  from '../shared/OfflineNotice';
 var registrationStyle = require('../../assets/style/Registration');
 
 
@@ -192,7 +193,7 @@ class Register extends Component {
         if(e.code==='auth/email-already-in-use'){
           ToastAndroid.showWithGravityAndOffset("Email aready used",ToastAndroid.LONG,ToastAndroid.BOTTOM, 25, 50);
         }else{
-           ToastAndroid.showWithGravityAndOffset("Something went wrong...",ToastAndroid.LONG,ToastAndroid.BOTTOM, 25, 50);
+           
         }
     })
   }
@@ -227,6 +228,7 @@ class Register extends Component {
 			<Root>
 			<Container style={registrationStyle.containerWrapper} >
       <Loader loading={this.state.loading} />
+      <OfflineNotice/>
 			<ScrollView  contentContainerStyle={{flexGrow: 1}} keyboardShouldPersistTaps={"always"}>
 				
 

@@ -43,6 +43,8 @@ export const Stack = createStackNavigator({
             header: null
         }
     },
+   
+   
 
    
     ForgotPassword: { 

@@ -8,6 +8,7 @@ import { connect } from 'react-redux';
 import { saveLocationOffline, saveLocationOnline  } from '../../actions/locationActions' ;
 import {  userLogin } from '../../actions/userActions' ;
 import Loader from '../shared/Loader';
+import OfflineNotice  from '../shared/OfflineNotice';
 var registrationStyle = require('../../assets/style/Registration');
 
 
@@ -44,7 +45,7 @@ class Login extends Component {
                         this.setState({loading:false})
                         this.props.navigation.navigate('Home');
                     }else{
-                        this.setState({loading:false})
+                        this.setState({loading:false,email:'',password:''})
                         ToastAndroid.showWithGravityAndOffset("Invalid username or bad password", ToastAndroid.LONG, ToastAndroid.BOTTOM, 25, 50 );
                     }
                 }, 1000);
@@ -73,6 +74,7 @@ class Login extends Component {
             <Container style={registrationStyle.containerWrapper}>
         	   
           	<Loader loading={this.state.loading} />
+            <OfflineNotice/>
             <ScrollView  contentContainerStyle={{flexGrow: 1}} keyboardShouldPersistTaps={"always"}>
                     <View style={registrationStyle.container}>
                         <View style={registrationStyle.logoContainer}>

@@ -5,7 +5,7 @@ import { Root, Container, Header, Body, Title, Item, Input, Label, Button, Icon,
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { connect } from 'react-redux';
 import { displayGroup  } from '../../actions/groupActions' ;
-
+import OfflineNotice  from '../shared/OfflineNotice';
 var globalStyle = require('../../assets/style/GlobalStyle');
 
 
@@ -39,6 +39,7 @@ class MembersGroup extends Component {
         return (
             <Root>
                 <Container style={globalStyle.containerWrapper}>
+                <OfflineNotice/>
                     <Header style={globalStyle.header}>
                         <Left style={globalStyle.headerMenu} >
                             <Button transparent onPress={()=> {this.props.navigation.goBack()}}>

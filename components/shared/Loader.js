@@ -32,10 +32,10 @@ class Loader extends Component{
 const styles = StyleSheet.create({
     modalWrapper:{
         flex: 1,
-        height: Dimensions.get('window').height+900,
+        height: Dimensions.get('window').height+100,
     },
     modalBackground: {
-        height: Dimensions.get('window').height+900,
+        height: Dimensions.get('window').height+100,
         flex: 1,
         alignItems: 'center',
         flexDirection: 'column',

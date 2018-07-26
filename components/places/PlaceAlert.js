@@ -13,6 +13,7 @@ import MapView, { ProviderPropType, Marker, AnimatedRegion,Animated,Polyline } f
 import { connect } from 'react-redux';
 import { savePlaceAlert,getPlaceAlert  } from '../../actions/locationActions' ;
 import Loading  from '../shared/Loading';
+import OfflineNotice  from '../shared/OfflineNotice';
 
 
 
@@ -110,6 +111,7 @@ class PlaceAlert extends Component {
         return (
             <Root>
                 <Loader loading={this.state.busy} />
+                <OfflineNotice/>
                 <Container style={globalStyle.containerWrapper}>
                         <Header style={globalStyle.header}>
                             <Left style={globalStyle.headerLeft} >

@@ -5,6 +5,7 @@ import { Root, Container, Header, Body, Title, Item, Input, Label, Button, Icon,
 import Loading  from '../shared/Loading';
 import { connect } from 'react-redux';
 import Loader from '../shared/Loader';
+import OfflineNotice  from '../shared/OfflineNotice';
 import { generateInvitationCode, getInvitationCode  } from '../../actions/memberActions' ;
 var globalStyle = require('../../assets/style/GlobalStyle');
 var userdetails = require('../shared/userDetails');
@@ -51,6 +52,7 @@ class GenerateInviteCode extends Component {
         return (
             <Root>
                 <Loader loading={this.state.loading} />
+                <OfflineNotice/>
                 <Container style={globalStyle.containerWrapper}>
                
                     <Header style={globalStyle.header}>

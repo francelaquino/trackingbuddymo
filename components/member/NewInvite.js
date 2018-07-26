@@ -4,6 +4,7 @@ import {  Platform,  StyleSheet,  Text,  View, ScrollView,TextInput, TouchableOp
 import { Content,Root, Container, Header, Body, Title, Item, Input, Label, Button, Icon, Left, Right } from 'native-base';
 import { connect } from 'react-redux';
 import Loader from '../shared/Loader';
+import OfflineNotice  from '../shared/OfflineNotice';
 import { sendInvite, displayMember, displayHomeMember } from '../../actions/memberActions' ;
 var globalStyle = require('../../assets/style/GlobalStyle');
 
@@ -66,6 +67,7 @@ class NewInvite extends Component {
         return (
             <Root>
                 <Loader loading={this.state.loading} />
+                <OfflineNotice/>
                 <Container style={globalStyle.containerWrapper}>
                     <Header style={globalStyle.header}>
                         <Left style={globalStyle.headerLeft} >

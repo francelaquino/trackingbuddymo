@@ -5,6 +5,7 @@ import { Content,Root, Container, Header, Body, Title, Item, Input, Label, Butto
 import EditGroup from '../group/EditGroup';
 import AddMember from '../group/AddMember';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import OfflineNotice  from '../shared/OfflineNotice';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 var globalStyle = require('../../assets/style/GlobalStyle');
 
@@ -35,6 +36,7 @@ class GroupHome extends Component {
         return (
             <Root>
                 <Container style={globalStyle.containerWrapper}>
+                <OfflineNotice/>
                     <Header hasTabs style={globalStyle.header}>
                         <Left style={globalStyle.headerLeft} >
                             <Button transparent onPress={()=> {this.props.navigation.goBack()}} >

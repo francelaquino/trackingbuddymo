@@ -4,6 +4,7 @@ import {  Platform,  StyleSheet,  Text,  View, ScrollView,TextInput, TouchableOp
 import { Root, Container, Header, Body, Title, Item, Input, Label, Button, Icon, Left, Right, Content} from 'native-base';
 import Loading  from '../shared/Loading';
 import Loader from '../shared/Loader';
+import OfflineNotice  from '../shared/OfflineNotice';
 import firebase from 'react-native-firebase';
 var globalStyle = require('../../assets/style/GlobalStyle');
 var userdetails = require('../shared/userDetails');
@@ -85,6 +86,7 @@ class ChangePassword extends Component {
         return (
             <Root>
                 <Loader loading={this.state.loading} />
+                <OfflineNotice/>
                 <Container style={globalStyle.containerWrapper}>
                
                     <Header style={globalStyle.header}>

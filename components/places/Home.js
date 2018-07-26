@@ -11,6 +11,7 @@ import Entypo from 'react-native-vector-icons/Entypo';
 import MapView, { ProviderPropType, Marker, AnimatedRegion,Animated,Polyline } from 'react-native-maps';
 import Loading  from '../shared/Loading';
 import Loader  from '../shared/Loader';
+import OfflineNotice  from '../shared/OfflineNotice';
 import LeftDrawer from '../shared/LeftDrawer'
 import { connect } from 'react-redux';
 import { displayHomeMember  } from '../../actions/memberActions' ;
@@ -312,6 +313,7 @@ class HomePlaces extends Component {
                 onClose={() => this.closeDrawer()} >
                 <Root>
                 <Loader loading={this.state.isLoading} />
+                <OfflineNotice />
                 <Container style={globalStyle.containerWrapper}>
                 
           

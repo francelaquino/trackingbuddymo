@@ -4,6 +4,7 @@ import {  Platform,  StyleSheet,  Text,  View, ScrollView,TextInput, TouchableOp
 import { Content,Root, Container, Header, Body, Title, Item, Input, Label, Button, Icon, Left, Right, Tabs, TabHeading, Tab } from 'native-base';
 import UserProfile from '../user/UserProfile';
 import LocationPlaces from '../places/LocationPlaces';
+import OfflineNotice  from '../shared/OfflineNotice';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 var userdetails = require('../../components/shared/userDetails');
@@ -19,6 +20,7 @@ class ProfileHome extends Component {
         return (
             <Root>
                 <Container style={globalStyle.containerWrapper}>
+                <OfflineNotice/>
                     <Header hasTabs style={globalStyle.header}>
                         <Left style={globalStyle.headerLeft} >
                             <Button transparent onPress={()=> {this.props.navigation.goBack()}} >

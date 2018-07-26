@@ -11,6 +11,7 @@ import Entypo from 'react-native-vector-icons/Entypo';
 import MapView, { ProviderPropType, Marker, AnimatedRegion,Animated,Polyline } from 'react-native-maps';
 import Loading  from '../shared/Loading';
 import Loader from '../shared/Loader';
+import OfflineNotice  from '../shared/OfflineNotice';
 const LATITUDE_DELTA = 0.01;
 const LONGITUDE_DELTA = 0.01;
 
@@ -91,8 +92,10 @@ class LocationView extends Component {
         return (
             <Root>
                 <Container style={globalStyle.containerWrapper}>
+                <Loader loading={this.state.loading} />
+                <OfflineNotice/>
                 <ScrollView  contentContainerStyle={{flexGrow: 1}} keyboardShouldPersistTaps={"always"}>
-                    <Loader loading={this.state.loading} />
+                   
                         <Header style={globalStyle.header}>
                             <Left style={globalStyle.headerLeft} >
                                 <Button transparent onPress={()=> {this.props.navigation.goBack()}} >
