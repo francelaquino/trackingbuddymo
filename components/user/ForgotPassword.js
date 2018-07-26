@@ -32,7 +32,7 @@ class ForgotPassword extends Component {
 
         this.setState({loading:true});
         firebase.auth().sendPasswordResetEmail(this.state.email).then((res)=>{
-            self.setState({loading:false});
+            self.setState({loading:false,email:''});
             ToastAndroid.showWithGravityAndOffset("A message has been sent to your email with instructions to reset your password", ToastAndroid.LONG, ToastAndroid.BOTTOM, 25, 50 );
         }).catch(function(err) {
             self.setState({loading:false});

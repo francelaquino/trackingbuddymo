@@ -4,19 +4,17 @@ import React, { Component } from 'react';
 import { TouchableOpacity, Platform,  StyleSheet,  Text,  View,Image } from 'react-native';
 import { Root,Content,Drawer,Container ,List , ListItem, Right, Body,Left,Icon, Thumbnail} from 'native-base';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
-import firebase from 'react-native-firebase';
+import { connect } from 'react-redux';
+import { clearHomeMembers  } from '../../actions/memberActions' ;
 var globalStyle = require('../../assets/style/GlobalStyle');
 var userdetails = require('../shared/userDetails');
 
 type Props = {};
 
-export default class LeftDrawer extends Component<Props> {
+class LeftDrawer extends Component<Props> {
 
     constructor(props) {
         super(props)
-        this.state={
-            emptyPhoto:'https://firebasestorage.googleapis.com/v0/b/trackingbuddy-3bebd.appspot.com/o/member_photos%2Ficons8-person-80.png?alt=media&token=59864ce7-cf1c-4c5e-a07d-76c286a2171d',
-        }
       }
   displayMember(){
     this.props.navigation.navigate('DisplayMember',{closeDrawer:this.props.closeDrawer()});
@@ -52,8 +50,10 @@ export default class LeftDrawer extends Component<Props> {
     userdetails.avatar="";
     userdetails.userid="";
     this.props.closeDrawer();
+    
     setTimeout(() => {
         this.props.navigation.navigate('Login');
+        this.props.clearHomeMembers();
     }, 1000);
     
   }
@@ -160,7 +160,15 @@ export default class LeftDrawer extends Component<Props> {
 }
 
 
-
+const mapStateToProps = state => ({
+    
+  })
+  
+  
+  
+  LeftDrawer=connect(mapStateToProps,{clearHomeMembers})(LeftDrawer);
+  
+export default LeftDrawer;
 
 const styles = StyleSheet.create({
     container: {

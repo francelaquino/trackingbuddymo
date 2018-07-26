@@ -36,11 +36,11 @@ class NewInvite extends Component {
             return false;
         }
         this.setState({loading:true})
-        this.props.sendInvite(this.state.invitationcode).then(res=>{
+        this.props.sendInvite(this.state.invitationcode).then(async res=>{
         	if(res==true){
                 ToastAndroid.showWithGravityAndOffset("Member successfully added",ToastAndroid.LONG,ToastAndroid.BOTTOM, 25, 50);
-                this.props.displayMember();
-                this.props.displayHomeMember();
+                await this.props.displayMember();
+                await this.props.displayHomeMember();
                 this.setState({invitationcode:'',loading:false})
             }else{
                 ToastAndroid.showWithGravityAndOffset("Invalid invitation code",ToastAndroid.LONG,ToastAndroid.BOTTOM, 25, 50);

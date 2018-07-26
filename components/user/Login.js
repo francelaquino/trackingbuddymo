@@ -6,6 +6,7 @@ import firebase from 'react-native-firebase';
 import Geocoder from 'react-native-geocoder';
 import { connect } from 'react-redux';
 import { saveLocationOffline, saveLocationOnline  } from '../../actions/locationActions' ;
+import { displayHomeMember  } from '../../actions/memberActions' ;
 import {  userLogin } from '../../actions/userActions' ;
 import Loader from '../shared/Loader';
 import OfflineNotice  from '../shared/OfflineNotice';
@@ -39,17 +40,22 @@ class Login extends Component {
         this.props.userLogin(this.state.email,this.state.password).then(async (res)=>{
             setTimeout(() => {
                  this.props.saveLocationOnline();
+
                 setTimeout(() => {
-                
+                    this.props.displayHomeMember();
                     if(res==""){
-                        this.setState({loading:false})
+                        self.setState({
+                            loading:false,
+                            email:'',
+                            password:'',
+                          });
                         this.props.navigation.navigate('Home');
                     }else{
                         this.setState({loading:false,email:'',password:''})
                         ToastAndroid.showWithGravityAndOffset("Invalid username or bad password", ToastAndroid.LONG, ToastAndroid.BOTTOM, 25, 50 );
                     }
-                }, 1000);
-            }, 1000);
+                }, 500);
+            }, 500);
 
            
 
@@ -131,6 +137,6 @@ const mapStateToProps = state => ({
   
   
   
-  Login=connect(mapStateToProps,{saveLocationOffline,saveLocationOnline,userLogin})(Login);
+  Login=connect(mapStateToProps,{saveLocationOffline,saveLocationOnline,userLogin, displayHomeMember})(Login);
   
 export default Login;

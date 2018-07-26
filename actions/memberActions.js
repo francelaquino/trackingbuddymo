@@ -1,4 +1,4 @@
-import { DISPLAY_MEMBER, INVITE_MEMBER, GET_INVITATIONCODE, GET_COUNTRIES, GENERATE_INVITATIONCODE, GET_MEMBER, DELETE_MEMBER, DISPLAY_HOME_MEMBER, DISPLAY_GROUP_MEMBER } from './types';
+import { DISPLAY_MEMBER, INVITE_MEMBER, GET_INVITATIONCODE, GET_COUNTRIES, GENERATE_INVITATIONCODE, GET_MEMBER, DELETE_MEMBER, DISPLAY_HOME_MEMBER, DISPLAY_GROUP_MEMBER,CLEAR_HOME_MEMBERS } from './types';
 import firebase from 'react-native-firebase';
 import Moment from 'moment';
 
@@ -8,12 +8,16 @@ var userdetails = require('../components/shared/userDetails');
 
 
 export const displayHomeMember=()=> async dispatch=> {
+    dispatch({ 
+        type: DISPLAY_HOME_MEMBER,
+        payload: [],
+    });
     let members=[];
     let count=0;
     let cnt=0;
 
     if(userdetails.group==""){
-       /* await firebase.database().ref().child('users/'+userdetails.userid).once("value",function(snapshot){
+        await firebase.database().ref().child('users/'+userdetails.userid).once("value",function(snapshot){
             if(snapshot.val() !== null){
                 members.push({
                     id:snapshot.key,
@@ -27,7 +31,7 @@ export const displayHomeMember=()=> async dispatch=> {
                 });
                
             }
-        })*/
+        })
 
         await firebase.database().ref().child('users/'+userdetails.userid+"/members").once('value',async function(snapshot){
             if(snapshot.val()===null){
@@ -278,20 +282,15 @@ export const getMember=(userid)=> async dispatch=> {
 
 export const deleteMember=(memberid)=> async dispatch=> {
         
-        await firebase.database().ref().child("users/"+userdetails.userid+"/members/"+memberid).remove()
-        .catch(function(err) {
-            resolve(false)
-        });
+        await firebase.database().ref().child("users/"+userdetails.userid+"/members/"+memberid).remove();
 
-        await firebase.database().ref().child("memberof/"+memberid+"/"+userdetails.userid).remove()
-        .catch(function(err) {
-            resolve(false)
-        });
+        await firebase.database().ref().child("memberof/"+memberid+"/"+userdetails.userid).remove();
 
-        await firebase.database().ref().child("groupmembers").orderByKey().equalTo(memberid).remove()
-        .catch(function(err) {
-            resolve(false)
-        });
+        await firebase.database().ref().child("users/"+memberid+"/members/"+userdetails.userid).remove();
+
+        await firebase.database().ref().child("memberof/"+userdetails.userid+"/"+memberid).remove();
+
+        await firebase.database().ref().child("groupmembers").orderByKey().equalTo(memberid).remove();
 
 
         
@@ -414,6 +413,15 @@ export const sendInvite=(invitationcode)=> async dispatch=> {
     });
 };
 
+
+export const clearHomeMembers=()=> dispatch=> {
+    
+        dispatch({ 
+            type: CLEAR_HOME_MEMBERS,
+            payload: []
+        });
+   
+};
 
 
 export const getCountrries=()=> dispatch=> {

@@ -284,9 +284,8 @@ class HomePlaces extends Component {
                 <MapView.Marker key={marker.id}
                 onLayout = {() => this.fitToMap()}
                 coordinate={marker.coordinates}
-                title={marker.firstname}>
-                <Image style={styles.marker} 
-                    source={require('../../images/marker.png')} />
+                title={marker.firstname}
+                image={require('../../images/marker.png')}>
                         <Text   style={styles.markerText}>{marker.firstname}</Text>
                    
                 <MapView.Callout >
@@ -437,7 +436,7 @@ const styles = StyleSheet.create({
         width:40,
         marginLeft:5,
         marginTop:16,
-        position:'absolute',
+        zIndex:9999
 
 
     },
@@ -454,10 +453,8 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = state => ({
     members: state.fetchMember.home_members,
-    home_markers: state.fetchMember.home_markers,
     //isLoading:state.fetchMember.isLoading,
     isConnected:state.fetchConnection.isConnected,
-    coordinates:state.fetchLocation.coordinates,
     
   })
   
