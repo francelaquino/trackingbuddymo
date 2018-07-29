@@ -23,19 +23,31 @@ import PlaceAlert from '../places/PlaceAlert';
 import GroupPlaces from '../places/GroupPlaces';
 import HomeSettings from '../settings/HomeSettings';
 import ChangePassword from '../user/ChangePassword';
+import Splash from './Splash';
 
 import  { createStackNavigator }  from 'react-navigation';
 
 
 export const Stack = createStackNavigator({
-    Login: { 
+    Login: {
         screen: Login,
         headerMode: 'none',
         navigationOptions: {
             header: null
         },
-        
+
     },
+    Splash: {
+        screen: Splash,
+        headerMode: 'none',
+        navigationOptions: {
+            header: null
+        },
+
+    },
+   
+   
+   
     Home: { 
         screen: Home,
         headerMode: 'none',

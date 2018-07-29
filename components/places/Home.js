@@ -1,6 +1,6 @@
 
 import React, { Component } from 'react';
-import { NetInfo , TouchableOpacity,Platform,  StyleSheet,  Text,  View, ScrollView,TextInput, ToastAndroid, Image,Dimensions, FlatList } from 'react-native';
+import { AsyncStorage, NetInfo, TouchableOpacity, Platform, StyleSheet, Text, View, ScrollView, TextInput, ToastAndroid, Image, Dimensions, FlatList } from 'react-native';
 import { Drawer,Root, Container, Header, Body, Title, Item, Input, Label, Button, Icon, Content, List, ListItem,Left, Right,Switch, Thumbnail,Card,CardItem } from 'native-base';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
@@ -18,7 +18,7 @@ import { displayHomeMember  } from '../../actions/memberActions' ;
 import { setConnection  } from '../../actions/connectionActions' ;
 import { saveLocationOffline, saveLocationOnline  } from '../../actions/locationActions' ;
 import firebase from 'react-native-firebase';
-import type { Notification  } from 'react-native-firebase';
+import type { Notification } from 'react-native-firebase';
 var PushNotification = require('react-native-push-notification');
 
 var screenHeight = Dimensions.get('window').height; 
@@ -35,7 +35,7 @@ const LATITUDE_DELTA = .05;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 
 BackgroundJob.cancelAll();
-
+let trackLocation;
 const trackPosition = {
     jobKey: "trackPositionJob",
     job: () =>trackLocation(),
@@ -64,19 +64,21 @@ var refreshTokenSchedule = {
 }
 
   
-let trackLocation;
 
 
-refreshToken=function(){
-    firebase.messaging().getToken()
-    .then(fcmToken => {
-        if (fcmToken) {
-            let userRef=firebase.database().ref().child("users/"+userdetails.userid);
-            userRef.update({ 
-                fcmtoken : fcmToken,
-            })
-        }
-    });
+
+refreshToken = function () {
+    if (userdetails.userid !== "" && userdetails.userid!==null) {
+        firebase.messaging().getToken()
+            .then(fcmToken => {
+                if (fcmToken) {
+                    let userRef = firebase.database().ref().child("users/" + userdetails.userid);
+                    userRef.update({
+                        fcmtoken: fcmToken,
+                    })
+                }
+            });
+    }
 }
 
 class HomePlaces extends Component {
@@ -106,7 +108,8 @@ class HomePlaces extends Component {
     componentWillUnmount(){
         BackgroundJob.cancelAll();
     }
-    componentDidMount(){
+    async componentDidMount() {
+
       
             this.notificationListener = firebase.notifications().onNotification((notification: Notification) => {
                 
@@ -285,7 +288,9 @@ class HomePlaces extends Component {
                 onLayout = {() => this.fitToMap()}
                 coordinate={marker.coordinates}
                 title={marker.firstname}
-                image={require('../../images/marker.png')}>
+                >
+                <Image style={styles.marker}
+                    source={require('../../images/marker.png')} />
                         <Text   style={styles.markerText}>{marker.firstname}</Text>
                    
                 <MapView.Callout >
@@ -424,19 +429,20 @@ const styles = StyleSheet.create({
       },
       marker: {
         alignSelf: 'center',
-        width:50,
-        height:60,
+        width:55,
+        height:65,
         margin:0,padding:0 
     },
+
     markerText: {
         textAlign: 'center',
         flex: 1,
         color: 'black',
         fontSize: 9,
-        width:40,
-        marginLeft:5,
-        marginTop:16,
-        zIndex:9999
+        width: 45,
+        marginLeft: 5,
+        marginTop: 17,
+        position: 'absolute',
 
 
     },

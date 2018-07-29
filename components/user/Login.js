@@ -1,6 +1,6 @@
 
 import React, { Component } from 'react';
-import {  NetInfo, Platform,  StyleSheet,  Text,  View, ScrollView,TextInput, TouchableOpacity, Image,ToastAndroid, NavigationActions  } from 'react-native';
+import {  AsyncStorage, NetInfo, Platform,  StyleSheet,  Text,  View, ScrollView,TextInput, TouchableOpacity, Image,ToastAndroid, NavigationActions  } from 'react-native';
 import { Root, Container, Header, Body, Title, Item, Input, Label, Button, Icon } from 'native-base';
 import firebase from 'react-native-firebase';
 import Geocoder from 'react-native-geocoder';
@@ -9,9 +9,10 @@ import { saveLocationOffline, saveLocationOnline  } from '../../actions/location
 import { displayHomeMember  } from '../../actions/memberActions' ;
 import {  userLogin } from '../../actions/userActions' ;
 import Loader from '../shared/Loader';
-import OfflineNotice  from '../shared/OfflineNotice';
+import OfflineNotice from '../shared/OfflineNotice';
+import Splash  from '../shared/Splash';
 var registrationStyle = require('../../assets/style/Registration');
-
+var userdetails = require('../shared/userDetails');
 
 class Login extends Component {
     constructor(props) {
@@ -27,7 +28,33 @@ class Login extends Component {
       }
       
   
- 
+    async componentWillMount() {
+        this.props.navigation.navigate('Splash');
+
+        let userid = await AsyncStorage.getItem("userid");
+        let email = await AsyncStorage.getItem("email");
+        let firstname = await AsyncStorage.getItem("firstname");
+        let lastname = await AsyncStorage.getItem("lastname");
+
+        setTimeout(() => {
+            if (userid === "" || userid === null) {
+                this.props.navigation.navigate('Login');
+            } else {
+                userdetails.userid = userid;
+                userdetails.email = email;
+                userdetails.firstname = firstname;
+                userdetails.lastname = lastname;
+                this.props.saveLocationOnline();
+                setTimeout(() => {
+                    this.props.displayHomeMember();
+                   
+                }, 1000);
+
+
+            }
+
+        }, 1000);
+    }
 
     onLogin(){
         
@@ -78,9 +105,11 @@ class Login extends Component {
     return (
         <Root>
             <Container style={registrationStyle.containerWrapper}>
-        	   
+                <Splash/>
           	<Loader loading={this.state.loading} />
-            <OfflineNotice/>
+                <OfflineNotice />
+                
+                
             <ScrollView  contentContainerStyle={{flexGrow: 1}} keyboardShouldPersistTaps={"always"}>
                     <View style={registrationStyle.container}>
                         <View style={registrationStyle.logoContainer}>

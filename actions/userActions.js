@@ -4,6 +4,8 @@ import { reset } from 'redux-form';
 import axios from 'axios';
 import firebase from 'react-native-firebase';
 import Moment from 'moment';
+import { AsyncStorage } from "react-native";
+
 var userdetails = require('../components/shared/userDetails');
 
 export const submitSignUp=(user)=> dispatch=> {
@@ -128,10 +130,14 @@ export const userLogin=(email,password)=> async dispatch=> {
       //if(res.user.emailVerified){
         let childPromise= new Promise(async (childResolve) => {
           await firebase.database().ref().child('users/'+res.user.uid).on('value',function(snapshot){
-            userdetails.userid=res.user.uid;
-            userdetails.email=snapshot.val().email;
-            userdetails.firstname=snapshot.val().firstname;
-            userdetails.lastname=snapshot.val().lastname;
+           userdetails.userid=res.user.uid;
+           userdetails.email=snapshot.val().email;
+           userdetails.firstname=snapshot.val().firstname;
+              userdetails.lastname = snapshot.val().lastname;
+              AsyncStorage.setItem("userid", userdetails.userid);
+              AsyncStorage.setItem("email", userdetails.email);
+              AsyncStorage.setItem("firstname", userdetails.firstname);
+              AsyncStorage.setItem("lastname", userdetails.lastname);
             childResolve();
           });
         }).then(function(){

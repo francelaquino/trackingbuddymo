@@ -66,7 +66,7 @@ export const saveLocationOffline=(coordinate)=> dispatch=> {
 };
 
 export const saveLocationOnline=()=> async dispatch=> {
-    if(userdetails.userid==""){
+    if (userdetails.userid == "" || userdetails.userid==null) {
         dispatch({ 
             type: SAVE_LOCATION_ONLINE,
             payload: [],

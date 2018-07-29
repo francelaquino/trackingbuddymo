@@ -1,7 +1,7 @@
 
 
 import React, { Component } from 'react';
-import { TouchableOpacity, Platform,  StyleSheet,  Text,  View,Image } from 'react-native';
+import { AsyncStorage, TouchableOpacity, Platform,  StyleSheet,  Text,  View,Image } from 'react-native';
 import { Root,Content,Drawer,Container ,List , ListItem, Right, Body,Left,Icon, Thumbnail} from 'native-base';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import { connect } from 'react-redux';
@@ -48,7 +48,11 @@ class LeftDrawer extends Component<Props> {
     userdetails.lastname="";
     userdetails.group="";
     userdetails.avatar="";
-    userdetails.userid="";
+      userdetails.userid = "";
+      AsyncStorage.setItem("userid", "");
+      AsyncStorage.setItem("email", "");
+      AsyncStorage.setItem("firstname", "");
+      AsyncStorage.setItem("lastname", "");
     this.props.closeDrawer();
     
     setTimeout(() => {
