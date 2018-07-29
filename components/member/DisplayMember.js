@@ -45,9 +45,9 @@ class DisplayMember extends Component {
                 keyExtractor={item => item.id}
                 data={data}
                 renderItem={({ item }) => (
-                        <ListItem key={item.id}  avatar style={globalStyle.listItem}>
+
+                        <ListItem key={item.id}  button avatar style={globalStyle.listItem}  onPress={() => {this.props.navigation.navigate("MemberHome",{id:item.id,firstname:item.firstname})}}>
                             <Left style={globalStyle.listLeft}>
-                               
                                 <View style={globalStyle.listAvatarContainer} >
                                 { item.avatar==='' ?  <Thumbnail  style={globalStyle.listAvatar} source={{uri: this.state.emptyPhoto}} /> :
                                 <Thumbnail  style={globalStyle.listAvatar} source={{uri: item.avatar}} />
@@ -58,10 +58,7 @@ class DisplayMember extends Component {
                                 <Text  style={globalStyle.listHeading}>{item.firstname}</Text>
                             </Body>
                             <Right style={globalStyle.listRight} >
-                                <TouchableOpacity  style={globalStyle.listRightTouchable}  
-                                    onPress={() => {this.props.navigation.navigate("MemberHome",{id:item.id,firstname:item.firstname})}}>
                                 <SimpleLineIcons  style={globalStyle.listRightOptionIcon}   name='arrow-right' />
-                                </TouchableOpacity>
                             </Right>
                             </ListItem>
                         ) }
@@ -101,7 +98,6 @@ class DisplayMember extends Component {
                             
                         </Right>
                     </Header>
-                    <Content padder>
                         <ScrollView  contentContainerStyle={{flexGrow: 1}} keyboardShouldPersistTaps={"always"}
                           >
                             <View style={globalStyle.container}>
@@ -111,7 +107,6 @@ class DisplayMember extends Component {
                             
                             </View>
                         </ScrollView>
-                    </Content>
                 </Container>
             </Root>
         )

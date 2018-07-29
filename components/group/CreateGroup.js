@@ -1,7 +1,7 @@
 
 import React, { Component } from 'react';
 import {  Platform,  StyleSheet,  Text,  View, ScrollView,TextInput, TouchableOpacity, ToastAndroid, Image } from 'react-native';
-import { Root, Container, Header, Body, Title, Item, Input, Label, Button, Icon, Left } from 'native-base';
+import { Root, Container, Header, Body, Title, Item, Input, Label, Button, Icon, Left, Content } from 'native-base';
 import ImagePicker from 'react-native-image-picker';
 import Loader  from '../shared/Loader';
 import OfflineNotice  from '../shared/OfflineNotice';
@@ -113,7 +113,7 @@ class CreateGroup extends Component {
                             <Title>Create Group</Title>
                         </Body>
                     </Header>
-                
+                    <Content padder>
                     <ScrollView contentContainerStyle={{flexGrow: 1}} keyboardShouldPersistTaps={"always"}>
                         <View style={globalStyle.container}>
                             <TouchableOpacity style={{marginTop:20}} onPress={this.selectPhoto.bind(this)}>
@@ -129,26 +129,27 @@ class CreateGroup extends Component {
 														<Text style={globalStyle.deleteButtonSmall} >Remove Photo</Text>
 														</TouchableOpacity>
 														}
-                            <Item  stackedLabel style={globalStyle.item}>
-                                <View style={globalStyle.inputicon}>  
-                                <TextInput style={globalStyle.textinputCenter} 
+                            <Item   style={globalStyle.regularitem}>
+                                <TextInput style={globalStyle.textinput} 
+                                  underlineColorAndroid= 'transparent'
+                                  placeholder="Group Name"
                                 name="groupname" autoCorrect={false}
                                 value={this.state.groupname}  maxLength = {20}
                                 onChangeText={groupname=>this.setState({groupname})}/>
-                                </View>
                             </Item>
                             
 
                             <View style={{justifyContent: 'center',alignItems: 'center'}}>
                                 <Button disabled={!this.state.groupname} style={this.state.groupname ? globalStyle.secondaryButton : globalStyle.secondaryButtonDisabled}
                                     onPress={()=>this.onSubmit()}
-                                    bordered light full rounded >
+                                    bordered light full  >
                                     <Text style={{color:'white'}}>Create Group</Text>
                                 </Button>
                             </View>
 
                         </View>
                     </ScrollView>
+                    </Content>
                 </Container>
         </Root>
 		)

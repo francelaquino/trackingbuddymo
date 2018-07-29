@@ -41,7 +41,15 @@ module.exports = StyleSheet.create({
         flexDirection:'column',
         width:'100%',
     },
-   
+    regularitem:{
+        borderLeftWidth: 1,
+        borderRightWidth: 1,
+        borderBottomWidth: 1,
+        borderTopWidth: 1,
+        height: 50,
+        backgroundColor:'white',
+        marginBottom:5,
+    },
     item: {
         borderColor:'transparent',
         backgroundColor:'transparent',
@@ -57,31 +65,31 @@ module.exports = StyleSheet.create({
         backgroundColor:theme.primaryButtonColor,
         marginTop:10,
         marginBottom:10,
-        width:'90%',
+        width:'100%',
         alignSelf: "center",
     },
     secondaryButtonDisabled:{
         backgroundColor:theme.primaryColorDisabled,
         marginBottom:10,
         marginTop:10,
-        width:'90%',
+        width:'100%',
         alignSelf: "center",
     },
     deleteButton:{
         backgroundColor:theme.deleteColor,
         marginBottom:10,
-        width:'90%',
+        width:'100%',
         alignSelf: "center",
     },
     textinput:{
         flex: 1,
-        paddingTop:0,
+        padding:5,
+        height: 50,
+        fontSize:15,
     },
     textinputCenter:{
         flex: 1,
-        paddingTop:0,
-        fontSize:25,
-        textAlign:'center',
+        fontSize:15,
         backgroundColor:'transparent',
         color:'green'
     },
@@ -164,7 +172,7 @@ module.exports = StyleSheet.create({
     },
     listAvatarContainer:{
         borderRadius: 50,
-        backgroundColor:'#1eaec5',
+        backgroundColor:'#1abc9c',
         padding:2,
         width:50,
         height:50,
@@ -187,7 +195,7 @@ module.exports = StyleSheet.create({
     },
     listAvatarContainerSmall:{
         borderRadius: 50,
-        backgroundColor:'#1eaec5',
+        backgroundColor:'#1abc9c',
         padding:2,
         width:40,
         height:40,
@@ -199,7 +207,7 @@ module.exports = StyleSheet.create({
     /* List Design End */
 
     avatarContainer:{
-        backgroundColor:'#2db1b6',
+        backgroundColor:'#16a085',
         alignItems: 'center',
         marginBottom:10,
         borderRadius: 40,

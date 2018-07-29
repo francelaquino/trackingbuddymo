@@ -242,82 +242,76 @@ class Register extends Component {
 							</View>
 						</TouchableOpacity>
 					</View>
+         
 					
-						<Item  stackedLabel  style={registrationStyle.item}  >
-							<Label style={registrationStyle.stackedlabel}>Email</Label>
-							<View style={registrationStyle.inputicon}>  
-								<TextInput  style={registrationStyle.textinput} 
-								name="email" autoCorrect={false}
+						<Item   style={registrationStyle.regularitem}  >
+                <TextInput  style={registrationStyle.textinput} 
+                underlineColorAndroid= 'transparent'
+                placeholder="Email address"
+								name="email" autoCorrect={false} maxLength = {50}
 								value={this.state.email}
 								onChangeText={email=>this.setState({email})}/>
-							</View>
 						</Item>
 					
-						<Item  stackedLabel style={registrationStyle.item}>
-							<Label style={registrationStyle.stackedlabel}>Password</Label>
-							<View style={registrationStyle.inputicon}>  
-								<TextInput  style={registrationStyle.textinput } 
+						<Item   style={registrationStyle.regularitem}>
+                <TextInput  style={registrationStyle.textinput } 
+                 underlineColorAndroid= 'transparent'
+                 placeholder="Password"
 								name="password" autoCorrect={false}
 								value={this.state.password} secureTextEntry
 								onChangeText={password=>this.setState({password})}/>
-							</View>
 						</Item>
 
 
-						<Item  stackedLabel style={registrationStyle.item} >
-							<Label style={registrationStyle.stackedlabel}>Re-type Password</Label>
-							<View style={registrationStyle.inputicon}>  
-								<TextInput  style={registrationStyle.textinput} 
+						<Item   style={registrationStyle.regularitem} >
+                <TextInput  style={registrationStyle.textinput} 
+                 underlineColorAndroid= 'transparent'
+                 placeholder="Re-Type Passwprd"
 								name="retypepassword" autoCorrect={false}
 								value={this.state.retypepassword} secureTextEntry
 								onChangeText={retypepassword=>this.setState({retypepassword})}/>
-							</View>
 						
 						</Item>
-						<Item  stackedLabel style={registrationStyle.item}>
-							<Label style={registrationStyle.stackedlabel}>First Name</Label>
-							<View style={registrationStyle.inputicon}>  
-								<TextInput  style={registrationStyle.textinput} 
+						<Item   style={registrationStyle.regularitem}>
+                <TextInput  style={registrationStyle.textinput} 
+                 underlineColorAndroid= 'transparent'
+                 placeholder="First Name" maxLength = {10}
 								name="firstname" autoCorrect={false}
 								value={this.state.firstname}
 								onChangeText={firstname=>this.setState({firstname})}/>
-							</View>
 						</Item>
 					
-						<Item  stackedLabel style={registrationStyle.item}>
-							<Label style={registrationStyle.stackedlabel}>Middle Name</Label>
-							<View style={registrationStyle.inputicon}>  
-								<TextInput  style={registrationStyle.textinput} 
+						<Item   style={registrationStyle.regularitem}>
+                <TextInput  style={registrationStyle.textinput} 
+                 underlineColorAndroid= 'transparent'
+                 placeholder="Middle Name" maxLength = {10}
 								name="middlename" autoCorrect={false}
 								value={this.state.middlename}
 								onChangeText={middlename=>this.setState({middlename})}/>
-								</View>
 						</Item>
 					
-						<Item  stackedLabel style={registrationStyle.item}>
-							<Label style={registrationStyle.stackedlabel}>Last Name</Label>
-							<View style={registrationStyle.inputicon}>  
-								<TextInput  style={registrationStyle.textinput} 
-								name="lastname" autoCorrect={false}
+						<Item   style={registrationStyle.regularitem}>
+                <TextInput  style={registrationStyle.textinput} 
+                 underlineColorAndroid= 'transparent'
+                 placeholder="Last Name"
+								name="lastname" autoCorrect={false} maxLength = {10}
 								value={this.state.lastname}
 								onChangeText={lastname=>this.setState({lastname})}/>
-							</View>
 					</Item>
-						<Item  stackedLabel style={registrationStyle.item}>
-							<Label style={registrationStyle.stackedlabel}>Mobile No.</Label>
-							<View style={registrationStyle.inputicon}>  
-								<TextInput  style={registrationStyle.textinput} 
+						<Item   style={registrationStyle.regularitem}>
+                <TextInput  style={registrationStyle.textinput} 
+                 underlineColorAndroid= 'transparent'
+                 placeholder="Mobile No."
 								name="mobileno" autoCorrect={false}
 								value={this.state.mobileno}
 								onChangeText={mobileno=>this.setState({mobileno})}/>
-							</View>
 						</Item>
 					
 						
-					<View style={{justifyContent: 'center',alignItems: 'center',marginTop:30}}>
+					<View style={{justifyContent: 'center',alignItems: 'center',marginTop:10}}>
 						<Button 
 							onPress={()=>this.onSubmit()}
-							full rounded style={registrationStyle.registrationbutton}>
+							full  style={registrationStyle.registrationbutton}>
 							<Text>Register</Text>
 						</Button>
 						<TouchableOpacity  style={{marginTop:20}} underlayColor={'transparent'} onPress={() =>navigate('Login')}>

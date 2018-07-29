@@ -32,9 +32,9 @@ class ProfileHome extends Component {
                         </Body>
                        
                     </Header>
-                            <Tabs tabBarPosition="top" tabBarUnderlineStyle={{borderBottomWidth:2,borderBottomColor:'#1eaec5'}} >
+                            <Tabs tabBarPosition="top" tabBarUnderlineStyle={{borderBottomWidth:2,borderBottomColor:'#16a085'}} >
                             <Tab  heading={<TabHeading style={{backgroundColor: 'white'}}>
-                                <Text style={{color: '#1eaec5'}}>Profile</Text>
+                                <Text style={{color: '#16a085',fontSize:16}}>Profile</Text>
                                 </TabHeading>}>
                                 <ScrollView showsVerticalScrollIndicator={false}>
                                     <UserProfile/>
@@ -43,7 +43,7 @@ class ProfileHome extends Component {
                                 
                             </Tab>
                             <Tab  heading={<TabHeading style={{backgroundColor: 'white'}}>
-                                <Text style={{color: '#1eaec5'}}>Locations</Text>
+                                <Text style={{color: '#16a085',fontSize:16}}>Locations</Text>
                                 </TabHeading>}>
                                 <ScrollView showsVerticalScrollIndicator={false}>
                                 <LocationPlaces memberid={userdetails.userid} navigate={this.props.navigation.navigate}/>

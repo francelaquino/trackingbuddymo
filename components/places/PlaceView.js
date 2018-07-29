@@ -110,7 +110,7 @@ class PlaceView extends Component {
     
     ready(){
         const members =this.props.members.map(member=>(
-            <ListItem key={member.id}  avatar style={globalStyle.listItem}>
+            <ListItem key={member.id}  avatar button style={globalStyle.listItem}  onPress={() => {this.props.navigation.navigate("PlaceAlert",{placename: this.state.placename,placeid:this.state.id,userid:member.id,firstname:member.firstname,region:this.state.region})}}>
             <Left style={globalStyle.listLeft}>
                
                 <View style={globalStyle.listAvatarContainer} >
@@ -123,10 +123,7 @@ class PlaceView extends Component {
                 <Text  style={globalStyle.listHeading}>{member.firstname}</Text>
             </Body>
             <Right style={globalStyle.listRight} >
-                                <TouchableOpacity  style={globalStyle.listRightTouchable}  
-                                    onPress={() => {this.props.navigation.navigate("PlaceAlert",{placename: this.state.placename,placeid:this.state.id,userid:member.id,firstname:member.firstname,region:this.state.region})}}>
                                 <SimpleLineIcons  style={globalStyle.listRightOptionIcon}   name='arrow-right' />
-                                </TouchableOpacity>
                             </Right>
             </ListItem>
         ));
@@ -166,7 +163,7 @@ class PlaceView extends Component {
                             <View style={styles.mapContainer}>
                             <Image style={{width:'100%',height:200,position:'absolute'}} source={{ uri: this.state.mapSnapshot.uri }} />
                             
-                                    <View style={{width:70,height:70,borderWidth:1,borderColor:'#1eaec5',borderRadius:35, backgroundColor: 'rgba(30, 174, 197, 0.5)', justifyContent: 'center',alignItems: 'center'}}>
+                                    <View style={{width:100,height:100,borderWidth:1,borderColor:'#1eaec5',borderRadius:50, backgroundColor: 'rgba(30, 174, 197, 0.5)', justifyContent: 'center',alignItems: 'center'}}>
                                     <View style={{width:10,height:10, borderRadius:5,backgroundColor: 'rgba(0, 113, 189, 0.5)'}}></View>
                                     </View>
                                     

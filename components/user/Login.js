@@ -18,6 +18,7 @@ class Login extends Component {
     constructor(props) {
         super(props)
         this.state = {
+            showSplash:true,
             loading:false,
             email: 'francel_aquino@yahoo.com',
             password:'111111',
@@ -28,8 +29,7 @@ class Login extends Component {
       }
       
   
-    async componentWillMount() {
-        this.props.navigation.navigate('Splash');
+    async componentDidMount() {
 
         let userid = await AsyncStorage.getItem("userid");
         let email = await AsyncStorage.getItem("email");
@@ -38,7 +38,9 @@ class Login extends Component {
 
         setTimeout(() => {
             if (userid === "" || userid === null) {
-                this.props.navigation.navigate('Login');
+                setTimeout(() => {
+                    this.setState({showSplash:false})
+                }, 1500);
             } else {
                 userdetails.userid = userid;
                 userdetails.email = email;
@@ -47,8 +49,8 @@ class Login extends Component {
                 this.props.saveLocationOnline();
                 setTimeout(() => {
                     this.props.displayHomeMember();
-                   
-                }, 1000);
+                    this.props.navigation.navigate('Home');
+                }, 1500);
 
 
             }
@@ -71,12 +73,13 @@ class Login extends Component {
                 setTimeout(() => {
                     this.props.displayHomeMember();
                     if(res==""){
+                        
+                        this.props.navigation.navigate('Home');
                         self.setState({
                             loading:false,
                             email:'',
                             password:'',
                           });
-                        this.props.navigation.navigate('Home');
                     }else{
                         this.setState({loading:false,email:'',password:''})
                         ToastAndroid.showWithGravityAndOffset("Invalid username or bad password", ToastAndroid.LONG, ToastAndroid.BOTTOM, 25, 50 );
@@ -105,7 +108,7 @@ class Login extends Component {
     return (
         <Root>
             <Container style={registrationStyle.containerWrapper}>
-                <Splash/>
+            <Splash hide={this.state.showSplash}/>
           	<Loader loading={this.state.loading} />
                 <OfflineNotice />
                 
@@ -114,39 +117,43 @@ class Login extends Component {
                     <View style={registrationStyle.container}>
                         <View style={registrationStyle.logoContainer}>
                         <Image  style={registrationStyle.logo} resizeMode='contain'  source={require('../../images/logo.png')} />
-                        <Text style={{fontSize:22,color:'#303131'}}>Tracking Buddy</Text>
+                        <Text style={{fontSize:15,color:'silver',marginTop:10}}>Tracking Buddy</Text>
                         
                         </View>
-                        <Item  stackedLabel style={registrationStyle.item}>
-                            <Label style={registrationStyle.stackedlabel}>Email</Label>
-                            <View style={registrationStyle.inputicon}>  
-                            <TextInput style={registrationStyle.textinput} 
+                        <Item  style={registrationStyle.regularitem}>
+                        <TextInput style={registrationStyle.textinput} 
+                            underlineColorAndroid= 'transparent'
+                            placeholder="Email address"
                             name="email" autoCorrect={false}
                             value={this.state.email}  maxLength = {50}
                             onChangeText={email=>this.setState({email})}/>
-                            </View>
                         </Item>
-                        <Item  stackedLabel style={registrationStyle.item}>
-                            <Label style={registrationStyle.stackedlabel}>Password</Label>
-                            <View style={registrationStyle.inputicon}>  
+                        <Item  style={registrationStyle.regularitem}>
                             <TextInput style={registrationStyle.textinput} 
+                             underlineColorAndroid= 'transparent'
+                             placeholder="Password"
                             name="password" autoCorrect={false} secureTextEntry
                             value={this.state.password}  maxLength = {50}
                             onChangeText={password=>this.setState({password})}/>
-                            </View>
                         </Item>
-
-                        <View style={{justifyContent: 'center',alignItems: 'center'}}>
+                        <View style={{alignSelf: 'flex-end',marginTop:10}}>
+                            <TouchableOpacity underlayColor={'transparent'}  onPress={() =>navigate('ForgotPassword')}>
+                            <Text style={{color:'#16a085',fontSize:16}}>Forgot Password?</Text>
+                            </TouchableOpacity>
+                        </View>
+                        <View style={{justifyContent: 'center',alignItems: 'center',marginTop:20}}>
                             <Button 
                                 onPress={()=>this.onLogin()}
-                                full rounded style={registrationStyle.registrationbutton}>
+                                full  style={registrationStyle.registrationbutton}>
                                 <Text style={{color:'white'}}>Login</Text>
                             </Button>
-                            <TouchableOpacity underlayColor={'transparent'}  onPress={() =>navigate('ForgotPassword')}>
-                            <Text style={registrationStyle.haveaccount}>Forgot Password?</Text>
-                            </TouchableOpacity>
+                            
+                           
+                        </View>
+                        
+                        <View style={{justifyContent: 'center',alignItems: 'center',marginTop:10}}>
                             <TouchableOpacity  underlayColor={'transparent'}  onPress={() =>navigate('Register')}>
-                            <Text style={registrationStyle.haveaccount}>Not a member? <Text style={registrationStyle.loginButton}>Register</Text></Text>
+                            <Text style={registrationStyle.haveaccount}>Don't have an account? <Text style={registrationStyle.loginButton}>Register</Text></Text>
                             </TouchableOpacity>
                         </View>
 

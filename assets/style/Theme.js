@@ -1,10 +1,10 @@
 
 var style = {
-    primaryColor: "#1eaec5",
-    primaryButtonColor: "#096473",
-    primaryColorDisabled:'#2b8c9b',
-    lightColor: "#30d6f1",
-    darkColor: "#174e54",
+    primaryColor: "#16a085",
+    primaryButtonColor: "#16a085",
+    primaryColorDisabled:'#7f8c8d',
+    lightColor: "#1abc9c",
+    darkColor: "#16a085",
     deleteColor: "#f64949"
 }
 export const theme = style;

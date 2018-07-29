@@ -114,7 +114,7 @@ class InfoMember extends Component {
                             <ListItem last>
                                 <Button 
                                 onPress={()=>this.confirmDelete()}
-                                bordered light full rounded style={globalStyle.deleteButton}>
+                                bordered light full  style={globalStyle.deleteButton}>
                                 <Text style={{color:'white'}}>Delete Member</Text>
                                 </Button>
                             </ListItem>

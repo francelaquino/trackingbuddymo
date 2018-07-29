@@ -1,7 +1,7 @@
 
 import React, { Component } from 'react';
 import {  Platform,  StyleSheet,  Text,  View, ScrollView,TextInput, TouchableOpacity, ToastAndroid } from 'react-native';
-import { Root, Container, Header, Body, Title, Item, Input, Label, Button, Icon, Left, Right } from 'native-base';
+import { Root, Container, Header, Body, Title, Item, Input, Label, Button, Icon, Left, Right, Content } from 'native-base';
 import Loading  from '../shared/Loading';
 import { connect } from 'react-redux';
 import Loader from '../shared/Loader';
@@ -22,7 +22,8 @@ class GenerateInviteCode extends Component {
       }
 
     componentWillMount() {
-        this.onGenerate();
+        this.props.getInvitationCode();
+        //this.onGenerate();
     }
             
     
@@ -74,13 +75,15 @@ class GenerateInviteCode extends Component {
                                     <Text style={{justifyContent: 'center',alignItems: 'center', alignSelf: "center", flexDirection:'column',fontSize:12,marginBottom:10,color:'gray'}}>Expires on {this.props.invitationcode.expiration}</Text>
                                     </View>
                         }
+                        <Content padder>
                             <View style={{justifyContent: 'center',alignItems: 'center'}}>
                                 <Button 
                                     onPress={()=>this.onGenerate()}
-                                    bordered light full rounded style={globalStyle.secondaryButton}>
+                                    bordered light full style={globalStyle.secondaryButton}>
                                     <Text style={{color:'white'}}>Generate Code</Text>
                                 </Button>
                             </View>
+                            </Content>
 
                         </View>
                     </ScrollView>

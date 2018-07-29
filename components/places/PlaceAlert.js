@@ -148,11 +148,13 @@ class PlaceAlert extends Component {
                             </Right>
                             </ListItem>
                         </List>
+                        <Content padder>
                         <Button disabled={!this.state.placename} style={this.state.placename ? globalStyle.secondaryButton : globalStyle.secondaryButtonDisabled}
                                         onPress={()=>this.onSubmit()}
-                                        bordered light full rounded >
+                                        bordered light full  >
                                         <Text style={{color:'white'}}>Save Alert</Text>
                                     </Button>
+                                    </Content>
                         </View>
 
 

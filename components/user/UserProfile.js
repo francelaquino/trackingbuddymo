@@ -1,7 +1,7 @@
 
 import React, { Component } from 'react';
 import {  Platform,  StyleSheet,  Text,  View, ScrollView,TextInput, TouchableOpacity, ToastAndroid, Alert, Image, Picker } from 'react-native';
-import { Root, Container, Header, Body, Title, Item, Input, Label, Button, Icon, Left, Right, List, ListItem } from 'native-base';
+import { Root, Container, Header, Body, Title, Item, Input, Label, Button, Icon, Left, Right, List, ListItem, Content } from 'native-base';
 import { connect } from 'react-redux';
 import {  getProfile, updateProfile } from '../../actions/userActions' ;
 import { displayHomeMember  } from '../../actions/memberActions' ;
@@ -147,99 +147,84 @@ class UserProfile extends Component {
             <Picker.Item key={country.id} label={country.country} value={country.id} />
               ));
         return (
-            
+            <Content padder>
             <View style={globalStyle.container}>
            <Loader loading={this.state.loading} />
-          
+            
             <ScrollView  contentContainerStyle={{flexGrow: 1}} keyboardShouldPersistTaps={"always"}>
-				
-
-                        <View  style={{marginTop:20,marginBottom:20}}>
+                <View  style={{marginTop:20,marginBottom:20}}>
 						<TouchableOpacity onPress={this.selectPhoto.bind(this)}>
                         <View style={globalStyle.avatarContainer}>
                             { this.state.avatarsource.uri === '' ? <Image style={globalStyle.avatarBig} source={{uri : this.state.emptyPhoto}} />  :
                                 <Image style={globalStyle.avatarBig} source={this.state.avatarsource} />
                                 }
                             </View>
-
-                             
-
-                             
-
 						</TouchableOpacity>
                         { (this.state.avatarsource.uri != '' && this.state.avatarsource.uri!=this.state.emptyPhoto) &&
-														<TouchableOpacity   onPress={this.removePhoto.bind(this)}>
-														<Text style={globalStyle.deleteButtonSmall} >Remove Photo</Text>
-														</TouchableOpacity>
-														}
-					</View>
+                            <TouchableOpacity   onPress={this.removePhoto.bind(this)}>
+                            <Text style={globalStyle.deleteButtonSmall} >Remove Photo</Text>
+                            </TouchableOpacity>
+                        }
+				</View>
 
                     
 					
-						<Item  stackedLabel  style={registrationStyle.item}  >
-							<Label style={registrationStyle.stackedlabel}>Email</Label>
-							<View style={registrationStyle.inputicon}>  
-								<TextInput  style={registrationStyle.textinput} 
+
+						<Item   style={registrationStyle.regularitem}  >
+                                <TextInput  style={registrationStyle.textinput} 
+                                underlineColorAndroid= 'transparent'
+                                placeholder="Email address"
 								name="email" autoCorrect={false}
 								value={this.state.email}
 								editable={false}/>
-								<MaterialIcons onPress={()=>this.required()}  name='error-outline' color="red"  size={22} style={[registrationStyle.iconError,(this.state.emailError && this.state.email=='' ) && registrationStyle.show]} />
-							</View>
 						</Item>
 					
 					
 
-						<Item  stackedLabel style={registrationStyle.item}>
-							<Label style={registrationStyle.stackedlabel}>First Name</Label>
-							<View style={registrationStyle.inputicon}>  
-								<TextInput  style={registrationStyle.textinput} 
+						<Item   style={registrationStyle.regularitem}>
+                                <TextInput  style={registrationStyle.textinput} 
+                                 underlineColorAndroid= 'transparent'
+                                 placeholder="First Name"
 								name="firstname" autoCorrect={false}
-								value={this.state.firstname}
+								value={this.state.firstname} maxLength = {10}
 								onChangeText={firstname=>this.setState({firstname})}/>
-								<MaterialIcons onPress={()=>this.required()}  name='error-outline' color="red"  size={20} style={[registrationStyle.iconError,(this.state.firstnameError && this.state.firstname=='' ) && registrationStyle.show]} />
-							</View>
 						</Item>
 					
-						<Item  stackedLabel style={registrationStyle.item}>
-							<Label style={registrationStyle.stackedlabel}>Middle Name</Label>
-							<View style={registrationStyle.inputicon}>  
-								<TextInput  style={registrationStyle.textinput} 
+						<Item   style={registrationStyle.regularitem}>
+                                <TextInput  style={registrationStyle.textinput} 
+                                 underlineColorAndroid= 'transparent'
+                                 placeholder="Middle Name"
 								name="middlename" autoCorrect={false}
-								value={this.state.middlename}
+								value={this.state.middlename} maxLength = {10}
 								onChangeText={middlename=>this.setState({middlename})}/>
-								</View>
 						</Item>
 					
-						<Item  stackedLabel style={registrationStyle.item}>
-							<Label style={registrationStyle.stackedlabel}>Last Name</Label>
-							<View style={registrationStyle.inputicon}>  
-								<TextInput  style={registrationStyle.textinput} 
+						<Item   style={registrationStyle.regularitem}>
+                                <TextInput  style={registrationStyle.textinput} 
+                                 underlineColorAndroid= 'transparent'
+                                 placeholder="Last Name"
 								name="lastname" autoCorrect={false}
-								value={this.state.lastname}
+								value={this.state.lastname} maxLength = {10}
 								onChangeText={lastname=>this.setState({lastname})}/>
-								<MaterialIcons onPress={()=>this.required()}  name='error-outline' color="red"  size={20} style={[registrationStyle.iconError,(this.state.lastnameError && this.state.lastname=='' ) && registrationStyle.show]} />
-							</View>
 					</Item>
-						<Item  stackedLabel style={registrationStyle.item}>
-							<Label style={registrationStyle.stackedlabel}>Mobile No.</Label>
-							<View style={registrationStyle.inputicon}>  
-								<TextInput  style={registrationStyle.textinput} 
+						<Item   style={registrationStyle.regularitem}>
+                                <TextInput  style={registrationStyle.textinput} 
+                                 underlineColorAndroid= 'transparent'
+                                 placeholder="Mobile No."
 								name="mobileno" autoCorrect={false}
-								value={this.state.mobileno}
+								value={this.state.mobileno} maxLength = {50}
 								onChangeText={mobileno=>this.setState({mobileno})}/>
-								<MaterialIcons onPress={()=>this.required()}  name='error-outline' color="red"  size={20} style={[registrationStyle.iconError,(this.state.mobilenoError && this.state.mobileno=='' ) && registrationStyle.show]} />
-							</View>
 						</Item>
 					
                         <Button  onPress={()=>this.onSubmit()}
-                        bordered light full rounded style={globalStyle.secondaryButton}>
+                        bordered light full  style={globalStyle.secondaryButton}>
                         <Text style={{color:'white'}}>Update</Text>
                         </Button>
 					
 				</ScrollView>
-            
                    
                 </View>
+                </Content>
         )
     }
     render() {

@@ -89,6 +89,7 @@ class HomePlaces extends Component {
         this.state = {
             groupname:'',
             isLoading:false,
+            memberReady:false,
             region:{
                 latitude: LATITUDE,
                 longitude: LONGITUDE,
@@ -219,6 +220,7 @@ class HomePlaces extends Component {
         self.props.displayHomeMember().then(res=>{
             setTimeout(() => {
                 self.fitToMap();
+                self.setState({memberReady:true})
             }, 1000);
         });
     }
@@ -231,6 +233,7 @@ class HomePlaces extends Component {
                 self.props.displayHomeMember().then(res=>{
                     setTimeout(() => {
                         self.fitToMap();
+                        self.setState({memberReady:true})
                     }, 1000);
                 });
             })
@@ -370,7 +373,9 @@ class HomePlaces extends Component {
                         
                         
                         <View style={styles.memberContainer} >
-                            {this.renderMember()}
+                        { this.state.memberReady &&
+                            this.renderMember()
+                        }
                         </View>
                     </View>
 

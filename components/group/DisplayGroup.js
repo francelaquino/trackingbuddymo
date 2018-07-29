@@ -66,7 +66,7 @@ class DisplayGroup extends Component {
     ready(){
         const { navigate } = this.props.navigation;
         const groups =this.props.groups.map(group=>(
-            <ListItem key={group.id}  avatar style={globalStyle.listItem}>
+            <ListItem key={group.id}  button avatar style={globalStyle.listItem}  onPress={() => {this.props.navigation.navigate("GroupHome",{id:group.id,groupname:group.groupname,avatar:group.avatar})}}>
                             
                             <Left style={globalStyle.listLeft}>
                                 <View style={globalStyle.listAvatarContainer} >
@@ -80,11 +80,7 @@ class DisplayGroup extends Component {
                             </Body>
 
                             <Right style={[globalStyle.listRight]} >
-                                <TouchableOpacity  style={globalStyle.listRightTouchable}  
-                                    onPress={() => {this.props.navigation.navigate("GroupHome",{id:group.id,groupname:group.groupname,avatar:group.avatar})}}>
                                     <SimpleLineIcons  style={globalStyle.listRightOptionIcon}   name='arrow-right' />
-                                </TouchableOpacity>
-
                             </Right>
                             </ListItem>
 
@@ -112,7 +108,6 @@ class DisplayGroup extends Component {
                             
                         </Right>
                     </Header>
-                    <Content padder>
                     <ScrollView  contentContainerStyle={{flexGrow: 1}} keyboardShouldPersistTaps={"always"}>
                     <View style={globalStyle.container}>
                         <List>
@@ -123,7 +118,6 @@ class DisplayGroup extends Component {
                     </View>
                     </ScrollView>
                    
-                    </Content>
                 </Container>
             </Root>
         )

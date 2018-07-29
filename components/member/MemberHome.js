@@ -32,9 +32,9 @@ class MemberHome extends Component {
                         </Body>
                        
                     </Header>
-                            <Tabs tabBarPosition="top" tabBarUnderlineStyle={{borderBottomWidth:2,borderBottomColor:'#1eaec5'}} >
+                            <Tabs tabBarPosition="top" tabBarUnderlineStyle={{borderBottomWidth:2,borderBottomColor:'#16a085'}} >
                             <Tab  heading={<TabHeading style={{backgroundColor: 'white'}}>
-                                <Text style={{color: '#1eaec5',fontSize:16}}>Profile</Text>
+                                <Text style={{color: '#16a085',fontSize:16}}>Profile</Text>
                                 </TabHeading>}>
                                 <ScrollView showsVerticalScrollIndicator={false}>
                                     <InfoMember navigate={this.props.navigation} memberid={this.props.navigation.state.params.id} memberfirstname={this.props.navigation.state.params.firstname}/>
@@ -43,7 +43,7 @@ class MemberHome extends Component {
                                 
                             </Tab>
                             <Tab  heading={<TabHeading style={{backgroundColor: 'white'}}>
-                                <Text style={{color: '#1eaec5',fontSize:16}}>Locations</Text>
+                                <Text style={{color: '#16a085',fontSize:16}}>Locations</Text>
                                 </TabHeading>}>
                                 <ScrollView showsVerticalScrollIndicator={false}>
                                 <LocationPlaces memberid={this.props.navigation.state.params.id} navigate={this.props.navigation.navigate} />

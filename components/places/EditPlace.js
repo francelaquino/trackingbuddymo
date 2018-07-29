@@ -171,26 +171,25 @@ class EditPlace extends Component {
 
 
                                     </MapView>
-                                    <View style={{width:70,height:70,borderWidth:1,borderColor:'#1eaec5',borderRadius:35, backgroundColor: 'rgba(30, 174, 197, 0.5)', justifyContent: 'center',alignItems: 'center'}}>
+                                    <View style={{width:100,height:100,borderWidth:1,borderColor:'#1eaec5',borderRadius:50, backgroundColor: 'rgba(30, 174, 197, 0.5)', justifyContent: 'center',alignItems: 'center'}}>
                                     <View style={{width:10,height:10, borderRadius:5,backgroundColor: 'rgba(0, 113, 189, 0.5)'}}></View>
                                     </View>
                                     
                             </View>
                             <View  style={styles.footerContainer}>
                             
-                            <Item stackedLabel>
-                            <Label style={globalStyle.label} >Enter Place Name</Label>
-                            <Input style={globalStyle.textinput} value={this.state.placename}  autoCorrect={false} onChangeText={placename=>this.setState({placename})} name="placename"/>
+                            <Item   style={globalStyle.regularitem}>
+                            <Input style={globalStyle.textinput} value={this.state.placename} maxLength={50} placeholder="Place Name" autoCorrect={false} onChangeText={placename=>this.setState({placename})} name="placename"/>
                             </Item>
                             <Button disabled={!this.state.placename} style={this.state.placename ? globalStyle.secondaryButton : globalStyle.secondaryButtonDisabled}
                                         onPress={()=>this.onSubmit()}
-                                        bordered light full rounded >
+                                        bordered light full  >
                                         <Text style={{color:'white'}}>Update Place</Text>
                                     </Button>
 
                                 <Button 
                                     onPress={()=>this.confirmDelete()}
-                                    bordered light full rounded style={globalStyle.deleteButton}>
+                                    bordered light full  style={globalStyle.deleteButton}>
                                     <Text style={{color:'white'}}>Delete Place</Text>
                                 </Button>
                             

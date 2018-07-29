@@ -48,9 +48,9 @@ class GroupHome extends Component {
                         </Body>
                        
                     </Header>
-                            <Tabs tabBarPosition="top" tabBarUnderlineStyle={{borderBottomWidth:2,borderBottomColor:'#1eaec5'}} >
+                            <Tabs tabBarPosition="top" tabBarUnderlineStyle={{borderBottomWidth:2,borderBottomColor:'#16a085'}} >
                             <Tab  heading={<TabHeading style={{backgroundColor: 'white'}}>
-                                <Text style={{color: '#1eaec5',fontSize:16}}>Edit Group</Text>
+                                <Text style={{color: '#16a085',fontSize:16}}>Edit Group</Text>
                                 </TabHeading>}>
                                 <ScrollView showsVerticalScrollIndicator={false}>
                                     <EditGroup avatarsource={this.state.avatarsource} groupname={this.state.groupname} groupid={this.state.groupid}/>
@@ -59,7 +59,7 @@ class GroupHome extends Component {
                                 
                             </Tab>
                             <Tab  heading={<TabHeading style={{backgroundColor: 'white'}}>
-                                <Text style={{color: '#1eaec5',fontSize:16}}>Members</Text>
+                                <Text style={{color: '#16a085',fontSize:16}}>Members</Text>
                                 </TabHeading>}>
                                 <ScrollView showsVerticalScrollIndicator={false}>
                                     <AddMember  groupname={this.state.groupname} groupid={this.state.groupid}/>

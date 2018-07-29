@@ -29,6 +29,7 @@ import  { createStackNavigator }  from 'react-navigation';
 
 
 export const Stack = createStackNavigator({
+
     Login: {
         screen: Login,
         headerMode: 'none',
@@ -37,6 +38,18 @@ export const Stack = createStackNavigator({
         },
 
     },
+
+    Register: { 
+        screen: Register,
+        headerMode: 'none',
+        navigationOptions: {
+            header: null
+        } 
+    },
+    
+
+
+   
     Splash: {
         screen: Splash,
         headerMode: 'none',
@@ -209,14 +222,7 @@ export const Stack = createStackNavigator({
     },*/
 
    
-    Register: { 
-        screen: Register,
-        headerMode: 'none',
-        navigationOptions: {
-            header: null
-        } 
-    },
-    
+  
     
     SelectGroup: { 
         screen: SelectGroup,

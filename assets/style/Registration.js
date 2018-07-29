@@ -6,10 +6,10 @@ var React = require('react-native');
 var { StyleSheet} = React;
 module.exports = StyleSheet.create({
     containerWrapper: {
-        backgroundColor:'white',
+        backgroundColor:'#f5f8f9',
     },
     container: {
-        backgroundColor:'white',
+        backgroundColor:'#f5f8f9',
         flex: 1,
         padding:10,
         alignSelf: "center",
@@ -30,6 +30,15 @@ module.exports = StyleSheet.create({
     logo:{
         height:140,
     },
+    regularitem:{
+        borderLeftWidth: 1,
+        borderRightWidth: 1,
+        borderBottomWidth: 1,
+        borderTopWidth: 1,
+        height: 50,
+        backgroundColor:'white',
+        marginBottom:5,
+    },
     item: {
         borderColor:'transparent',
         backgroundColor:'transparent',
@@ -46,8 +55,10 @@ module.exports = StyleSheet.create({
     },
     textinput:{
         flex: 1,
-        paddingTop:0,
-        borderBottomColor:'white',
+        padding:5,
+        height: 50,
+        fontSize:15,
+        
         
     },
     countrycode:{
@@ -88,7 +99,7 @@ module.exports = StyleSheet.create({
         opacity:0,
     },
     avatarContainer:{
-        backgroundColor:'#2db1b6',
+        backgroundColor:'#16a085',
         alignItems: 'center',
         marginBottom:10,
         borderRadius: 40,

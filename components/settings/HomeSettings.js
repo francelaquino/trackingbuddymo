@@ -38,7 +38,9 @@ class HomeSettings extends Component {
                     <View style={globalStyle.container}>
                     
                         <List>
-                        <ListItem   avatar style={globalStyle.listItem}>
+                        <ListItem   avatar button style={globalStyle.listItem}  onPress={() => {
+                                        this.props.navigation.navigate("ChangePassword");
+                                    }}>
                         <Left >
                     
                             <MaterialCommunityIcons  style={{fontSize:30,color:'#1eaec5'}} name="textbox-password"/>
@@ -48,16 +50,13 @@ class HomeSettings extends Component {
                                 <Text style={globalStyle.listHeading}>Change Password</Text>
                             </Body>
                             <Right style={globalStyle.listRight} >
-                                <TouchableOpacity  style={globalStyle.listRightTouchable}  
-                                    onPress={() => {
-                                        this.props.navigation.navigate("ChangePassword");
-                                    }}>
                                 <SimpleLineIcons  style={globalStyle.listRightOptionIcon}   name='arrow-right' />
-                                </TouchableOpacity>
                             </Right>
                             </ListItem>
 
-                        <ListItem   avatar style={globalStyle.listItem}>
+                        <ListItem   avatar button style={globalStyle.listItem} onPress={() => {
+                                        this.props.navigation.navigate("GenerateInviteCode");
+                                    }}>
                         <Left >
                     
                             <MaterialCommunityIcons  style={{fontSize:30,color:'#1eaec5'}} name="table-row"/>
@@ -67,12 +66,7 @@ class HomeSettings extends Component {
                                 <Text style={globalStyle.listHeading}>Invitation Code</Text>
                             </Body>
                             <Right style={globalStyle.listRight} >
-                                <TouchableOpacity  style={globalStyle.listRightTouchable}  
-                                    onPress={() => {
-                                        this.props.navigation.navigate("GenerateInviteCode");
-                                    }}>
                                 <SimpleLineIcons  style={globalStyle.listRightOptionIcon}   name='arrow-right' />
-                                </TouchableOpacity>
                             </Right>
                             </ListItem>
 

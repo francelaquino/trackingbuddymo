@@ -52,7 +52,7 @@ class PlaceList extends Component {
                 keyExtractor={item => item.id}
                 data={data}
                 renderItem={({ item }) => (
-                    <ListItem icon key={item.id}  avatar style={globalStyle.listItem} >
+                    <ListItem icon key={item.id} button avatar style={globalStyle.listItem}  onPress={() => {this.props.navigation.navigate("PlaceView",{place:item})}}>
                     <Left >
                     
                     <Entypo  style={{fontSize:30,color:'#1eaec5'}} name="location"/>
@@ -63,10 +63,7 @@ class PlaceList extends Component {
                         </Body>
                     
                         <Right style={globalStyle.listRight}>
-                        <TouchableOpacity  style={globalStyle.listRightTouchable}  
-                            onPress={() => {this.props.navigation.navigate("PlaceView",{place:item})}}>
                             <SimpleLineIcons  style={globalStyle.listRightOptionIcon}   name='arrow-right' />
-                        </TouchableOpacity>
                         </Right>
                     </ListItem>
                 ) }
