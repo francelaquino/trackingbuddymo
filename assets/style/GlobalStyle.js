@@ -67,19 +67,22 @@ module.exports = StyleSheet.create({
         marginBottom:10,
         width:'100%',
         alignSelf: "center",
+        borderRadius:15,
     },
     secondaryButtonDisabled:{
-        backgroundColor:theme.primaryColorDisabled,
+        backgroundColor: theme.primaryButtonColor,
         marginBottom:10,
         marginTop:10,
         width:'100%',
         alignSelf: "center",
+        borderRadius: 15,
     },
     deleteButton:{
         backgroundColor:theme.deleteColor,
         marginBottom:10,
         width:'100%',
         alignSelf: "center",
+        borderRadius: 15,
     },
     textinput:{
         flex: 1,
@@ -87,9 +90,11 @@ module.exports = StyleSheet.create({
         height: 50,
         fontSize:15,
     },
-    textinputCenter:{
+    textinputCenter: {
         flex: 1,
-        fontSize:15,
+        padding: 5,
+        height: 50,
+        fontSize: 15,
         backgroundColor:'transparent',
         color:'green'
     },

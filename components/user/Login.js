@@ -66,39 +66,26 @@ class Login extends Component {
             return false;
         }
         this.setState({loading:true});
-        this.props.userLogin(this.state.email,this.state.password).then(async (res)=>{
-            setTimeout(() => {
-                 this.props.saveLocationOnline();
-
+        this.props.userLogin(this.state.email, this.state.password).then(async (res) => {
+            if (res == "") {
                 setTimeout(() => {
-                    this.props.displayHomeMember();
-                    if(res==""){
-                        
-                        this.props.navigation.navigate('Home');
-                        self.setState({
-                            loading:false,
-                            email:'',
-                            password:'',
-                          });
-                    }else{
-                        this.setState({loading:false,email:'',password:''})
-                        ToastAndroid.showWithGravityAndOffset("Invalid username or bad password", ToastAndroid.LONG, ToastAndroid.BOTTOM, 25, 50 );
-                    }
+                    this.props.saveLocationOnline();
+                    setTimeout(() => {
+                        this.props.displayHomeMember();
+                            this.props.navigation.navigate('Home');
+                            self.setState({
+                                loading: false,
+                                email: '',
+                                password: '',
+                            });
+                    }, 500);
                 }, 500);
-            }, 500);
-
-           
-
-        }).catch(function(err) {
-            self.setState({
-                loading:false,
-                email:'',
-                password:'',
-              });
-              ToastAndroid.showWithGravityAndOffset("Invalid username or bad password", ToastAndroid.LONG, ToastAndroid.BOTTOM, 25, 50 );
+            } else {
+                this.setState({ loading: false, email: '', password: '' })
+                ToastAndroid.showWithGravityAndOffset(res, ToastAndroid.LONG, ToastAndroid.BOTTOM, 25, 50);
+            }
         });
 
-        
 
       
     }

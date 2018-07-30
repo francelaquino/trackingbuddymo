@@ -120,30 +120,34 @@ class Register extends Component {
     if(this.state.password!=this.state.retypepassword){
       ToastAndroid.showWithGravityAndOffset("Password mismatch",ToastAndroid.LONG,ToastAndroid.BOTTOM, 25, 50);
       return false;
-	}
-	
+      }
 
+      firebase.database().ref(".info/connected").on("value", function (snap) {
+          if (snap.val() === true) {
+              this.setState({ loading: true })
+              if (this.state.avatarsource != "") {
+                  let avatarlink = this.state.email + '.jpg';
 
-        this.setState({loading:true})
-        if(this.state.avatarsource!=""){
-          let avatarlink=this.state.email+'.jpg';
+                  const ref = firebase.storage().ref("/member_photos/" + avatarlink);
+                  const unsubscribe = ref.putFile(this.state.avatarsource.uri.replace("file:/", "")).on(
+                      firebase.storage.TaskEvent.STATE_CHANGED,
+                      (snapshot) => {
 
-          const ref = firebase.storage().ref("/member_photos/"+avatarlink);
-          const unsubscribe = ref.putFile(this.state.avatarsource.uri.replace("file:/", "")).on(
-          firebase.storage.TaskEvent.STATE_CHANGED,
-          (snapshot) => {
-              
-          },
-          (error) => {
-          unsubscribe();
-          },
-          (res) => {
-            this.setState({avatar:res.downloadURL })
-            this.sendSubmit();
-          });
-        }else{
-          this.sendSubmit();
-        }
+                      },
+                      (error) => {
+                          unsubscribe();
+                      },
+                      (res) => {
+                          this.setState({ avatar: res.downloadURL })
+                          this.sendSubmit();
+                      });
+              } else {
+                  this.sendSubmit();
+              }
+          } else {
+              ToastAndroid.showWithGravityAndOffset("Network connection error", ToastAndroid.LONG, ToastAndroid.BOTTOM, 25, 50);
+          }
+      })
   }
   async  generateCode(){
     let code="";

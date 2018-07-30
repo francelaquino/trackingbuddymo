@@ -10,7 +10,7 @@ import { NavigationActions } from 'react-navigation'
 import Loading  from '../shared/Loading';
 import ImagePicker from 'react-native-image-picker';
 import Loader from '../shared/Loader';
-
+import firebase from 'react-native-firebase';
 var globalStyle = require('../../assets/style/GlobalStyle');
 var registrationStyle = require('../../assets/style/Registration');
 
@@ -35,19 +35,22 @@ class UserProfile extends Component {
       }
 
       
-    async componentWillMount() {
-        this.props.getProfile().then(()=>{
-            this.setState({
-                firstname:this.props.profile.firstname,
-                email:this.props.profile.email,
-                mobileno:this.props.profile.mobileno,
-                middlename:this.props.profile.middlename,
-                lastname:this.props.profile.lastname,
-                avatarsource:{uri :this.props.profile.avatar},
-            })
-        }).catch(function(err) {
+    componentWillMount() {
+        this.props.getProfile().then((res) => {
+            if (res == "") {
+                this.setState({
+                    firstname: this.props.profile.firstname,
+                    email: this.props.profile.email,
+                    mobileno: this.props.profile.mobileno,
+                    middlename: this.props.profile.middlename,
+                    lastname: this.props.profile.lastname,
+                    avatarsource: { uri: this.props.profile.avatar },
+                })
+            } else {
+                ToastAndroid.showWithGravityAndOffset(res, ToastAndroid.LONG, ToastAndroid.BOTTOM, 25, 50);
+            }
         });
-
+      
 
     }
 
@@ -90,13 +93,15 @@ class UserProfile extends Component {
 
         this.props.updateProfile(info).then(res=>{
             this.setState({loading:false})
-            if(res!==""){
+            if (res == "") {
                 this.props.displayHomeMember();
-                ToastAndroid.showWithGravityAndOffset(res,ToastAndroid.LONG,ToastAndroid.BOTTOM, 25, 50);
+                ToastAndroid.showWithGravityAndOffset("Profile successfully updated", ToastAndroid.LONG, ToastAndroid.BOTTOM, 25, 50);
+            } else {
+                ToastAndroid.showWithGravityAndOffset(res, ToastAndroid.LONG, ToastAndroid.BOTTOM, 25, 50);
             }
-            
         }).catch(function(err) {
-            this.setState({loading:false})
+            this.setState({ loading: false })
+            ToastAndroid.showWithGravityAndOffset("Something went wrong...", ToastAndroid.LONG, ToastAndroid.BOTTOM, 25, 50);
         });
     }
 

@@ -1,5 +1,6 @@
 import { DISPLAY_MEMBER, INVITE_MEMBER, GET_INVITATIONCODE, GET_COUNTRIES, GENERATE_INVITATIONCODE, GET_MEMBER, DELETE_MEMBER, DISPLAY_HOME_MEMBER, DISPLAY_GROUP_MEMBER,CLEAR_HOME_MEMBERS } from './types';
 import firebase from 'react-native-firebase';
+import {  ToastAndroid } from 'react-native';
 import Moment from 'moment';
 
 
@@ -208,48 +209,57 @@ export const displayGroupMember=(groupid)=> dispatch=> {
 
 
 
-export const displayMember=()=> async dispatch=> {
-   try{
-        let members=[]
-        let count=0;
-        let cnt=0;
-        await firebase.database().ref().child('users/'+userdetails.userid+"/members").once('value',async function(snapshot){
-        
-            if(snapshot.val()===null){
-                dispatch({ 
-                    type: DISPLAY_MEMBER,
-                    payload: members
-                });
-            }else{
-                count=snapshot.numChildren();
-                await snapshot.forEach(async childSnapshot => {
-                        let userid=childSnapshot.key;
-                        await firebase.database().ref().child('users/'+userid).once("value",async function(dataSnapshot){
-                            if(dataSnapshot.val() !== null){
-                                members.push({
-                                    id:dataSnapshot.key,
-                                    firstname:dataSnapshot.val().firstname,
-                                    avatar: dataSnapshot.val().avatar,
-                                });
-                            }
-                        })
-                        cnt++;
-                            if(cnt>=count){
-                                dispatch({ 
+export const displayMember = () => async dispatch => {
+    firebase.database().ref(".info/connected").on("value", function (snap) {
+        if (snap.val() === true) {
+            try {
+                let members = []
+                let count = 0;
+                let cnt = 0;
+                 firebase.database().ref().child('users/' + userdetails.userid + "/members").once('value', async function (snapshot) {
+                    if (snapshot.val() === null) {
+                        dispatch({
+                            type: DISPLAY_MEMBER,
+                            payload: members
+                        });
+                    } else {
+                        count = snapshot.numChildren();
+                        await snapshot.forEach(async childSnapshot => {
+                            let userid = childSnapshot.key;
+                            await firebase.database().ref().child('users/' + userid).once("value", async function (dataSnapshot) {
+                                if (dataSnapshot.val() !== null) {
+                                    members.push({
+                                        id: dataSnapshot.key,
+                                        firstname: dataSnapshot.val().firstname,
+                                        avatar: dataSnapshot.val().avatar,
+                                    });
+                                }
+                            })
+                            cnt++;
+                            if (cnt >= count) {
+                                dispatch({
                                     type: DISPLAY_MEMBER,
                                     payload: members
                                 });
                             }
-                    })
-                }
-            
-        })
-    }catch (e) {
-        dispatch({ 
-            type: DISPLAY_MEMBER,
-            payload: members
-        });
-    }
+                        })
+                    }
+
+                })
+            } catch (e) {
+                dispatch({
+                    type: DISPLAY_MEMBER,
+                    payload: members
+                });
+            }
+        } else {
+            dispatch({
+                type: DISPLAY_MEMBER,
+                payload: []
+            });
+            ToastAndroid.showWithGravityAndOffset("Network connection error", ToastAndroid.LONG, ToastAndroid.BOTTOM, 25, 50);
+        }
+    })
    
     
 };

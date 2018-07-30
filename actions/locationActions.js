@@ -12,42 +12,48 @@ export const displayLocations=(userid)=> dispatch=> {
     let count=0;
     let cnt=0;
 
-        return new Promise((resolve) => {
-            firebase.database().ref().child('locations/'+userid).orderByChild("dateadded").limitToFirst(100).once("value",function(snapshot){
-                if(snapshot.val()===null){
-                    resolve();
-                }else{
-                    snapshot.forEach(childSnapshot => {
-                        
-                        let dateadded= Moment(new Date(parseInt(childSnapshot.val().dateadded))).format("DD-MMM-YYYY ddd hh:mm A");
-                        locations.push({
-                            id:childSnapshot.key,
-                            address:childSnapshot.val().address,
-                            dateadded: dateadded,
-                            coordinates:{
-                                longitude: Number(childSnapshot.val().lon),
-                                latitude: Number(childSnapshot.val().lat)
-                            }
-                            
-                        });
-                        cnt++;
-                        if(cnt>=count){
-                            resolve();
-                        }
+    return new Promise((resolve) => {
+        firebase.database().ref(".info/connected").on("value", function (snap) {
+            if (snap.val() === true) {
+                firebase.database().ref().child('locations/' + userid).orderByChild("dateadded").limitToFirst(100).once("value", function (snapshot) {
+                    if (snapshot.val() === null) {
+                        resolve("");
+                    } else {
+                        snapshot.forEach(childSnapshot => {
 
-                    })
-                    
-                }
-            })
-            }).then(function(snapshot){
-                    dispatch({ 
-                        type: DISPLAY_LOCATION,
-                        payload: locations.reverse(),
-                    });
-                
-            })
-            
-           
+                            let dateadded = Moment(new Date(parseInt(childSnapshot.val().dateadded))).format("DD-MMM-YYYY ddd hh:mm A");
+                            locations.push({
+                                id: childSnapshot.key,
+                                address: childSnapshot.val().address,
+                                dateadded: dateadded,
+                                coordinates: {
+                                    longitude: Number(childSnapshot.val().lon),
+                                    latitude: Number(childSnapshot.val().lat)
+                                }
+
+                            });
+                            cnt++;
+                            if (cnt >= count) {
+                                dispatch({
+                                    type: DISPLAY_LOCATION,
+                                    payload: locations.reverse(),
+                                });
+                                resolve("");
+                            }
+
+                        })
+
+                    }
+                })
+            } else {
+                dispatch({
+                    type: DISPLAY_LOCATION,
+                    payload: [],
+                });
+                resolve("Network connection error");
+            }
+        })
+    })
     
 };
 

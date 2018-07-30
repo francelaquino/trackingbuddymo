@@ -29,6 +29,13 @@ import  { createStackNavigator }  from 'react-navigation';
 
 
 export const Stack = createStackNavigator({
+    Home: {
+        screen: Home,
+        headerMode: 'none',
+        navigationOptions: {
+            header: null
+        }
+    },
 
     Login: {
         screen: Login,
@@ -61,13 +68,7 @@ export const Stack = createStackNavigator({
    
    
    
-    Home: { 
-        screen: Home,
-        headerMode: 'none',
-        navigationOptions: {
-            header: null
-        }
-    },
+   
    
    
 

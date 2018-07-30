@@ -37,7 +37,8 @@ module.exports = StyleSheet.create({
         borderTopWidth: 1,
         height: 50,
         backgroundColor:'white',
-        marginBottom:5,
+        marginBottom: 5,
+        borderRadius: 12,
     },
     item: {
         borderColor:'transparent',
@@ -57,7 +58,8 @@ module.exports = StyleSheet.create({
         flex: 1,
         padding:5,
         height: 50,
-        fontSize:15,
+        fontSize: 15,
+       
         
         
     },
@@ -68,7 +70,8 @@ module.exports = StyleSheet.create({
         alignSelf: "center",
     },
     registrationbutton:{
-        backgroundColor:theme.primaryButtonColor,
+        backgroundColor: theme.primaryButtonColor,
+        borderRadius:15,
     },
     haveaccount:{
         fontSize:16,
@@ -79,7 +82,8 @@ module.exports = StyleSheet.create({
     loginButton:{
         color:theme.primaryButtonColor,
         fontSize:16,
-        marginTop: 20
+        marginTop: 20,
+        borderRadius: 12,
     },
     error:{
         borderColor:'red'

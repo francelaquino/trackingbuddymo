@@ -83,13 +83,11 @@ class NewInvite extends Component {
                     <Content padder>
                     <ScrollView  contentContainerStyle={{flexGrow: 1}} keyboardShouldPersistTaps={"always"}>
                         <View style={globalStyle.container}>
-                            <Item  stackedLabel style={globalStyle.item}>
-                                <View style={globalStyle.inputicon}>  
+                            <Item   style={globalStyle.regularitem}>
                                 <TextInput style={globalStyle.textinputCenter} autoCapitalize="characters"
                                 name="invitationcode" autoCorrect={false}
                                 value={this.state.invitationcode}  maxLength = {20}
                                 onChangeText={invitationcode=>this.setState({invitationcode})}/>
-                                </View>
                             </Item>
                             
                             

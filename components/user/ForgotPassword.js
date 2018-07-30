@@ -13,7 +13,7 @@ class ForgotPassword extends Component {
         super(props)
         this.state = {
             loading:false,
-            email: 'francel_aquino@yahoo.com',
+            email: '',
             
         };
        
@@ -26,23 +26,29 @@ class ForgotPassword extends Component {
         
         let self=this;
         if(this.state.email=="" ){
-            ToastAndroid.showWithGravityAndOffset("Please enter email address",ToastAndroid.LONG,ToastAndroid.BOTTOM,25,50);
+            ToastAndroid.showWithGravityAndOffset("Enter email address",ToastAndroid.LONG,ToastAndroid.BOTTOM,25,50);
             return false;
         }
+          firebase.database().ref(".info/connected").on("value", function (snap) {
+              if (snap.val() === true) {
+                  this.setState({ loading: true })
+                  this.setState({ loading: true });
+                  firebase.auth().sendPasswordResetEmail(this.state.email).then((res) => {
+                      self.setState({ loading: false, email: '' });
+                      ToastAndroid.showWithGravityAndOffset("A message has been sent to your email with instructions to reset your password", ToastAndroid.LONG, ToastAndroid.BOTTOM, 25, 50);
+                  }).catch(function (err) {
+                      self.setState({ loading: false });
+                      if (err.code === 'auth/user-not-found') {
+                          ToastAndroid.showWithGravityAndOffset("Unrecognized email address", ToastAndroid.LONG, ToastAndroid.BOTTOM, 25, 50);
+                      } else {
 
-        this.setState({loading:true});
-        firebase.auth().sendPasswordResetEmail(this.state.email).then((res)=>{
-            self.setState({loading:false,email:''});
-            ToastAndroid.showWithGravityAndOffset("A message has been sent to your email with instructions to reset your password", ToastAndroid.LONG, ToastAndroid.BOTTOM, 25, 50 );
-        }).catch(function(err) {
-            self.setState({loading:false});
-            if(err.code==='auth/user-not-found'){
-                ToastAndroid.showWithGravityAndOffset("Unrecognized email address",ToastAndroid.LONG,ToastAndroid.BOTTOM, 25, 50);
-              }else{
-                 
+                      }
+
+                  });
+              } else {
+                  ToastAndroid.showWithGravityAndOffset("Network connection error", ToastAndroid.LONG, ToastAndroid.BOTTOM, 25, 50);
               }
-            
-        });
+          })
 
         
 
@@ -65,14 +71,13 @@ class ForgotPassword extends Component {
                         <Text style={{fontSize:22,color:'#303131'}}>Tracking Buddy</Text>
                         
                         </View>
-                        <Item  stackedLabel style={registrationStyle.item}>
-                            <Label style={registrationStyle.stackedlabel}>Email</Label>
-                            <View style={registrationStyle.inputicon}>  
+                        <Item   style={registrationStyle.regularitem}>
                             <TextInput style={registrationStyle.textinput} 
-                            name="email" autoCorrect={false}
+                                name="email" autoCorrect={false}
+                                underlineColorAndroid='transparent'
+                                placeholder="Email address"
                             value={this.state.email}  maxLength = {50}
                             onChangeText={email=>this.setState({email})}/>
-                            </View>
                         </Item>
                        
 

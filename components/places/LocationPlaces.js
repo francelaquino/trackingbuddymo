@@ -29,8 +29,13 @@ class LocationPlaces extends Component<Props> {
         this.initialize();
     }
         
-    initialize(){
-        this.props.displayLocations(this.props.memberid);
+    initialize() {
+        this.props.displayLocations(this.props.memberid).then(res => {
+            if (res !== "") {
+                ToastAndroid.showWithGravityAndOffset(res, ToastAndroid.LONG, ToastAndroid.BOTTOM, 25, 50);
+            }
+        })
+
     }
 
 
