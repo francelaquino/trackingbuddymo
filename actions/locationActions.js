@@ -2,7 +2,7 @@ import { DISPLAY_LOCATION, SAVE_LOCATION_OFFLINE, SAVE_LOCATION_ONLINE, DISPLAY_
 import firebase from 'react-native-firebase';
 import Moment from 'moment';
 import Geocoder from 'react-native-geocoder';
-import { ToastAndroid } from 'react-native';
+import { ToastAndroid,AsyncStorage } from 'react-native';
 
 
 var userdetails = require('../components/shared/userDetails');
@@ -58,18 +58,55 @@ export const displayLocations=(userid)=> dispatch=> {
     })
     
 };
+const rad=(x)=> {
+    return x * Math.PI / 180;
+};
+const getDistance=(lat1,long1,lat2,long2) => {
+    let R = 6378137;
+    let dLat = rad(lat2 - lat1);
+    let dLong = rad(long2 - long1);
+    let a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(rad(lat1)) * Math.cos(rad(lat2)) *
+      Math.sin(dLong / 2) * Math.sin(dLong / 2);
+      let c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+      let d = R * c;
+    return d; 
+  };
 
+export const saveLocationOffline=()=> dispatch=> {
+    navigator.geolocation.getCurrentPosition(
+        async (position) => {
+            const coords = { 
+                latitude: position.coords.latitude,
+                longitude: position.coords.longitude,
+                dateadded:Date.now()
+            }
+            const offlineLocation = await AsyncStorage.getItem('offlineLocation');
+            let location = JSON.parse(offlineLocation);
+            if( !location ){
+                location = [];
+            }
 
-export const saveLocationOffline=(coordinate)=> dispatch=> {
-        let coord = {
-            lat: coordinate.lat,
-            lng:  coordinate.lng,
-        };
+if(location.length>1){
+    var loc=location[location.length-1];
+            let distance=getDistance(loc.latitude,loc.longitude,coords.latitude,coords.longitude)
+            if(distance>100){
+                location.push(coords)
+                await AsyncStorage.setItem("offlineLocation", JSON.stringify(location) )
+            }
+}else{
+    location.push(coords)
+            await AsyncStorage.setItem("offlineLocation", JSON.stringify(location) )
+}
+            
 
-          dispatch({ 
-            type: SAVE_LOCATION_OFFLINE,
-            payload: coord,
-        });
+            
+                
+        },
+        (err) => {
+        },
+         { enableHighAccuracy: false, timeout: 10000, maximumAge: 3000 }
+    );
     
 };
 
@@ -108,13 +145,41 @@ export const saveLocationOnline=()=> async dispatch=> {
     }
 };
 
+export const pushLocationOnline=()=> async dispatch=> {
+
+    const offlineLocation = await AsyncStorage.getItem('offlineLocation');
+    let location = JSON.parse(offlineLocation);
+    if( !location ){
+        location = [];
+    }
+    console.log(location)
+    if(location.length>0){
+        for(let x=0;x<location.length;x++){
+            var loc=location[x];
+            await fetch("https://us-central1-trackingbuddy-3bebd.cloudfunctions.net/api/appendLocation?lat="+ loc.latitude +"&lon="+ loc.longitude +"&userid="+userdetails.userid+"&dateadded="+loc.dateadded+"&firstname="+userdetails.firstname)
+                .then((response) => response)
+                .then((response) => {
+                })
+                .catch((error) => {
+                });
+
+                if(x>=location.length){
+                    location = [];
+                    await AsyncStorage.setItem("offlineLocation", JSON.stringify(location) )
+                }
+        }
+
+    }
+
+    
+};
+
 export const saveLocationOnLogin=()=> async dispatch=> {
     return new Promise((resolve) => {
        
         navigator.geolocation.getCurrentPosition(
             (position) => {
 
-                console.log(userdetails);
                 resolve(position)
             },
             (err) => {

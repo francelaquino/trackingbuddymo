@@ -20,8 +20,8 @@ class Login extends Component {
         this.state = {
             showSplash:false,
             loading:false,
-            email: '',
-            password:'',
+            email: 'francel_aquino@yahoo.com',
+            password:'111111',
             
         };
        

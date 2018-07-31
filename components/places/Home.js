@@ -16,7 +16,7 @@ import LeftDrawer from '../shared/LeftDrawer'
 import { connect } from 'react-redux';
 import { displayHomeMember  } from '../../actions/memberActions' ;
 import { setConnection  } from '../../actions/connectionActions' ;
-import { saveLocationOffline, saveLocationOnline  } from '../../actions/locationActions' ;
+import { saveLocationOffline, saveLocationOnline,pushLocationOnline  } from '../../actions/locationActions' ;
 import firebase from 'react-native-firebase';
 import type { Notification } from 'react-native-firebase';
 var PushNotification = require('react-native-push-notification');
@@ -36,10 +36,19 @@ const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 
 BackgroundJob.cancelAll();
 let trackLocation;
-const trackPosition = {
+    const trackPosition = {
     jobKey: "trackPositionJob",
-    job: () =>trackLocation(),
-};
+    job: () =>{
+        let self=this;
+        try{
+            trackLocation();
+        } catch (e) {
+            self.props.saveLocationOffline();
+           
+        }
+    },
+    };
+
 const updateToken={
     jobKey: "refreshTokenJob",
     job: () =>refreshToken(),
@@ -107,7 +116,7 @@ class HomePlaces extends Component {
 
 
     componentWillUnmount() {
-        BackgroundJob.cancelAll();
+       // BackgroundJob.cancelAll();
     }
     async componentDidMount() {
 
@@ -141,10 +150,12 @@ class HomePlaces extends Component {
         trackLocation = function () {
             NetInfo.isConnected.fetch().done((isConnected) => {
                 if (isConnected) {
-                    self.props.saveLocationOnline();
+                    self.props.pushLocationOnline();
+                    //self.props.saveLocationOnline();
+                    //self.props.saveLocationOffline();
 
                 } else {
-                    //self.props.saveLocationOffline(coords);
+                    self.props.saveLocationOffline();
                 }
             });
         }
@@ -471,6 +482,6 @@ const mapStateToProps = state => ({
   
   
   
-HomePlaces=connect(mapStateToProps,{displayHomeMember,setConnection,saveLocationOffline,saveLocationOnline})(HomePlaces);
+HomePlaces=connect(mapStateToProps,{displayHomeMember,setConnection,saveLocationOffline,saveLocationOnline,pushLocationOnline})(HomePlaces);
   
 export default HomePlaces;
