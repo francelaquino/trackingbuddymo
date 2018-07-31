@@ -37,18 +37,15 @@ class NewInvite extends Component {
         }
         this.setState({loading:true})
         this.props.sendInvite(this.state.invitationcode).then(async res=>{
-        	if(res==true){
+        	if(res==""){
                 ToastAndroid.showWithGravityAndOffset("Member successfully added",ToastAndroid.LONG,ToastAndroid.BOTTOM, 25, 50);
                 await this.props.displayMember();
                 await this.props.displayHomeMember();
                 this.setState({invitationcode:'',loading:false})
             }else{
-                ToastAndroid.showWithGravityAndOffset("Invalid invitation code",ToastAndroid.LONG,ToastAndroid.BOTTOM, 25, 50);
+                ToastAndroid.showWithGravityAndOffset(res,ToastAndroid.LONG,ToastAndroid.BOTTOM, 25, 50);
                 this.setState({invitationcode:'',loading:false})
             }
-        }).catch(function(err) {
-            ToastAndroid.showWithGravityAndOffset("Invalid invitation code",ToastAndroid.LONG,ToastAndroid.BOTTOM, 25, 50);
-            this.setState({invitationcode:'',loading:false})
         });
     }
 
@@ -85,7 +82,8 @@ class NewInvite extends Component {
                         <View style={globalStyle.container}>
                             <Item   style={globalStyle.regularitem}>
                                 <TextInput style={globalStyle.textinputCenter} autoCapitalize="characters"
-                                name="invitationcode" autoCorrect={false}
+                                        name="invitationcode" autoCorrect={false}
+                                        underlineColorAndroid='transparent'
                                 value={this.state.invitationcode}  maxLength = {20}
                                 onChangeText={invitationcode=>this.setState({invitationcode})}/>
                             </Item>

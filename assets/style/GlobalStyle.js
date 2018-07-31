@@ -41,14 +41,15 @@ module.exports = StyleSheet.create({
         flexDirection:'column',
         width:'100%',
     },
-    regularitem:{
+    regularitem: {
         borderLeftWidth: 1,
         borderRightWidth: 1,
         borderBottomWidth: 1,
+        borderRadius: 15,
         borderTopWidth: 1,
         height: 50,
-        backgroundColor:'white',
-        marginBottom:5,
+        backgroundColor: 'white',
+        marginBottom: 5,
     },
     item: {
         borderColor:'transparent',
@@ -65,7 +66,7 @@ module.exports = StyleSheet.create({
         backgroundColor:theme.primaryButtonColor,
         marginTop:10,
         marginBottom:10,
-        width:'100%',
+        width: '100%',
         alignSelf: "center",
         borderRadius:15,
     },
@@ -80,7 +81,7 @@ module.exports = StyleSheet.create({
     deleteButton:{
         backgroundColor:theme.deleteColor,
         marginBottom:10,
-        width:'100%',
+        width: '100%',
         alignSelf: "center",
         borderRadius: 15,
     },
@@ -95,8 +96,7 @@ module.exports = StyleSheet.create({
         padding: 5,
         height: 50,
         fontSize: 15,
-        backgroundColor:'transparent',
-        color:'green'
+        textAlign:'center',
     },
     primaryBKColor:{
         backgroundColor:theme.primaryColor,

@@ -40,119 +40,120 @@ class LeftDrawer extends Component<Props> {
     this.props.navigation.navigate('HomeSettings');
     this.props.closeDrawer();
   }
-  displayLogout(){
-    //firebase.auth().signOut();
-    userdetails.userid="";
-    userdetails.email="";
-    userdetails.firstname="";
-    userdetails.lastname="";
-    userdetails.group="";
-    userdetails.avatar="";
-      userdetails.userid = "";
-      AsyncStorage.setItem("userid", "");
-      AsyncStorage.setItem("email", "");
-      AsyncStorage.setItem("firstname", "");
-      AsyncStorage.setItem("lastname", "");
-    this.props.closeDrawer();
-    
-    setTimeout(() => {
-        this.props.navigation.navigate('Login');
-        this.props.clearHomeMembers();
-    }, 1000);
-    
-  }
+    displayLogout() {
+        //firebase.auth().signOut();
+        userdetails.userid = "";
+        userdetails.email = "";
+        userdetails.firstname = "";
+        userdetails.lastname = "";
+        userdetails.group = "";
+        userdetails.avatar = "";
+        userdetails.userid = "";
+        AsyncStorage.setItem("userid", "");
+        AsyncStorage.setItem("email", "");
+        AsyncStorage.setItem("firstname", "");
+        AsyncStorage.setItem("lastname", "");
+        this.props.closeDrawer();
+
+        setTimeout(() => {
+            this.props.navigation.navigate('Login');
+            this.props.clearHomeMembers();
+        }, 1000);
+
+    }
   render() {
     const navigation = this.props.navigation;    
     return (
                 <Container > 
-                    <Content style={{backgroundColor:'rgba(50, 50, 50, 0.9)',height:'100%'}}>
-                        <View style={{height:55,borderBottomWidth:1,borderBottomColor:'#b7b8b8',alignItems:'center',flex:1}} >
-                        <Text style={{width:'100%',fontSize:17,color:'white', textAlign:'center',marginTop:15}}>TRACKING BUDDY</Text>
+            <Content style={{ backgroundColor: '#1abc9c', height: '100%' }}>
+                <View style={{ height: 155, borderBottomWidth: 1, borderBottomColor: 'white', alignItems: 'center', flex: 1, marginBottom:20 }} >
+                    <Image style={{ height: 100,marginTop:20 }} resizeMode='contain' source={require('../../images/logo_splash.png')} />
+                        <Text style={{width:'100%',fontSize:17,color:'white', textAlign:'center',marginTop:5}}>TRACKING BUDDY</Text>
                         </View>
                     
                         <List>
                         
-                            <ListItem icon style={{marginBottom:5}}>
+                    <ListItem icon style={{ marginBottom: 5,padding:15}}>
                             <Left>
-                                <SimpleLineIcons style={{fontSize:30,width:30,color:'#c8c8c8'}} name="home" />
+                            <SimpleLineIcons style={{ fontSize: 30, width: 30, color:'white'}} name="home" />
                             </Left>
                             <Body style={{width:'100%',borderBottomWidth:0}} >
                                 
                                 <TouchableOpacity  onPress={() =>this.displayHome()}>
-                                <Text style={{fontSize:16,color:'white'}}>HOME</Text>
+                                <Text style={{fontSize:19,color:'white',marginLeft:10}}>HOME</Text>
                                 </TouchableOpacity>
                             </Body>
                             </ListItem>
-                            <ListItem icon style={{marginBottom:5}}>
+                           <ListItem icon style={{ marginBottom: 5,padding:15}}>
                             <Left>
-                                <SimpleLineIcons style={{fontSize:30,width:30,color:'#c8c8c8'}} name="user" />
+                                <SimpleLineIcons style={{fontSize:30,width:30,color:'white'}} name="user" />
                             </Left>
                             <Body style={{width:'100%',borderBottomWidth:0}} >
                             <TouchableOpacity  onPress={() =>this.displayProfile()}>
-                                <Text style={{fontSize:16,color:'white'}}>PROFILE</Text>
+                                <Text style={{ fontSize: 19, color: 'white', marginLeft: 10}}>PROFILE</Text>
                                 </TouchableOpacity>
                             </Body>
                             </ListItem>
                            
-                            <ListItem icon style={{marginBottom:5}}>
+                           <ListItem icon style={{ marginBottom: 5,padding:15}}>
                             <Left>
-                                <SimpleLineIcons style={{fontSize:30,width:30,color:'#c8c8c8'}} name="people" />
+                                <SimpleLineIcons style={{fontSize:30,width:30,color:'white'}} name="people" />
                             </Left>
                             <Body style={{width:'100%',borderBottomWidth:0}} >
                                 <TouchableOpacity  onPress={() =>this.displayMember()}>
-                                <Text style={{fontSize:16,color:'white'}}>MEMBER</Text>
+                                <Text style={{ fontSize: 19, color: 'white', marginLeft: 10}}>MEMBER</Text>
                                 </TouchableOpacity>
                             </Body>
                             </ListItem>
-                            <ListItem icon style={{marginBottom:5}}>
+                           <ListItem icon style={{ marginBottom: 5,padding:15}}>
                             <Left>
-                                <SimpleLineIcons style={{fontSize:30,width:30,color:'#c8c8c8'}} name="organization" />
+                                <SimpleLineIcons style={{fontSize:30,width:30,color:'white'}} name="organization" />
                             </Left>
                             <Body style={{width:'100%',borderBottomWidth:0}} >
                             <TouchableOpacity  onPress={() =>this.displayGroup()}>
-                                <Text style={{fontSize:16,color:'white'}}>GROUP</Text>
+                                <Text style={{ fontSize: 19, color: 'white', marginLeft: 10}}>GROUP</Text>
                                 </TouchableOpacity>
                             </Body>
                             </ListItem>
-                            <ListItem icon style={{borderBottomWidth:1,borderBottomColor:'rgba(200, 200, 200, 0.5)'}}>
+                    <ListItem icon style={{ marginBottom: 5, padding: 15 }}>
                             <Left>
-                            <SimpleLineIcons  style={{fontSize:30,width:30,color:'#c8c8c8'}} name="location-pin"/>
+                            <SimpleLineIcons  style={{fontSize:30,width:30,color:'white'}} name="location-pin"/>
                             </Left>
                             <Body style={{width:'100%',borderBottomWidth:0}} >
                             <TouchableOpacity  onPress={() =>this.displayPlaces()}>
-                                <Text style={{fontSize:16,color:'white'}}>PLACES</Text>
+                                <Text style={{ fontSize: 19, color: 'white', marginLeft: 10}}>PLACES</Text>
                                 </TouchableOpacity>
                             </Body>
                             </ListItem>
                             
-                            <ListItem icon style={{borderBottomWidth:1,borderBottomColor:'rgba(200, 200, 200, 0.5)'}}>
+                    <ListItem icon style={{ marginBottom: 5, padding: 15 }}>
                             <Left>
-                                <SimpleLineIcons style={{fontSize:30,width:30,color:'#c8c8c8'}} name="settings" />
+                                <SimpleLineIcons style={{fontSize:30,width:30,color:'white'}} name="settings" />
                             </Left>
                             <Body style={{width:'100%',borderBottomWidth:0}} >
                                 <TouchableOpacity  onPress={() =>this.displaySettings()}>
-                                    <Text style={{fontSize:16,color:'white'}}>SETTINGS</Text>
+                                <Text style={{ fontSize: 19, color: 'white', marginLeft: 10}}>SETTINGS</Text>
                                 </TouchableOpacity>
                             </Body>
                             </ListItem>
-                            <ListItem icon style={{borderBottomWidth:1,borderBottomColor:'rgba(200, 200, 200, 0.5)'}}>
+                    <ListItem icon style={{ marginBottom: 5, padding: 15 }}>
                             <Left>
-                                <SimpleLineIcons style={{fontSize:30,width:30,color:'#c8c8c8'}} name="info" />
+                                <SimpleLineIcons style={{fontSize:30,width:30,color:'white'}} name="info" />
                             </Left>
                             <Body style={{width:'100%',borderBottomWidth:0}} >
                                 
                                 <TouchableOpacity  onPress={() =>this.displayHome()}>
-                                <Text style={{fontSize:16,color:'white'}}>ABOUT</Text>
+                                <Text style={{ fontSize: 19, color: 'white', marginLeft: 10}}>ABOUT</Text>
                                 </TouchableOpacity>
                             </Body>
                             </ListItem>
-                            <ListItem icon style={{marginBottom:5}}>
+                           <ListItem icon style={{ marginBottom: 5,padding:15}}>
                             <Left>
-                                <SimpleLineIcons style={{fontSize:30,width:25,color:'#c8c8c8'}} name="logout" />
+                                <SimpleLineIcons style={{fontSize:30,width:25,color:'white'}} name="logout" />
                             </Left>
                             <Body style={{width:'100%',borderBottomWidth:0}} >
                             <TouchableOpacity  onPress={() =>this.displayLogout()}>
-                                    <Text style={{fontSize:16,color:'white'}}>LOGOUT</Text>
+                                <Text style={{ fontSize: 19, color: 'white', marginLeft: 10}}>LOGOUT</Text>
                                 </TouchableOpacity>
                             </Body>
                             </ListItem>

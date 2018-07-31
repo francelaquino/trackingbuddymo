@@ -18,10 +18,10 @@ class Login extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            showSplash:true,
+            showSplash:false,
             loading:false,
-            email: 'francel_aquino@yahoo.com',
-            password:'111111',
+            email: '',
+            password:'',
             
         };
        
@@ -35,8 +35,7 @@ class Login extends Component {
         let email = await AsyncStorage.getItem("email");
         let firstname = await AsyncStorage.getItem("firstname");
         let lastname = await AsyncStorage.getItem("lastname");
-
-        setTimeout(() => {
+        setTimeout(async () => {
             if (userid === "" || userid === null) {
                 setTimeout(() => {
                     this.setState({showSplash:false})
@@ -46,7 +45,7 @@ class Login extends Component {
                 userdetails.email = email;
                 userdetails.firstname = firstname;
                 userdetails.lastname = lastname;
-                this.props.saveLocationOnline();
+                await this.props.saveLocationOnline();
                 setTimeout(() => {
                     this.props.displayHomeMember();
                     this.props.navigation.navigate('Home');
@@ -58,26 +57,33 @@ class Login extends Component {
         }, 1000);
     }
 
-    onLogin(){
-        
-        let self=this;
-        if(this.state.email=="" || this.state.password==""){
-            ToastAndroid.showWithGravityAndOffset("Invalid username or wrong password",ToastAndroid.LONG,ToastAndroid.BOTTOM,25,50);
+    onLogin() {
+
+        let self = this;
+        if (this.state.email == "" || this.state.password == "") {
+            ToastAndroid.showWithGravityAndOffset("Invalid username or wrong password", ToastAndroid.LONG, ToastAndroid.BOTTOM, 25, 50);
             return false;
         }
-        this.setState({loading:true});
-        this.props.userLogin(this.state.email, this.state.password).then(async (res) => {
+        this.setState({ loading: true });
+
+        this.props.userLogin(this.state.email, this.state.password).then((res) => {
+            setTimeout(() => {
+                if (userdetails.userid === "" || userdetails.userid === null) {
+                    this.setState({ loading: false })
+                    ToastAndroid.showWithGravityAndOffset("Network connection error", ToastAndroid.LONG, ToastAndroid.BOTTOM, 25, 50);
+                }
+            }, 3000);
             if (res == "") {
                 setTimeout(() => {
                     this.props.saveLocationOnline();
                     setTimeout(() => {
                         this.props.displayHomeMember();
-                            this.props.navigation.navigate('Home');
-                            self.setState({
-                                loading: false,
-                                email: '',
-                                password: '',
-                            });
+                        this.props.navigation.navigate('Home');
+                        self.setState({
+                            loading: false,
+                            email: '',
+                            password: '',
+                        });
                     }, 500);
                 }, 500);
             } else {
@@ -86,8 +92,6 @@ class Login extends Component {
             }
         });
 
-
-      
     }
     render() {
         

@@ -1,6 +1,6 @@
 
 import React, { Component } from 'react';
-import {  Platform,  StyleSheet,  Text,  View, ScrollView,TextInput, TouchableOpacity, ToastAndroid } from 'react-native';
+import { Platform, StyleSheet, Text, View, ScrollView, TextInput, TouchableOpacity, ToastAndroid, Share } from 'react-native';
 import { Root, Container, Header, Body, Title, Item, Input, Label, Button, Icon, Left, Right, Content } from 'native-base';
 import Loading  from '../shared/Loading';
 import { connect } from 'react-redux';
@@ -39,6 +39,14 @@ class GenerateInviteCode extends Component {
     }
 
 
+    onShare() {
+        Share.share({
+            message: 'Invitation Code : '+ this.props.invitationcode.code
+        }).then(res => {
+        });
+    }
+
+
    
     loading(){
         return (
@@ -65,6 +73,12 @@ class GenerateInviteCode extends Component {
                         <Body>
                             <Title>Invitation Code</Title>
                         </Body>
+                        <Right  >
+                            <Button transparent onPress={() => this.onShare()}>
+                                <Text style={globalStyle.headerRightText}>Share</Text>
+                            </Button>
+
+                        </Right>
                     </Header>
                 
                     <ScrollView  contentContainerStyle={{flexGrow: 1}} keyboardShouldPersistTaps={"always"}>
@@ -81,7 +95,8 @@ class GenerateInviteCode extends Component {
                                     onPress={()=>this.onGenerate()}
                                     bordered light full style={globalStyle.secondaryButton}>
                                     <Text style={{color:'white'}}>Generate Code</Text>
-                                </Button>
+                                    </Button>
+                                   
                             </View>
                             </Content>
 

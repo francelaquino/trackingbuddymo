@@ -136,13 +136,11 @@ export const updateProfile = (info) => async dispatch => {
 export const userLogin = (email, password) => async dispatch => {
     
     return new Promise(async (resolve) => {
-        firebase.database().ref(".info/connected").on("value", function (snap) {
-            if (snap.val() === true) {
                 firebase.auth().signInAndRetrieveDataWithEmailAndPassword(email, password)
                     .then(function (res) {
                         //if(res.user.emailVerified){
-                        let childPromise = new Promise(async (childResolve) => {
-                            await firebase.database().ref().child('users/' + res.user.uid).on('value', function (snapshot) {
+                        let childPromise = new Promise( (childResolve) => {
+                             firebase.database().ref().child('users/' + res.user.uid).on('value', function (snapshot) {
                                 userdetails.userid = res.user.uid;
                                 userdetails.email = snapshot.val().email;
                                 userdetails.firstname = snapshot.val().firstname;
@@ -165,10 +163,6 @@ export const userLogin = (email, password) => async dispatch => {
                     .catch(function (err) {
                         resolve("Invalid username or bad password")
                     });
-            } else {
-                resolve("Network connection error")
-            }
-        });
       
     })
 

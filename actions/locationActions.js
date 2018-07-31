@@ -2,6 +2,8 @@ import { DISPLAY_LOCATION, SAVE_LOCATION_OFFLINE, SAVE_LOCATION_ONLINE, DISPLAY_
 import firebase from 'react-native-firebase';
 import Moment from 'moment';
 import Geocoder from 'react-native-geocoder';
+import { ToastAndroid } from 'react-native';
+
 
 var userdetails = require('../components/shared/userDetails');
 
@@ -77,11 +79,11 @@ export const saveLocationOnline=()=> async dispatch=> {
             type: SAVE_LOCATION_ONLINE,
             payload: [],
         });
-    }else{
+    } else {
+
         let dateadded=Date.now();
         navigator.geolocation.getCurrentPosition(
             (position) => {
-
                 fetch("https://us-central1-trackingbuddy-3bebd.cloudfunctions.net/api/appendLocation?lat="+ position.coords.latitude +"&lon="+ position.coords.longitude +"&userid="+userdetails.userid+"&dateadded="+dateadded+"&firstname="+userdetails.firstname)
                 .then((response) => response)
                 .then((response) => {
@@ -101,7 +103,7 @@ export const saveLocationOnline=()=> async dispatch=> {
             },
             (err) => {
             },
-            { enableHighAccuracy: true, timeout: 20000 }
+             { enableHighAccuracy: false, timeout: 10000, maximumAge: 3000 }
         );
     }
 };
@@ -153,35 +155,42 @@ export const createPlace=(place,coordinate)=> dispatch=> {
         lng:  coordinate.longitude,
     };
     return new Promise((resolve) => {
+        firebase.database().ref(".info/connected").on("value", function (snap) {
+            if (snap.val() === true) {
 
-        Geocoder.geocodePosition(coords).then(res => {
-            let address=res[1].formattedAddress;
-            firebase.database().ref().child("places/"+userdetails.userid).orderByChild("placename").equalTo(place).once("value",snapshot => {
-                if(snapshot.val()==null){
-                    firebase.database().ref().child("places/"+userdetails.userid).push({ 
-                            placename : place,
-                            latitude: coordinate.latitude,
-                            longitude: coordinate.longitude,
-                            latitudeDelta: coordinate.latitudeDelta,
-                            longitudeDelta: coordinate.longitudeDelta,
-                            address: address,
-                            dateadded: Date.now(),
-                            dateupdated: Date.now(),
-                    })
-                    .catch(function(err) {
-                        resolve("")
+                Geocoder.geocodePosition(coords).then(res => {
+                    let address = res[1].formattedAddress;
+                    firebase.database().ref().child("places/" + userdetails.userid).orderByChild("placename").equalTo(place).once("value", snapshot => {
+                        if (snapshot.val() == null) {
+                            firebase.database().ref().child("places/" + userdetails.userid).push({
+                                placename: place,
+                                latitude: coordinate.latitude,
+                                longitude: coordinate.longitude,
+                                latitudeDelta: coordinate.latitudeDelta,
+                                longitudeDelta: coordinate.longitudeDelta,
+                                address: address,
+                                dateadded: Date.now(),
+                                dateupdated: Date.now(),
+                            })
+                                .catch(function (err) {
+                                    resolve("")
+                                });
+                            resolve("Place successfully created");
+                        } else {
+                            resolve("Place already exist");
+                        }
+                    }).catch(function (err) {
+                        resolve("");
+
                     });
-                    resolve("Place successfully created");
-                }else{
-                    resolve("Place already exist");
-                }
-            }).catch(function(err) {
+                }).catch(err => {
+                    resolve("");
+                })
+            } else {
                 resolve("");
-                
-            });
-        }).catch(err => {
-            resolve("");
-        })
+                ToastAndroid.showWithGravityAndOffset("Network connection error", ToastAndroid.LONG, ToastAndroid.BOTTOM, 25, 50);
+            }
+        });
     });
 };
 
@@ -301,24 +310,35 @@ export const deletePlace=(id)=> dispatch=> {
 
 export const displayPlaces=()=>async dispatch=> {
     let places=[];
-    try{
-        await firebase.database().ref().child('places/'+userdetails.userid).orderByKey().once("value",async function(snapshot){
-            await snapshot.forEach(childSnapshot => {
-                let dateadded= Moment(new Date(parseInt(childSnapshot.val().dateadded))).format("ddd DD-MMM-YYYY hh:mm A");
-                places.push({
-                    id:childSnapshot.key,
-                    address:childSnapshot.val().address,
-                    placename:childSnapshot.val().placename,
-                    dateadded: dateadded,
-                    longitude: Number(childSnapshot.val().longitude),
-                    latitude: Number(childSnapshot.val().latitude)
-                    
+    try {
+        firebase.database().ref(".info/connected").on("value", function (snap) {
+            if (snap.val() === true) {
+                firebase.database().ref().child('places/' + userdetails.userid).orderByKey().once("value", async function (snapshot) {
+                    await snapshot.forEach(childSnapshot => {
+                        let dateadded = Moment(new Date(parseInt(childSnapshot.val().dateadded))).format("ddd DD-MMM-YYYY hh:mm A");
+                        places.push({
+                            id: childSnapshot.key,
+                            address: childSnapshot.val().address,
+                            placename: childSnapshot.val().placename,
+                            dateadded: dateadded,
+                            longitude: Number(childSnapshot.val().longitude),
+                            latitude: Number(childSnapshot.val().latitude)
+
+                        });
+                    })
+                    dispatch({
+                        type: DISPLAY_PLACES,
+                        payload: places,
+                    });
                 });
-            })
-            dispatch({ 
-                type: DISPLAY_PLACES,
-                payload: places,
-            });
+            } else {
+                dispatch({
+                    type: DISPLAY_PLACES,
+                    payload: places,
+                });
+
+                ToastAndroid.showWithGravityAndOffset("Network connection error", ToastAndroid.LONG, ToastAndroid.BOTTOM, 25, 50);
+            }
         });
         
     }catch (e) {
@@ -328,34 +348,7 @@ export const displayPlaces=()=>async dispatch=> {
         });
     }
 
-   /* let count=0;
-    let cnt=0;
-        return new Promise((resolve) => {
-            firebase.database().ref().child('places/'+userdetails.userid).orderByKey().on("value",function(snapshot){
-                snapshot.forEach(childSnapshot => {
-                    let dateadded= Moment(new Date(parseInt(childSnapshot.val().dateadded))).format("ddd DD-MMM-YYYY hh:mm A");
-                    places.push({
-                        id:childSnapshot.key,
-                        address:childSnapshot.val().address,
-                        placename:childSnapshot.val().placename,
-                        dateadded: dateadded,
-                        longitude: Number(childSnapshot.val().longitude),
-                        latitude: Number(childSnapshot.val().latitude)
-                        
-                    });
-                    cnt++;
-                    if(cnt>=count){
-                        resolve();
-                    }
-
-                })
-            });
-        }).then(function(){
-            dispatch({ 
-                type: DISPLAY_PLACES,
-                payload: places,
-                });
-        })*/
+  
     
 };
 

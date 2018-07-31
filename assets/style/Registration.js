@@ -71,7 +71,7 @@ module.exports = StyleSheet.create({
     },
     registrationbutton:{
         backgroundColor: theme.primaryButtonColor,
-        borderRadius:15,
+        borderRadius: 15,
     },
     haveaccount:{
         fontSize:16,

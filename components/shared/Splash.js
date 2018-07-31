@@ -44,34 +44,4 @@ Splash = connect(mapStateToProps, { })(Splash);
 export default Splash;
 
 
-     /*async componentDidMount() {
-         let userid = await AsyncStorage.getItem("userid");
-         let email =  await AsyncStorage.getItem("email");
-         let firstname = await AsyncStorage.getItem("firstname");
-         let lastname = await AsyncStorage.getItem("lastname");
-        
-         setTimeout(() => {
-             if (userid === "" || userid === null) {
-                
-
-
-                
-                 this.props.navigation.navigate('Login');
-            } else {
-                userdetails.userid = userid;
-                userdetails.email = email;
-                userdetails.firstname = firstname;
-                userdetails.lastname = lastname;
-                this.props.saveLocationOnline();
-                setTimeout(() => {
-                    this.props.displayHomeMember();
-                    this.props.navigation.navigate('Home');
-                }, 1000);
-               
-
-            }
-           
-        }, 1000);
-    }*/
-
-
+    

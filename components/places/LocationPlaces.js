@@ -10,7 +10,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Loading  from '../shared/Loading';
-import OfflineNotice  from '../shared/OfflineNotice';
+import OfflineNotice from '../shared/OfflineNotice';
 var userdetails = require('../shared/userDetails');
 var globalStyle = require('../../assets/style/GlobalStyle');
 
@@ -55,7 +55,7 @@ class LocationPlaces extends Component<Props> {
                 renderItem={({ item }) => (
                     <ListItem key={item.id}  avatar style={globalStyle.listItem} >
                     <Left style={globalStyle.listLeft}>
-                               <SimpleLineIcons size={30} style={{color:'#1eaec5'}}    name='location-pin' />
+                            <SimpleLineIcons size={30} style={{ color:'#16a085'}}    name='location-pin' />
                            </Left>
                     <Body style={globalStyle.listBody} >
                         <Text numberOfLines={1} style={globalStyle.listHeading}>{item.address}</Text>

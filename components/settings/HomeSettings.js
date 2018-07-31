@@ -18,65 +18,65 @@ class HomeSettings extends Component {
     
     }
    
-    ready(){
-        return(
+    ready() {
+        return (
             <Root>
                 <Container style={globalStyle.containerWrapper}>
-                <OfflineNotice/>
+                    <OfflineNotice />
                     <Header style={globalStyle.header}>
-                    <Left style={globalStyle.headerLeft} >
-                            <Button transparent onPress={()=> {this.props.navigation.goBack()}} >
+                        <Left style={globalStyle.headerLeft} >
+                            <Button transparent onPress={() => { this.props.navigation.goBack() }} >
                                 <Icon size={30} name='arrow-back' />
-                            </Button> 
+                            </Button>
                         </Left>
                         <Body>
                             <Title>Settings</Title>
                         </Body>
                     </Header>
                     <Content padder>
-                    <ScrollView  contentContainerStyle={{flexGrow: 1}} keyboardShouldPersistTaps={"always"}>
-                    <View style={globalStyle.container}>
-                    
-                        <List>
-                        <ListItem   avatar button style={globalStyle.listItem}  onPress={() => {
+                        <ScrollView contentContainerStyle={{ flexGrow: 1 }} keyboardShouldPersistTaps={"always"}>
+                            <View style={globalStyle.container}>
+
+                                <List>
+                                    <ListItem avatar button style={globalStyle.listItem} onPress={() => {
                                         this.props.navigation.navigate("ChangePassword");
                                     }}>
-                        <Left >
-                    
-                            <MaterialCommunityIcons  style={{fontSize:30,color:'#1eaec5'}} name="textbox-password"/>
-                        </Left>
-                            
-                            <Body style={globalStyle.listBody} >
-                                <Text style={globalStyle.listHeading}>Change Password</Text>
-                            </Body>
-                            <Right style={globalStyle.listRight} >
-                                <SimpleLineIcons  style={globalStyle.listRightOptionIcon}   name='arrow-right' />
-                            </Right>
-                            </ListItem>
+                                        <Left >
 
-                        <ListItem   avatar button style={globalStyle.listItem} onPress={() => {
+                                            <MaterialCommunityIcons style={{ fontSize: 30, color: '#16a085' }} name="textbox-password" />
+                                        </Left>
+
+                                        <Body style={globalStyle.listBody} >
+                                            <Text style={globalStyle.listHeading}>Change Password</Text>
+                                        </Body>
+                                        <Right style={globalStyle.listRight} >
+                                            <SimpleLineIcons style={globalStyle.listRightOptionIcon} name='arrow-right' />
+                                        </Right>
+                                    </ListItem>
+
+                                    <ListItem avatar button style={globalStyle.listItem} onPress={() => {
                                         this.props.navigation.navigate("GenerateInviteCode");
                                     }}>
-                        <Left >
-                    
-                            <MaterialCommunityIcons  style={{fontSize:30,color:'#1eaec5'}} name="table-row"/>
-                        </Left>
-                            
-                            <Body style={globalStyle.listBody} >
-                                <Text style={globalStyle.listHeading}>Invitation Code</Text>
-                            </Body>
-                            <Right style={globalStyle.listRight} >
-                                <SimpleLineIcons  style={globalStyle.listRightOptionIcon}   name='arrow-right' />
-                            </Right>
-                            </ListItem>
+                                        <Left >
 
-                       
+                                            <MaterialCommunityIcons style={{ fontSize: 30, color: '#16a085' }} name="table-row" />
+                                        </Left>
 
-                        </List>
+                                        <Body style={globalStyle.listBody} >
+                                            <Text style={globalStyle.listHeading}>Invitation Code</Text>
+                                        </Body>
+                                        <Right style={globalStyle.listRight} >
+                                            <SimpleLineIcons style={globalStyle.listRightOptionIcon} name='arrow-right' />
+                                        </Right>
+                                    </ListItem>
 
-                         
-                    </View>
-                    </ScrollView>
+
+
+                                </List>
+
+
+                            </View>
+                        </ScrollView>
                     </Content>
                 </Container>
             </Root>

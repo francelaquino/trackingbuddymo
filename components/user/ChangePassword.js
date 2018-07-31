@@ -41,30 +41,36 @@ class ChangePassword extends Component {
         
         
 
-        let self=this;
-        this.setState({loading:true})
-        let user= firebase.auth().currentUser;
-        let credentails=firebase.auth.EmailAuthProvider.credential(userdetails.email,this.state.currentpassword);
-        user.reauthenticateAndRetrieveDataWithCredential(credentails).then(function(){
-            user.updatePassword(self.state.newpassword).then(function(){
-                self.setState({loading:false})
-                self.setState({
-                    currentpassword:'',
-                    newpassword:'',
-                    retypepassword:''
-                })
-                ToastAndroid.showWithGravityAndOffset("Password successfully changed",ToastAndroid.LONG,ToastAndroid.BOTTOM, 25, 50);
-            }).catch(function(err) {
-                if(err.code=="auth/weak-password"){
-                    ToastAndroid.showWithGravityAndOffset("The given password is invalid. Password should be at least 6 characters",ToastAndroid.LONG,ToastAndroid.BOTTOM, 25, 50);
-                }else{
-                    ToastAndroid.showWithGravityAndOffset("Something went wrong...",ToastAndroid.LONG,ToastAndroid.BOTTOM, 25, 50);
-                 }
-               self.setState({loading:false})
-            });
-        }).catch(function(err) {
-            ToastAndroid.showWithGravityAndOffset("The current password is invalid",ToastAndroid.LONG,ToastAndroid.BOTTOM, 25, 50);
-           self.setState({loading:false})
+        let self = this;
+        firebase.database().ref(".info/connected").on("value", function (snap) {
+            if (snap.val() === true) {
+                this.setState({ loading: true })
+                let user = firebase.auth().currentUser;
+                let credentails = firebase.auth.EmailAuthProvider.credential(userdetails.email, this.state.currentpassword);
+                user.reauthenticateAndRetrieveDataWithCredential(credentails).then(function () {
+                    user.updatePassword(self.state.newpassword).then(function () {
+                        self.setState({ loading: false })
+                        self.setState({
+                            currentpassword: '',
+                            newpassword: '',
+                            retypepassword: ''
+                        })
+                        ToastAndroid.showWithGravityAndOffset("Password successfully changed", ToastAndroid.LONG, ToastAndroid.BOTTOM, 25, 50);
+                    }).catch(function (err) {
+                        if (err.code == "auth/weak-password") {
+                            ToastAndroid.showWithGravityAndOffset("The given password is invalid. Password should be at least 6 characters", ToastAndroid.LONG, ToastAndroid.BOTTOM, 25, 50);
+                        } else {
+                            ToastAndroid.showWithGravityAndOffset("Something went wrong...", ToastAndroid.LONG, ToastAndroid.BOTTOM, 25, 50);
+                        }
+                        self.setState({ loading: false })
+                    });
+                }).catch(function (err) {
+                    ToastAndroid.showWithGravityAndOffset("The current password is invalid", ToastAndroid.LONG, ToastAndroid.BOTTOM, 25, 50);
+                    self.setState({ loading: false })
+                });
+            } else {
+                ToastAndroid.showWithGravityAndOffset("Network connection error", ToastAndroid.LONG, ToastAndroid.BOTTOM, 25, 50);
+            }
         });
 
 

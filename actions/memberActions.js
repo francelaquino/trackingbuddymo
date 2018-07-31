@@ -314,26 +314,37 @@ export const getInvitationCode=()=> dispatch=> {
             code:'',
             expiration:'',
         }
+        firebase.database().ref(".info/connected").on("value", function (snap) {
+            if (snap.val() === true) {
 
-        let userRef = firebase.database().ref().child('users/'+userdetails.userid);
-        userRef.once('value', (snapshot) => {
-            let expiration= Moment(new Date(parseInt(snapshot.val().invitationcodeexpiration))).format("DD-MMM-YYYY");
-                invitationcode.code=snapshot.val().invitationcode;
-                invitationcode.expiration=expiration;
-            dispatch({ 
-                type: GET_INVITATIONCODE,
-                payload: invitationcode
-            });
-            resolve()
-            
-        })
-        .catch(function(err) {
-            dispatch({ 
-                type: GET_INVITATIONCODE,
-                payload: invitationcode
-            });
-            resolve()
-          });
+                let userRef = firebase.database().ref().child('users/' + userdetails.userid);
+                userRef.once('value', (snapshot) => {
+                    let expiration = Moment(new Date(parseInt(snapshot.val().invitationcodeexpiration))).format("DD-MMM-YYYY");
+                    invitationcode.code = snapshot.val().invitationcode;
+                    invitationcode.expiration = expiration;
+                    dispatch({
+                        type: GET_INVITATIONCODE,
+                        payload: invitationcode
+                    });
+                    resolve()
+
+                })
+                    .catch(function (err) {
+                        dispatch({
+                            type: GET_INVITATIONCODE,
+                            payload: invitationcode
+                        });
+                        resolve()
+                    });
+            } else {
+                resolve()
+                dispatch({
+                    type: GET_INVITATIONCODE,
+                    payload: invitationcode
+                });
+                ToastAndroid.showWithGravityAndOffset("Network connection error", ToastAndroid.LONG, ToastAndroid.BOTTOM, 25, 50);
+            }
+        });
          
     });
        
@@ -341,25 +352,32 @@ export const getInvitationCode=()=> dispatch=> {
 
 export const generateInvitationCode=()=> dispatch=> {
     return new Promise((resolve) => {
-        var code = "";
-        var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-        for(var i = 0; i < 5; i++) {
-            code += possible.charAt(Math.floor(Math.random() * possible.length));
-        }
-        
-        let days=86400000*6;
+        firebase.database().ref(".info/connected").on("value", function (snap) {
+            if (snap.val() === true) {
 
-        let groupRef = firebase.database().ref().child("users/"+userdetails.userid);
-        groupRef.update({ 
-                invitationcode : code,
-                invitationcodeexpiration: Date.now()+days,
-        })
-        .catch(function(err) {
-            resolve()
+                var code = "";
+                var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+                for (var i = 0; i < 5; i++) {
+                    code += possible.charAt(Math.floor(Math.random() * possible.length));
+                }
+
+                let days = 86400000 * 6;
+
+                let groupRef = firebase.database().ref().child("users/" + userdetails.userid);
+                groupRef.update({
+                    invitationcode: code,
+                    invitationcodeexpiration: Date.now() + days,
+                })
+                    .catch(function (err) {
+                        resolve()
+                    });
+                resolve()
+            } else {
+                resolve();
+                ToastAndroid.showWithGravityAndOffset("Network connection error", ToastAndroid.LONG, ToastAndroid.BOTTOM, 25, 50);
+
+            }
         });
-        resolve()
-        }).catch(function(err) {
-            resolve()
     });
    
 };
@@ -367,57 +385,62 @@ export const generateInvitationCode=()=> dispatch=> {
 
 export const sendInvite=(invitationcode)=> async dispatch=> {
     return new Promise((resolve) => {
-        firebase.database().ref().child("users").orderByChild("invitationcode").equalTo(invitationcode).once("value",async snapshot => {
-            let id="";
-            let parent=this;
-            if(snapshot.val()===null){
-                resolve(false)
+        firebase.database().ref(".info/connected").on("value", function (snap) {
+            if (snap.val() === true) {
+                firebase.database().ref().child("users").orderByChild("invitationcode").equalTo(invitationcode).once("value", async snapshot => {
+                    let id = "";
+                    let parent = this;
+                    if (snapshot.val() === null) {
+                        resolve("Invalid invitation code")
+                    }
+                    snapshot.forEach(async function (childSnapshot) {
+                        let expiration = childSnapshot.val().invitationcodeexpiration;
+
+                        let today = Date.now();
+                        if (Number(today) > Number(expiration)) {
+                            resolve("Invitation code is already expired");
+                        } else {
+                            id = childSnapshot.key;
+                            await firebase.database().ref().child("users/" + userdetails.userid + "/members/" + id).set({
+                                userid: id,
+                                dateadded: Date.now(),
+                                lastmovement: Date.now(),
+                            }).catch(function (err) {
+                                resolve("Something went wrong...")
+                            });
+
+                            await firebase.database().ref().child("users/" + id + "/members/" + userdetails.userid).set({
+                                userid: id,
+                                dateadded: Date.now(),
+                                lastmovement: Date.now(),
+                            }).catch(function (err) {
+                                resolve("Something went wrong...")
+                            });
+
+                            await firebase.database().ref().child("memberof/" + id + "/" + userdetails.userid).update({
+                                userid: userdetails.userid,
+                                dateadded: Date.now(),
+                            }).catch(function (err) {
+                                resolve("Something went wrong...")
+                            });
+
+                            await firebase.database().ref().child("memberof/" + userdetails.userid + "/" + id).update({
+                                userid: userdetails.userid,
+                                dateadded: Date.now(),
+                            }).catch(function (err) {
+                                resolve("Something went wrong...")
+                            });
+                            resolve("")
+                        }
+
+
+                    });
+                }).catch(function (err) {
+                    resolve("Something went wrong...")
+                });
+            } else {
+                resolve("Network connection error")
             }
-            snapshot.forEach(async function(childSnapshot) {
-                let expiration= childSnapshot.val().invitationcodeexpiration;
-                
-                let today = Date.now();
-                if(Number(today)>Number(expiration)){
-                    resolve(false);
-                }else{
-                    id = childSnapshot.key;
-                    await firebase.database().ref().child("users/"+userdetails.userid+"/members/"+id).set({ 
-                        userid : id,
-                        dateadded: Date.now(),
-                        lastmovement: Date.now(),
-                    }).catch(function(err) {
-                        resolve(false)
-                    });
-
-                    await firebase.database().ref().child("users/"+id+"/members/"+userdetails.userid).set({ 
-                        userid : id,
-                        dateadded: Date.now(),
-                        lastmovement: Date.now(),
-                    }).catch(function(err) {
-                        resolve(false)
-                    });
-
-                    await firebase.database().ref().child("memberof/"+id+"/"+userdetails.userid).update({ 
-                        userid : userdetails.userid,
-                        dateadded: Date.now(),
-                    }).catch(function(err) {
-                        resolve(false)
-                    });
-
-                    await firebase.database().ref().child("memberof/"+userdetails.userid+"/"+id).update({ 
-                        userid : userdetails.userid,
-                        dateadded: Date.now(),
-                    }).catch(function(err) {
-                        resolve(false)
-                    });
-                    resolve(true)
-                }
-
-               
-            });
-        }).catch(function(err) {
-            console.log(err)
-            resolve(false)
         });
 
     });
@@ -436,9 +459,9 @@ export const clearHomeMembers=()=> dispatch=> {
 
 export const getCountrries=()=> dispatch=> {
     let countries:{
-        id: '',
-        countrycode: '',
-        country: ''
+        id: "",
+        countrycode: "",
+        country: ""
       }
 
       let count=0;

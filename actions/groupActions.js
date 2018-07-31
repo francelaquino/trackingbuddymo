@@ -1,7 +1,7 @@
 import { CREATE_GROUP, DISPLAY_GROUP, DELETE_GROUP } from './types';
 import { BASE_URL } from '../constants'
 import firebase from 'react-native-firebase';
-import axios from 'axios';
+import { ToastAndroid } from 'react-native';
 var userdetails = require('../components/shared/userDetails');
 
 randomString=(length)=>{  
@@ -18,57 +18,66 @@ export const createGroup=(groupname,avatarsource)=> dispatch=> {
     let emptyPhoto='https://firebasestorage.googleapis.com/v0/b/trackingbuddy-3bebd.appspot.com/o/group_photos%2Fgroup.png?alt=media&token=d1bade4b-6fee-43f7-829a-0b6f76005b40';
     let avatar="";
     return new Promise((resolve) => {
-        firebase.database().ref().child("groups/"+userdetails.userid).orderByChild("groupname").equalTo(groupname).once("value",snapshot => {
-            if (snapshot.val()){
-                resolve("Group already exist");
-            }else{
-                let groupid=userdetails.userid+randomString(4);
-                if(avatarsource!=""){
-                    let avatarlink=groupid+".jpg";
-                    let ref = firebase.storage().ref("/group_photos/"+avatarlink);
-                    ref.putFile(avatarsource.uri.replace("file:/", "")).then(res => {
-                        avatar=res.downloadURL;
-                        setTimeout(() => {
-                            let groupRef = firebase.database().ref().child("groups/"+userdetails.userid+"/"+groupid);
-                            groupRef.set({ 
-                                id:groupid,
-                                groupname : groupname,
-                                avatar: avatar,
-                                datecreated: Date.now(),
-                                dateupdated: Date.now(),
-                            })
-                            .catch(function(err) {
-                                    console.log('error', err);
-                            });
 
-                            resolve("Group successfully created");
-                        }, 0);
-                    })
-                    .catch(function(err) {
-                        console.log('error', err);
-                        
-                    });
-                }else{
-                    setTimeout(() => {
-                        let groupRef = firebase.database().ref().child("groups/"+userdetails.userid+"/"+groupid);
-                            groupRef.set({ 
-                                id:groupid,
-                                groupname : groupname,
-                                avatar: emptyPhoto,
-                                datecreated: Date.now(),
-                                dateupdated: Date.now(),
+        firebase.database().ref(".info/connected").on("value", function (snap) {
+            if (snap.val() === true) {
+
+                firebase.database().ref().child("groups/" + userdetails.userid).orderByChild("groupname").equalTo(groupname).once("value", snapshot => {
+                    if (snapshot.val()) {
+                        resolve("Group already exist");
+                    } else {
+                        let groupid = userdetails.userid + randomString(4);
+                        if (avatarsource != "") {
+                            let avatarlink = groupid + ".jpg";
+                            let ref = firebase.storage().ref("/group_photos/" + avatarlink);
+                            ref.putFile(avatarsource.uri.replace("file:/", "")).then(res => {
+                                avatar = res.downloadURL;
+                                setTimeout(() => {
+                                    let groupRef = firebase.database().ref().child("groups/" + userdetails.userid + "/" + groupid);
+                                    groupRef.set({
+                                        id: groupid,
+                                        groupname: groupname,
+                                        avatar: avatar,
+                                        datecreated: Date.now(),
+                                        dateupdated: Date.now(),
+                                    })
+                                        .catch(function (err) {
+                                            console.log('error', err);
+                                        });
+
+                                    resolve("Group successfully created");
+                                }, 0);
                             })
-                            .catch(function(err) {
+                                .catch(function (err) {
                                     console.log('error', err);
-                            });
-                            resolve("Group successfully created");
-                    }, 0);
-                }
+
+                                });
+                        } else {
+                            setTimeout(() => {
+                                let groupRef = firebase.database().ref().child("groups/" + userdetails.userid + "/" + groupid);
+                                groupRef.set({
+                                    id: groupid,
+                                    groupname: groupname,
+                                    avatar: emptyPhoto,
+                                    datecreated: Date.now(),
+                                    dateupdated: Date.now(),
+                                })
+                                    .catch(function (err) {
+                                        console.log('error', err);
+                                    });
+                                resolve("Group successfully created");
+                            }, 0);
+                        }
+                    }
+                }).catch(function (err) {
+                    console.log('error', err);
+                    resolve("");
+
+                });
+            } else {
+                resolve("");
+                ToastAndroid.showWithGravityAndOffset("Network connection error", ToastAndroid.LONG, ToastAndroid.BOTTOM, 25, 50);
             }
-        }).catch(function(err) {
-            console.log('error', err);
-            resolve("");
-            
         });
     });
 };
@@ -77,28 +86,38 @@ export const createGroup=(groupname,avatarsource)=> dispatch=> {
 
 export const displayGroup=()=> dispatch=> {
     let groups=[];
-    
-    return new Promise((resolve) => {
-        firebase.database().ref().child('groups/'+userdetails.userid).orderByChild("groupname").on('value', (snapshot) => {
-            resolve(snapshot) ;
-        });
-        
-    }).then(function (snapshot) {
-        if(snapshot.exists){
-            snapshot.forEach(function(child) {
-                groups.push({
-                id: child.key,
-                groupname: child.val().groupname,
-                avatar: child.val().avatar
-                })
+    firebase.database().ref(".info/connected").on("value", function (snap) {
+        if (snap.val() === true) {
+            return new Promise((resolve) => {
+
+                firebase.database().ref().child('groups/' + userdetails.userid).orderByChild("groupname").on('value', (snapshot) => {
+                    resolve(snapshot);
+                });
+
+            }).then(function (snapshot) {
+                if (snapshot.exists) {
+                    snapshot.forEach(function (child) {
+                        groups.push({
+                            id: child.key,
+                            groupname: child.val().groupname,
+                            avatar: child.val().avatar
+                        })
+                    });
+                }
+                dispatch({
+                    type: DISPLAY_GROUP,
+                    payload: groups,
+                });
+            }).catch(function (error) {
+                console.log(error)
             });
+        } else {
+            dispatch({
+                type: DISPLAY_GROUP,
+                payload: [],
+            });
+            ToastAndroid.showWithGravityAndOffset("Network connection error", ToastAndroid.LONG, ToastAndroid.BOTTOM, 25, 50);
         }
-        dispatch({ 
-            type: DISPLAY_GROUP,
-            payload: groups,
-        });
-    }).catch(function (error) {
-        console.log(error)
     });
 
 };

@@ -36,11 +36,7 @@ class PlaceList extends Component {
 
     loading(){
         return (
-          <Root>
-          <Container style={globalStyle.containerWrapper}>
           <Loading/>
-          </Container>
-          </Root>
         )
     }
 
@@ -55,7 +51,7 @@ class PlaceList extends Component {
                     <ListItem icon key={item.id} button avatar style={globalStyle.listItem}  onPress={() => {this.props.navigation.navigate("PlaceView",{place:item})}}>
                     <Left >
                     
-                    <Entypo  style={{fontSize:30,color:'#1eaec5'}} name="location"/>
+                            <Entypo style={{ fontSize: 30, color:'#16a085'}} name="location"/>
                 </Left>
                         <Body style={globalStyle.listBody} >
                             <Text numberOfLines={1} style={globalStyle.listHeading}>{item.placename}</Text>

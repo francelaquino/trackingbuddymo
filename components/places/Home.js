@@ -87,114 +87,114 @@ class HomePlaces extends Component {
         this.map = null;
 
         this.state = {
-            groupname:'',
-            isLoading:false,
-            memberReady:false,
-            region:{
+            groupname: '',
+            isLoading: false,
+            memberReady: false,
+            region: {
                 latitude: LATITUDE,
                 longitude: LONGITUDE,
-                latitudeDelta: LATITUDE_DELTA ,
+                latitudeDelta: LATITUDE_DELTA,
                 longitudeDelta: LONGITUDE_DELTA,
             },
             centerMarker: [],
             markers: [],
         };
 
-      }
-    
+    }
 
-    
 
-    
-    componentWillUnmount(){
+
+
+
+    componentWillUnmount() {
         BackgroundJob.cancelAll();
     }
     async componentDidMount() {
 
-      
-            this.notificationListener = firebase.notifications().onNotification((notification: Notification) => {
-                
-                PushNotification.localNotification({
-                    id: "1",
-                    autoCancel: true, 
-                    largeIcon: "ic_launcher",
-                    smallIcon: "ic_notification", 
-                    color: "#1eaec5", 
-                    /* iOS only properties */
-                    //alertAction: // (optional) default: view
-                    //category: // (optional) default: null
-                    //userInfo: // (optional) default: null (object containing additional notification data)
 
-                    title: "Tracking Buddy", 
-                    message: notification._body,
-                    playSound: true, 
-                    soundName: 'default', 
-                    number: '10', 
-                });
+        this.notificationListener = firebase.notifications().onNotification((notification: Notification) => {
 
-             
+            PushNotification.localNotification({
+                id: "1",
+                autoCancel: true,
+                largeIcon: "ic_launcher",
+                smallIcon: "ic_notification",
+                color: "#1eaec5",
+                /* iOS only properties */
+                //alertAction: // (optional) default: view
+                //category: // (optional) default: null
+                //userInfo: // (optional) default: null (object containing additional notification data)
+
+                title: "Tracking Buddy",
+                message: notification._body,
+                playSound: true,
+                soundName: 'default',
+                number: '10',
             });
 
 
-            
-        let self=this;
-        trackLocation =function() {
+        });
+
+
+
+        let self = this;
+        trackLocation = function () {
             NetInfo.isConnected.fetch().done((isConnected) => {
-                if(isConnected){
+                if (isConnected) {
                     self.props.saveLocationOnline();
 
-                }else{
+                } else {
                     //self.props.saveLocationOffline(coords);
                 }
             });
         }
 
-    
+
         BackgroundJob.schedule(trackPositionSchedule);
         BackgroundJob.schedule(refreshTokenSchedule);
-        
-    }
-  
 
-    async fitToMap(){
-        let coordinates=[];
-        if(this.props.members.length==1){
+    }
+
+
+    async fitToMap() {
+        let coordinates = [];
+        if (this.props.members.length == 1) {
             this.map.animateToRegion({
                 latitude: this.props.members[0].coordinates.latitude,
                 longitude: this.props.members[0].coordinates.longitude,
                 latitudeDelta: 0.005,
                 longitudeDelta: 0.005
-              })
-        }else if(this.props.members.length>1){
-            
+            })
+        } else if (this.props.members.length > 1) {
+
             for (let i = 0; i < this.props.members.length; i++) {
                 const coord = {
-                    coordinates:{
+                    coordinates: {
                         latitude: this.props.members[i].coordinates.latitude,
                         longitude: this.props.members[i].coordinates.longitude,
-                        latitudeDelta: LATITUDE_DELTA ,
+                        latitudeDelta: LATITUDE_DELTA,
                         longitudeDelta: LONGITUDE_DELTA,
                     }
                 }
-                    coordinates=coordinates.concat(coord.coordinates);
-                    
-                }
-                    this.map.fitToCoordinates(coordinates, { edgePadding: { top: 20, right: 20, bottom: 20, left: 20 }, animated: false })  
-            
-        
-            
+                coordinates = coordinates.concat(coord.coordinates);
+
+            }
+            this.map.fitToCoordinates(coordinates, { edgePadding: { top: 20, right: 20, bottom: 20, left: 20 }, animated: false })
+
+
+
         }
 
     }
-    
-    
+
+
     componentWillMount() {
-         this.initialize();
+        this.initialize();
     }
 
-    async centerToMarker(latitude,longitude){
-       
-        let center=[{
+    async centerToMarker(latitude, longitude) {
+
+        let center = [{
             latitude: latitude,
             longitude: longitude,
             latitudeDelta: 0.00522,
@@ -206,197 +206,197 @@ class HomePlaces extends Component {
             longitude: longitude,
             latitudeDelta: 0.005,
             longitudeDelta: 0.005
-          })
+        })
 
     }
     changeGroup = (groupname) => {
-        this.setState({isLoading:true})
+        this.setState({ isLoading: true })
         this.reload();
-        this.setState({groupname:groupname,isLoading:false});
-        
+        this.setState({ groupname: groupname, isLoading: false });
+
     }
-    reload(){
-        let self=this;
-        self.props.displayHomeMember().then(res=>{
+    reload() {
+        let self = this;
+        self.props.displayHomeMember().then(res => {
             setTimeout(() => {
                 self.fitToMap();
-                self.setState({memberReady:true})
+                self.setState({ memberReady: true })
             }, 1000);
         });
     }
-    
-   
-     initialize(){
-        let self=this;
+
+
+    initialize() {
+        let self = this;
         setTimeout(() => {
-            firebase.database().ref('users/'+userdetails.userid+'/members').on("value",(snapshot)=>{
-                self.props.displayHomeMember().then(res=>{
+            firebase.database().ref('users/' + userdetails.userid + '/members').on("value", (snapshot) => {
+                self.props.displayHomeMember().then(res => {
                     setTimeout(() => {
                         self.fitToMap();
-                        self.setState({memberReady:true})
+                        self.setState({ memberReady: true })
                     }, 1000);
                 });
             })
         }, 1000);
     }
-    loading(){
+    loading() {
         return (
-          <Root>
-          <Container style={globalStyle.containerWrapper}>
-          <Loading/>
-          </Container>
-          </Root>
+            <Root>
+                <Container style={globalStyle.containerWrapper}>
+                    <Loading />
+                </Container>
+            </Root>
         )
     }
 
-  
-    
+
+
 
     closeDrawer = () => {
         this.drawer._root.close()
     };
-      openDrawer = () => {
+    openDrawer = () => {
         this.drawer._root.open()
     };
 
-    renderMember(){
-            const data=this.props.members;
-            return (
-                <FlatList
-                    keyExtractor={item => item.id}
-                    horizontal={true}
-                    data={data}
-                    renderItem={({ item }) => (
-                        <TouchableOpacity onPress={()=>this.centerToMarker(item.coordinates.latitude,item.coordinates.longitude)}>
-                        <View  style={{flex:1,flexDirection:'column',alignItems:'center',width:80,height:60,margin:2}}>
+    renderMember() {
+        const data = this.props.members;
+        return (
+            <FlatList
+                keyExtractor={item => item.id}
+                horizontal={true}
+                data={data}
+                renderItem={({ item }) => (
+                    <TouchableOpacity onPress={() => this.centerToMarker(item.coordinates.latitude, item.coordinates.longitude)}>
+                        <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center', width: 80, height: 60, margin: 2 }}>
                             <View style={globalStyle.listAvatarContainerSmall} >
-                            { item.avatar==='' ?  <Thumbnail  onPress={()=>this.centerToMarker(item.coordinates.latitude,item.coordinates.longitude)} style={globalStyle.listAvatar} source={{uri: this.state.emptyPhoto}} /> :
-                            <Thumbnail onPress={()=>this.centerToMarker(item.coordinates.latitude,item.coordinates.longitude)}  style={globalStyle.listAvatarSmall} source={{uri: item.avatar}} />
-                            }
+                                {item.avatar === '' ? <Thumbnail onPress={() => this.centerToMarker(item.coordinates.latitude, item.coordinates.longitude)} style={globalStyle.listAvatar} source={{ uri: this.state.emptyPhoto }} /> :
+                                    <Thumbnail onPress={() => this.centerToMarker(item.coordinates.latitude, item.coordinates.longitude)} style={globalStyle.listAvatarSmall} source={{ uri: item.avatar }} />
+                                }
                             </View>
-                            <Text numberOfLines={1} style={{color:'#605f5f',fontSize:13}}>{item.firstname}</Text>
+                            <Text numberOfLines={1} style={{ color: '#605f5f', fontSize: 13 }}>{item.firstname}</Text>
                         </View>
-                        </TouchableOpacity>
-                    ) }
-                />)
+                    </TouchableOpacity>
+                )}
+            />)
     }
 
-    ready(){
+    ready() {
 
 
-     
 
-        const markers =this.props.members.map(marker=>(
-                <MapView.Marker key={marker.id}
-                onLayout = {() => this.fitToMap()}
+
+        const markers = this.props.members.map(marker => (
+            <MapView.Marker key={marker.id}
+                onLayout={() => this.fitToMap()}
                 coordinate={marker.coordinates}
-                title={marker.firstname}
-                >
+                title={marker.firstname}>
                 <Image style={styles.marker}
                     source={require('../../images/marker.png')} />
-                        <Text   style={styles.markerText}>{marker.firstname}</Text>
-                   
+                <Text style={styles.markerText}>{marker.firstname}</Text>
+
                 <MapView.Callout >
-               
+
                     <View style={styles.callOut}>
-                    <View style={globalStyle.listAvatarContainerSmall} >
-                    { marker.avatar==='' ?  <Thumbnail  style={globalStyle.listAvatar} source={{uri: this.state.emptyPhoto}} /> :
-                    <Thumbnail  style={globalStyle.listAvatarSmall} source={{uri: marker.avatar}} />
-                    }
-                    </View>
-                    <Text  style={styles.callOutText}>{marker.address}</Text></View>
+                        <View style={globalStyle.listAvatarContainerSmall} >
+                            {marker.avatar === '' ? <Thumbnail style={globalStyle.listAvatar} source={{ uri: this.state.emptyPhoto }} /> :
+                                <Thumbnail style={globalStyle.listAvatarSmall} source={{ uri: marker.avatar }} />
+                            }
+                        </View>
+                        <Text style={styles.callOutText}>{marker.address}</Text></View>
                 </MapView.Callout>
-                </MapView.Marker>
-               
+            </MapView.Marker>
+
         ));
-        
-        
+
+
 
         return (
             <Drawer leftDrawerWidth={40}
-            tapToClose={true} 
+                tapToClose={true}
                 ref={(ref) => { this.drawer = ref; }}
-                content={<LeftDrawer closeDrawer = {this.closeDrawer} navigation={this.props.navigation}/>}
+                content={<LeftDrawer closeDrawer={this.closeDrawer} navigation={this.props.navigation} />}
                 onClose={() => this.closeDrawer()} >
                 <Root>
-                <Loader loading={this.state.isLoading} />
-                <OfflineNotice />
-                <Container style={globalStyle.containerWrapper}>
-                
-          
-                    <Header style={globalStyle.header}>
-                        <Left style={globalStyle.headerMenu} >
-                            <Button transparent onPress={()=>this.openDrawer()} >
-                                <Icon size={30} name='menu' style={globalStyle.headerLeftMenuIcon} />
-                            </Button> 
-                        </Left>
-                        <Body>
-                            <Title style={globalStyle.headerTitle}>Home</Title>
-                        </Body>
-                        <Right style={globalStyle.headerRight} >
-                            <TouchableOpacity style={{marginRight:15}} onPress={() =>this.fitToMap()}>
-                            <MaterialIcons size={25} style={{color:'white'}} name="my-location"/>
-                            </TouchableOpacity>
-                            <TouchableOpacity  onPress={() =>this.props.navigation.navigate('SelectGroup',{changeGroup : this.changeGroup})}>
-                            <Ionicons  size={25} style={{color:'white'}} name="md-swap"/>
-                            </TouchableOpacity>
-                            
+                    <Loader loading={this.state.isLoading} />
+                    <OfflineNotice />
+                    <Container style={globalStyle.containerWrapper}>
 
-                            
-                        </Right>
-                        
-                    </Header>
-                    
-                    <View style={styles.mainContainer}>
-                   
-                        <View style={styles.mapContainer}>
-                        
-                        <MapView ref={map => {this.map = map}}
-                        loadingEnabled={true}
-                            zoomEnabled = {true}
-                            style={styles.map}
-                            loadingEnabled={false}
-                            >
-                            {markers}
 
-                            </MapView>
-                            { this.state.groupname!=='' &&
-                            <View style={{flexDirection: 'column',marginVertical: 5,width:'100%', alignItems:'center',position:'absolute',bottom:0}}>
-                            <Text style={{paddingTop:5,opacity:.5,borderRadius:15,backgroundColor:'black',width:200,height:30,color:'white',textAlign:'center', alignSelf: "center", flexDirection:'column'}}>{this.state.groupname} Group</Text>
+                        <Header style={globalStyle.header}>
+                            <Left style={globalStyle.headerMenu} >
+                                <Button transparent onPress={() => this.openDrawer()} >
+                                    <Icon size={30} name='menu' style={globalStyle.headerLeftMenuIcon} />
+                                </Button>
+                            </Left>
+                            <Body>
+                                <Title style={globalStyle.headerTitle}>Home</Title>
+                            </Body>
+                            <Right style={globalStyle.headerRight} >
+                                <TouchableOpacity style={{ marginRight: 15 }} onPress={() => this.fitToMap()}>
+                                    <MaterialIcons size={25} style={{ color: 'white' }} name="my-location" />
+                                </TouchableOpacity>
+                                <TouchableOpacity onPress={() => this.props.navigation.navigate('SelectGroup', { changeGroup: this.changeGroup })}>
+                                    <Ionicons size={25} style={{ color: 'white' }} name="md-swap" />
+                                </TouchableOpacity>
+
+
+
+                            </Right>
+
+                        </Header>
+
+                        <View style={styles.mainContainer}>
+
+                            <View style={styles.mapContainer}>
+                                    <Image  style={styles.marker}
+                                        source={require('../../images/marker.png')} />
+                                <MapView ref={map => { this.map = map }}
+                                    loadingEnabled={true}
+                                    zoomEnabled={true}
+                                    style={styles.map}
+                                    loadingEnabled={false}
+                                >
+                                    {markers}
+
+                                </MapView>
+                                {this.state.groupname !== '' &&
+                                    <View style={{ flexDirection: 'column', marginVertical: 5, width: '100%', alignItems: 'center', position: 'absolute', bottom: 0 }}>
+                                        <Text style={{ paddingTop: 5, opacity: .5, borderRadius: 15, backgroundColor: 'black', width: 200, height: 30, color: 'white', textAlign: 'center', alignSelf: "center", flexDirection: 'column' }}>{this.state.groupname} Group</Text>
+                                    </View>
+                                }
                             </View>
-                            }
-                        </View>
-                        
-                        
-                        
-                        
-                        
-                        
-                        <View style={styles.memberContainer} >
-                        { this.state.memberReady &&
-                            this.renderMember()
-                        }
-                        </View>
-                    </View>
 
-                   
-          
 
-                    
-                </Container>
-            </Root>
+
+
+
+
+                            <View style={styles.memberContainer} >
+                                {this.state.memberReady &&
+                                    this.renderMember()
+                                }
+                            </View>
+                        </View>
+
+
+
+
+
+                    </Container>
+                </Root>
             </Drawer>
-            
+
         )
     }
 
 
 
     render() {
-                return this.ready();
-        
+        return this.ready();
 
-  }
+
+    }
 }
 
 

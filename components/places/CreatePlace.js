@@ -87,7 +87,7 @@ class CreatePlace extends Component {
     getCurrentPosition() {
         try {
           navigator.geolocation.getCurrentPosition(
-            (position) => {
+              (position) => {
               const region = {
                 latitude: position.coords.latitude,
                 longitude: position.coords.longitude,
@@ -103,7 +103,9 @@ class CreatePlace extends Component {
             })
             },
             (error) => {
-            }
+              },
+                { enableHighAccuracy: false, timeout: 10000, maximumAge: 3000 }
+
           );
         } catch(e) {
         }
